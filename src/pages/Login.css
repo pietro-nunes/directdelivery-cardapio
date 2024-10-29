@@ -1,0 +1,68 @@
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f9f9f9; /* Fundo leve */
+}
+
+.login-form {
+    background: white;
+    padding: 30px;
+    border-radius: 10px; /* Bordas arredondadas */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+}
+
+.login-form h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333; /* Cor do texto */
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-group label {
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #555; /* Cor do rótulo */
+}
+
+.input-group input {
+    box-sizing: border-box;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px; /* Bordas arredondadas */
+    width: 100%;
+}
+
+.error {
+    color: red;
+    margin: 10px 0;
+    text-align: center;
+}
+
+.login-button {
+    width: 100%;
+    padding: 10px;
+    background: #008CBA; /* Cor do botão */
+    color: white;
+    border: none;
+    border-radius: 5px; /* Bordas arredondadas */
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.login-button:hover {
+    background: #007B9A; /* Efeito hover */
+}
+
+.info-message {
+    text-align: center;
+    font-size: 12px; /* Tamanho menor para a mensagem de info */
+    color: #777; /* Cor mais suave para a mensagem */
+    margin-top: 15px; /* Espaçamento superior */
+}

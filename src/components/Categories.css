@@ -1,0 +1,37 @@
+.categories-container {
+    display: flex;
+    flex-direction: row; /* Mantém as categorias em linha */
+    align-items: center; /* Alinha as categorias verticalmente */
+    position: relative; /* Necessário para a linha embaixo */
+    margin-bottom: 20px; /* Espaçamento inferior */
+    justify-content: flex-start; /* Alinha as categorias à esquerda */
+    overflow-x: auto; /* Permite rolagem horizontal */
+    white-space: nowrap; /* Impede que as categorias quebrem para a linha seguinte */
+}
+
+.category-item {
+    font-size: 14px; /* Tamanho da fonte menor */
+    margin: 0 10px; /* Espaçamento reduzido entre categorias */
+    padding: 5px 10px; /* Preenchimento interno menor */
+    cursor: pointer; /* Indica que é clicável */
+    color: #555; /* Cor padrão do texto mais suave */
+    transition: color 0.3s; /* Transição suave ao mudar a cor */
+    display: inline-block; /* Permite que os itens sejam tratados como inline */
+}
+
+.category-item:hover {
+    color: #28a745; /* Cor ao passar o mouse */
+}
+
+.category-item.active {
+    color: #28a745; /* Cor da categoria ativa */
+    font-weight: bold; /* Deixa a categoria ativa em negrito */
+}
+
+.underline {
+    height: 2px; /* Altura da linha */
+    background-color: #28a745; /* Cor da linha */
+    position: absolute; /* Posiciona a linha abaixo da categoria ativa */
+    bottom: 0; /* Coloca a linha diretamente abaixo */
+    transition: left 0.3s, width 0.3s; /* Transição suave ao mover a linha e alterar a largura */
+}

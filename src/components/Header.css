@@ -1,0 +1,104 @@
+/* Header styling */
+.header {
+    background-color: #1a9b9b;
+    padding: 15px 20px;
+    color: white;
+    width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links li {
+    margin: 0;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 8px 16px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    white-space: nowrap;
+}
+
+.nav-links a:hover {
+    background-color: #148f8f;
+}
+
+/* Estilo do botão sanduíche */
+.menu-toggle {
+    display: none; /* Ocultar no desktop */
+}
+
+/* Menu responsivo */
+.nav {
+    display: flex;
+    align-items: center;
+}
+
+.nav.open {
+    position: absolute; /* Muda para posição absoluta quando aberto */
+    top: 60px; /* Distância do topo */
+    left: 0;
+    width: 100%;
+    background-color: #1a9b9b; /* Fundo do menu */
+    z-index: 999; /* Para garantir que fique acima */
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: inline-block; /* Mostrar no mobile */
+    }
+
+    .nav-links {
+        display: none; /* Ocultar links no mobile */
+        flex-direction: column; /* Exibir em coluna ao abrir */
+        width: 100%; /* Largura total */
+        padding: 10px 0; /* Espaçamento vertical */
+    }
+
+    .nav.open .nav-links {
+        display: flex; /* Mostrar links ao abrir o menu */
+    }
+
+    .header-content {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+}
+
+@media (min-width: 769px) {
+    .nav-links {
+        display: flex; /* Exibir links em linha no desktop */
+    }
+
+    .menu-toggle {
+        display: none; /* Ocultar no desktop */
+    }
+}

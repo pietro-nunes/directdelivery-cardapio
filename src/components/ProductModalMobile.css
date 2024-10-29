@@ -1,0 +1,221 @@
+.modal-overlay-mobile {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: flex-end; /* Alinha o modal ao fundo da tela */
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease; /* Animação de fade in */
+}
+
+.modal-content-mobile {
+    width: 100%;
+    height: 100%;
+    background: white;
+    border-radius: 0; /* Remover bordas arredondadas para ocupar toda a tela */
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transform: translateY(100%); /* Inicia fora da tela */
+    animation: slideIn 0.4s forwards; /* Animação de deslizar */
+}
+
+.back-button-mobile {
+    cursor: pointer;
+    padding: 20px;
+}
+
+.back-icon-mobile {
+    width: 24px;
+    height: 24px;
+}
+
+.modal-body-mobile {
+    flex-grow: 1; /* Permite que essa seção cresça e ocupe o espaço disponível */
+    overflow-y: auto; /* Adiciona rolagem vertical */
+    padding: 20px;
+}
+
+.modal-product-name-mobile {
+    font-size: 1.5rem;
+    margin: 15px 0;
+    text-align: center;
+}
+
+.modal-product-price-mobile {
+    font-size: 1.5rem;
+    color: #28a745;
+    text-align: center;
+}
+
+.modal-product-description-mobile {
+    font-size: 1rem;
+    text-align: center;
+    margin: 10px 0;
+}
+
+.accompaniments-section-mobile {
+    margin: 10px 0;
+    border: 1px solid #ddd; /* Borda na seção */
+    border-radius: 8px; /* Bordas arredondadas para a seção */
+    padding: 10px;
+}
+
+.accordion-button-mobile {
+    background-color: #28a745; /* Cor do botão do acordeão */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px;
+    width: 100%;
+    text-align: left;
+    font-size: 1rem;
+}
+
+.accordion-content-mobile {
+    margin-top: 10px;
+}
+
+.accompaniments-list-mobile {
+    margin: 10px 0;
+}
+
+.accompaniment-card-mobile {
+    background: #f9f9f9; /* Fundo claro para os cards */
+    border: 1px solid #ccc; /* Borda dos cards */
+    border-radius: 5px; /* Bordas arredondadas dos cards */
+    padding: 10px;
+    margin-bottom: 10px; /* Espaço entre os cards */
+    display: flex;
+    align-items: center;
+}
+
+.custom-checkbox-mobile {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.checkbox-custom-mobile {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #28a745; /* Borda do checkbox */
+    border-radius: 4px; /* Bordas arredondadas */
+    display: inline-block;
+    position: relative;
+    margin-right: 10px;
+    cursor: pointer;
+    background-color: white; /* Cor de fundo inicial */
+    transition: background-color 0.3s ease; /* Transição suave */
+}
+
+input[type="checkbox"] {
+    opacity: 0; /* Esconde o checkbox padrão */
+    position: absolute;
+}
+
+input[type="checkbox"]:checked + .checkbox-custom-mobile {
+    background-color: #28a745; /* Cor de fundo quando selecionado */
+    border-color: #28a745; /* Cor da borda quando selecionado */
+}
+
+input[type="checkbox"]:checked + .checkbox-custom-mobile::after {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 2px;
+    width: 6px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.accompaniment-name-mobile {
+    margin-left: 10px; /* Espaçamento entre o checkbox e o texto */
+}
+
+.observations-section-mobile {
+    margin-top: 20px; /* Espaço entre a seção de acompanhamentos e observações */
+}
+
+.observations-mobile {
+    margin-top: 5px;
+    width: 100%;
+    height: 60px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    padding: 10px
+}
+
+.modal-footer-mobile {
+    display: flex; /* Usa flexbox para o layout */
+    justify-content: space-between; /* Espaça os elementos igualmente */
+    align-items: center; /* Centraliza verticalmente os elementos */
+    padding: 10px; /* Espaçamento interno */
+    background-color: #f9f9f9; /* Cor de fundo */
+    border-top: 1px solid #ddd; /* Borda superior para separar visualmente */
+}
+
+.add-to-cart-button-mobile {
+    width: 65%; /* Ajusta a largura do botão */
+    padding: 10px;
+    background-color: #28a745; /* Cor do botão */
+    color: white; /* Cor do texto do botão */
+    border: none; /* Remove borda padrão */
+    border-radius: 5px; /* Bordas arredondadas */
+    cursor: pointer; /* Cursor de ponteiro */
+    font-size: 1rem; /* Tamanho da fonte do botão */
+}
+
+.modal-total-price-mobile {
+    font-size: 1.2rem; /* Tamanho da fonte para o total */
+    font-weight: bold; /* Negrito para destacar o total */
+    color: #333; /* Cor do texto do total */
+    width: 35%; /* Ajusta a largura do total */
+    text-align: right; /* Alinha o texto à direita */
+}
+
+.disabled-checkbox {
+    background-color: #e0e0e0; /* Cor de fundo do checkbox desabilitado */
+    border-color: #b0b0b0; /* Cor da borda do checkbox desabilitado */
+    cursor: not-allowed; /* Cursor de não permitido */
+}
+
+.limit-warning {
+    margin-top: 5px;
+    font-size: 0.8rem; /* Tamanho da fonte menor */
+}
+
+.limit-warning span {
+    background-color: #28a745;
+    padding: 2px 10px;
+    border-radius: 5px;
+    color: white;
+}
+
+/* Animação de deslizamento */
+@keyframes slideIn {
+    from {
+        transform: translateY(100%); /* Começa fora da tela */
+    }
+    to {
+        transform: translateY(0); /* Termina na posição original */
+    }
+}
+
+/* Animação de fade-in */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
