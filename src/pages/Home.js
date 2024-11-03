@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import ProductCard from "../components/ProductCard";
 import Categories from "../components/Categories"; // Importa o novo componente de categorias
 import "./Home.css";
+import RestaurantInfo from "../components/RestaurantInfo";
 
 const Home = ({ addToCart }) => {
   const [selectedCategory, setSelectedCategory] = useState("Bebidas");
@@ -108,26 +109,8 @@ const Home = ({ addToCart }) => {
 
   return (
     <div className="home">
-      {/* Área do restaurante */}
-      <div className="restaurant-info">
-        <div className="restaurant-logo-container">
-          <img
-            src={
-              restaurantInfo.logo ||
-              "https://via.placeholder.com/150?text=Logo+Restaurante"
-            }
-            alt={`${restaurantInfo.name} Logo`}
-            className="restaurant-logo"
-          />
-        </div>
-        <div className="restaurant-details">
-          <h2>{restaurantInfo.name}</h2>
-          <p>Horário de Funcionamento: {restaurantInfo.hours}</p>
-          <p className={`status ${restaurantInfo.isOpen ? "open" : "closed"}`}>
-            {restaurantInfo.isOpen ? "Aberto" : "Fechado"}
-          </p>
-        </div>
-      </div>
+
+      <RestaurantInfo restaurantInfo={restaurantInfo}/>
 
       {/* Listagem de categorias e produtos */}
       <p>Explore nosso cardápio:</p>

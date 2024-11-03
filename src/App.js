@@ -35,6 +35,11 @@ function App() {
     setIsLoggedIn(true); // Atualiza o estado para logado
   };
 
+  const handleLogout = () => {
+    setIsLoggedIn(false);  
+    const token = localStorage.removeItem("token")
+  }
+
   const addToCart = (product) => {
     setCartItems((prevItems) => {
       const existingItem = prevItems.find((item) => item.id === product.id);
@@ -58,7 +63,7 @@ function App() {
             element={<Cart cartItems={cartItems} setCartItems={setCartItems} />}
           />{" "}
           {/* Rota para o Cart */}
-          <Route path="/checkout" element={<Checkout carrinho={cartItems} />} />
+          <Route path="/checkout" element={<Checkout carrinho={cartItems} onLogout={handleLogout} />} />
           <Route
             path="/login"
             element={

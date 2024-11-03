@@ -11,7 +11,6 @@
 }
 
 .cart-items {
-    max-height: 400px; /* Limita a altura dos itens */
     overflow-y: auto; /* Adiciona rolagem se necessário */
 }
 

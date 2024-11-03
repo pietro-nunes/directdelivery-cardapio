@@ -1,0 +1,76 @@
+/* Área do restaurante */
+.restaurant-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 30px;
+  background: white;
+  position: relative;
+  padding: 20px 0px;
+  text-align: center;
+}
+
+.restaurant-info::after {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 40px;
+  right: 0;
+  bottom: -24px;
+  left: 0;
+  background: linear-gradient(-45deg, transparent 70%, white 75%),
+    linear-gradient(45deg, transparent 70%, white 75%);
+  background-repeat: repeat-x;
+  background-size: 15px 10px, 15px 10px;
+  background-position: center;
+}
+
+/* Logo do restaurante */
+.restaurant-logo-container {
+  flex-shrink: 0;
+  width: 150px;
+  height: 150px;
+  margin-right: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #e0e0e0; /* Placeholder para o logo */
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.restaurant-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Garantir que a imagem ocupe o espaço de forma elegante */
+}
+
+/* Detalhes do restaurante */
+.restaurant-details {
+  text-align: center;
+}
+
+.restaurant-details h2 {
+  margin: 0;
+  font-size: 28px;
+  color: #1a9b9b; /* Combina com a cor principal */
+}
+
+.restaurant-details p {
+  margin: 5px 0;
+  font-size: 16px;
+}
+
+.status {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.status.open {
+  color: #4caf50; /* Verde para aberto */
+}
+
+.status.closed {
+  color: #ff6347; /* Vermelho para fechado */
+}

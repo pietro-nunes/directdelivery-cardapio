@@ -15,7 +15,7 @@ const Login = ({ onLogin }) => {
         // Simulação de consulta à API
         setTimeout(() => {
             if (username && number) { // Verifica se o nome e número estão preenchidos
-                const fakeToken = 'fake_jwt_token'; // Token simulado
+                const fakeToken = '{"id": 1, "nome": "Pietro Nunes", "telefone": "51984639694"}'; // Token simulado
                 localStorage.setItem('token', fakeToken); // Salva o token no localStorage
                 localStorage.setItem('username', username); // Salva o nome de usuário no localStorage
                 onLogin(); // Chama a função de callback passada como props
