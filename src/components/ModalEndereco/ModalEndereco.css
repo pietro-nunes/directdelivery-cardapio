@@ -1,0 +1,81 @@
+.end__modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Cor do fundo */
+    display: flex;
+    justify-content: center;
+    align-items: flex-end; /* Alinha o modal no fundo da tela */
+    z-index: 1000; /* Para ficar acima de outros elementos */
+}
+
+.end__modal-content {
+    background: white;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    width: 100%; /* Ocupar toda a largura do modal */
+    height: 100%; /* Ocupar toda a altura da tela */
+    animation: slide-in 0.3s ease forwards; /* Animação ao abrir */
+    overflow-y: auto; /* Permite rolagem se o conteúdo exceder a altura */
+}
+
+.end__modal-content select,
+.end__modal-content input {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between; /* Espaçamento entre os botões */
+    margin-top: 15px; /* Margem superior */
+    font-size: 1rem;
+}
+
+.end__modal-content form {
+    padding: 15px;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: space-between; /* Espaçamento entre os botões */
+    margin-top: 15px; /* Margem superior */
+}
+
+.modal-buttons button {
+    width: 100%;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: #28a745;
+    color: white;
+}
+
+@keyframes slide-in {
+    from {
+        transform: translateY(100%); /* Começa fora da tela (para baixo) */
+    }
+    to {
+        transform: translateY(0); /* Move para a posição visível */
+    }
+}
+
+/* Estilos responsivos */
+@media (min-width: 768px) {
+    .modal-content {
+        height: 50vh; /* Ocupar metade da altura da tela em desktops */
+        overflow-y: auto; /* Permite rolagem se o conteúdo exceder a altura */
+    }
+}
+
+.back-button-mobile {
+    cursor: pointer;
+    padding: 20px;
+}
+
+.back-icon-mobile {
+    width: 24px;
+    height: 24px;
+}

@@ -7,18 +7,6 @@
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
-h2 {
-    text-align: left;
-    font-size: 13px;
-    color: #333;
-    font-weight: bold;
-}
-
-h3 {
-    margin-top: 20px;
-    color: #555;
-}
-
 .customer-info,
 .delivery-info {
     padding: 15px;
@@ -35,12 +23,10 @@ h3 {
 .payment-select {
     width: 100%;
     padding: 12px;
-    border: 2px solid #1a9b9b; /* Borda mais espessa e colorida */
     border-radius: 5px;
     font-size: 16px;
     background-color: #f9f9f9;
     transition: border-color 0.3s, background-color 0.3s;
-    appearance: none; /* Remove a aparência padrão do select */
 }
 
 .payment-select:focus {
@@ -92,38 +78,6 @@ textarea {
     background: #218838; /* Efeito hover */
 }
 
-.modal-bottom {
-    position: fixed;
-    bottom: -100%; /* Começa fora da tela */
-    left: 0;
-    right: 0;
-    background-color: #fff;
-    border-radius: 20px 20px 0px 0px;
-    padding: 20px;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
-    animation: slide-in 0.3s ease forwards; /* Aplica a animação */
-}
-
-.modal-bottom.slide-in {
-    bottom: 0; /* Move para a posição visível */
-}
-
-.modal-content {
-    display: flex;
-    flex-direction: column;
-}
-
-
-.modal-content input {
-    width: 100%;
-    box-sizing: border-box;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
 .button-container {
     display: flex;
     justify-content: space-between; /* Alinha os botões lado a lado */
@@ -136,32 +90,6 @@ textarea {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-}
-
-
-.modal-content button {
-    margin: 5px;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    background-color: #1a9b9b; /* Cor do botão */
-    color: white;
-    cursor: pointer;
-}
-
-.overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5); /* Cor do overlay */
-    z-index: 1000; /* Z-index para ficar abaixo do modal */
-}
-
-.no-troco-button {
-    background-color: #f44336; /* Cor do botão "Não precisa de troco" */
-    color: white;
 }
 
 .delivery-info {
@@ -179,29 +107,20 @@ textarea {
     margin-right: 10px; /* Espaço entre o radio button e o texto */
 }
 
-.modal-content {
+.delivery-type p {
+    font-size: 1rem;
+}
+
+.delivery-type span {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.finish-order-info {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    gap: 15px;
 }
-
-.modal-content input {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-@keyframes slide-in {
-    from {
-        transform: translateY(100%); /* Começa fora da tela (para baixo) */
-    }
-    to {
-        transform: translateY(0); /* Move para a posição visível */
-    }
-}
-
 
 /* Responsividade */
 @media (max-width: 768px) {

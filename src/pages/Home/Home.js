@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import ProductCard from "../components/ProductCard";
-import Categories from "../components/Categories"; // Importa o novo componente de categorias
 import "./Home.css";
-import RestaurantInfo from "../components/RestaurantInfo";
+import React, { useState } from "react";
+import ProductCard from "../../components/ProductCard/ProductCard";
+import Categories from "../../components/Categories/Categories"; // Importa o novo componente de categorias
+import RestaurantInfo from "../../components/RestaurantInfo/RestaurantInfo";
 
 const Home = ({ addToCart }) => {
   const [selectedCategory, setSelectedCategory] = useState("Bebidas");

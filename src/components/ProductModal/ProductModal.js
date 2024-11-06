@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import ProductModalMobile from "./ProductModalMobile";
-import ProductModalDesktop from "./ProductModalDesktop";
+import ProductModalMobile from "../ProductModalMobile/ProductModalMobile";
+import ProductModalDesktop from "../ProductModalDesktop/ProductModalDesktop";
 
 const ProductModal = ({ product, closeModal, addToCart }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);

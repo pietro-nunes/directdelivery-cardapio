@@ -1,0 +1,68 @@
+.troco__modal-bottom {
+    position: fixed;
+    bottom: 0; /* Começa fora da tela */
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    border-radius: 20px 20px 0px 0px;
+    padding: 20px;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    animation: slide-in 0.3s ease forwards; /* Aplica a animação */
+}
+
+.troco__modal-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.troco__modal-content input {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between; /* Espaçamento entre os botões */
+    margin-top: 15px; /* Margem superior */
+    font-size: 1rem;
+}
+
+.troco__overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Cor do overlay */
+    z-index: 1000; /* Z-index para ficar abaixo do modal */
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between; /* Alinha os botões lado a lado */
+    width: 100%; /* Garante que ocupem o espaço total */
+}
+
+.button-container button {
+    margin: 5px; /* Espaçamento entre os botões */
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.no-troco-button {
+    background-color: #f44336; /* Cor do botão "Não precisa de troco" */
+    color: white;
+}
+
+@keyframes slide-in {
+    from {
+        transform: translateY(100%); /* Começa fora da tela (para baixo) */
+    }
+    to {
+        transform: translateY(0); /* Move para a posição visível */
+    }
+}

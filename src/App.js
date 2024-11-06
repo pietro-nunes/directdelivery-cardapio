@@ -5,12 +5,12 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import Header from "./components/Header";
-import Home from "./pages/Home";
-import Cart from "./pages/Cart"; // Importando o componente Cart
-import FabButton from "./components/FabButton";
-import Checkout from "./pages/Checkout";
-import Login from "./pages/Login";
+import Header from "./components/Header/Header";
+import Home from "./pages/Home/Home";
+import Cart from "./pages/Cart/Cart"; // Importando o componente Cart
+import FabButton from "./components/FabButton/FabButton";
+import Checkout from "./pages/Checkout/Checkout";
+import Login from "./pages/Login/Login";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Importa os estilos
 

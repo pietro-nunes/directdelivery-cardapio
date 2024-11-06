@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./ProductCard.css"; // Estilo do ProductCard
-import ProductModal from "./ProductModal"; // Importa o componente de modal
+import ProductModal from "../ProductModal/ProductModal"; // Importa o componente de modal
 
 const ProductCard = ({ product, addToCart }) => {
   const [isModalOpen, setIsModalOpen] = useState(false); // Estado para controlar a exibição do modal

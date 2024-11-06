@@ -1,23 +1,5 @@
-/* Global styling */
-* {
-  font-family: "Poppins", sans-serif;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  background-color: #f1f1f1;
-}
-
 .home {
   text-align: center;
-}
-
-/* Estilo das categorias */
-.category {
-  text-align: left; /* Garante que todos os itens dentro da categoria, incluindo o título, fiquem à esquerda */
-  margin-bottom: 40px;
-  padding: 0px 10px;
 }
 
 .category-title {
@@ -26,6 +8,13 @@ body {
   color: #1a9b9b;
   margin-bottom: 10px;
   text-align: center; /* Alinha o título da categoria à esquerda */
+}
+
+/* Estilo das categorias */
+.category {
+  text-align: left; /* Garante que todos os itens dentro da categoria, incluindo o título, fiquem à esquerda */
+  margin-bottom: 40px;
+  padding: 0px 10px;
 }
 
 /* Listagem de produtos */

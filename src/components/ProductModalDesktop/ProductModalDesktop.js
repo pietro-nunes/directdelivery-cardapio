@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import Accordion from "./Accordion"; // Importa o componente Accordion
-import "./ProductModalMobile.css";
+import Accordion from "../Accordion/Accordion"; // Importa o componente Accordion
+import "./ProductModalDesktop.css"; // Novo arquivo CSS para desktop
 import { Bounce, toast } from "react-toastify";
 
-const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
-  const [selectedAccompaniments, setSelectedAccompaniments] = useState({});
-  const [observation, setObservation] = useState(""); // Estado para a observação
+const ProductModalDesktop = ({ product = {}, closeModal, addToCart }) => {
+  const [selectedAccompaniments, setSelectedAccompaniments] = useState({}); // Usar um objeto para armazenar seleções por sessão
 
   const handleAccompanimentChange = (sessionId, accompanimentId, allowed) => {
     const currentSelections = selectedAccompaniments[sessionId] || [];
@@ -28,22 +27,6 @@ const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
   };
 
   const handleAddToCart = () => {
-    if (!product.sessions || product.sessions.length === 0) {
-      const productWithMemo = {
-        ...product,
-        selectedAccompaniments: [],
-        observation: observation, // Adiciona a observação
-        totalPrice: product.price || 0,
-      };
-      addToCart(productWithMemo);
-      toast.success("Obaa! Item adicionado ao carrinho!", {
-        theme: "colored",
-        transition: Bounce,
-      });
-      closeModal();
-      return;
-    }
-
     const selectedAccompanimentDetails =
       product.sessions.flatMap((session) => {
         const selectedItems = selectedAccompaniments[session.id] || [];
@@ -72,11 +55,10 @@ const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
     const productWithMemo = {
       ...product,
       selectedAccompaniments: selectedAccompanimentDetails,
-      observation: observation, // Adiciona a observação
       totalPrice: totalPrice,
     };
     addToCart(productWithMemo);
-    toast.success("Obaa! Item adicionado ao carrinho!", {
+    toast.success("Produto adicionado ao carrinho!", {
       theme: "colored",
       transition: Bounce,
     });
@@ -84,16 +66,16 @@ const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
   };
 
   return (
-    <div className="modal-overlay-mobile" onClick={closeModal}>
-      <div className="modal-content-mobile" onClick={(e) => e.stopPropagation()}>
-        <div className="back-button-mobile" onClick={closeModal}>
+    <div className="modal-overlay-desktop" onClick={closeModal}>
+      <div className="modal-content-desktop" onClick={(e) => e.stopPropagation()}>
+        <div className="back-button-desktop" onClick={closeModal}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={2}
             stroke="black"
-            className="back-icon-mobile"
+            className="back-icon-desktop"
           >
             <path
               strokeLinecap="round"
@@ -103,14 +85,14 @@ const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
           </svg>
         </div>
 
-        <div className="modal-body-mobile">
-          <h3 className="modal-product-name-mobile">
+        <div className="modal-body-desktop">
+          <h3 className="modal-product-name-desktop">
             {product.name || "Nome indisponível"}
           </h3>
-          <p className="modal-product-price-mobile">
+          <p className="modal-product-price-desktop">
             R$ {product.price ? product.price.toFixed(2) : "Preço indisponível"}
           </p>
-          <p className="modal-product-description-mobile">
+          <p className="modal-product-description-desktop">
             {product.description || "Descrição indisponível"}
           </p>
 
@@ -122,14 +104,7 @@ const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
                   Escolha até {session.allowed} itens
                   {session.mandatory > 0 ? " (obrigatório)" : ""}
                 </p>
-                {selectedAccompaniments[session.id] &&
-                  selectedAccompaniments[session.id].length >=
-                    session.allowed && (
-                    <div className="limit-warning">
-                      <span> Selecionado</span>
-                    </div>
-                  )}
-                <div className="accompaniments-list-mobile">
+                <div className="accompaniments-list-desktop">
                   {session.itens.map((item) => {
                     const isChecked = (
                       selectedAccompaniments[session.id] || []
@@ -139,8 +114,8 @@ const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
                         session.allowed && !isChecked;
 
                     return (
-                      <div className="accompaniment-card-mobile" key={item.id}>
-                        <label className="custom-checkbox-mobile">
+                      <div className="accompaniment-card-desktop" key={item.id}>
+                        <label className="custom-checkbox-desktop">
                           <input
                             type="checkbox"
                             checked={isChecked}
@@ -154,11 +129,11 @@ const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
                             disabled={isDisabled}
                           />
                           <span
-                            className={`checkbox-custom-mobile ${
+                            className={`checkbox-custom-desktop ${
                               isDisabled ? "disabled-checkbox" : ""
                             }`}
                           ></span>
-                          <span className="accompaniment-name-mobile">
+                          <span className="accompaniment-name-desktop">
                             {item.name}
                             {item.price > 0 ? (
                               <> - R$ {item.price.toFixed(2)}</>
@@ -169,26 +144,30 @@ const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
                     );
                   })}
                 </div>
+                {selectedAccompaniments[session.id] &&
+                  selectedAccompaniments[session.id].length >=
+                    session.allowed && (
+                    <p className="limit-warning-desktop">
+                      🎉 Você atingiu o limite de seleção para este item.
+                    </p>
+                  )}
               </Accordion>
             ))}
 
-          {/* Seção de Observações */}
-          <div className="observations-section-mobile">
-            <h4>Observações:</h4>
+          <div className="observations-section-desktop">
+            <h4>Observações</h4>
             <textarea
-              className="observations-mobile"
+              className="observations-desktop"
               placeholder="Ex.: Tirar cebola, ovo, etc."
-              value={observation}
-              onChange={(e) => setObservation(e.target.value)} // Atualiza o estado da observação
             />
           </div>
         </div>
 
-        <div className="modal-footer-mobile">
-          <div onClick={handleAddToCart} className="add-to-cart-button-mobile">
+        <div className="modal-footer-desktop">
+          <div onClick={handleAddToCart} className="add-to-cart-button-desktop">
             Adicionar ao Carrinho
           </div>
-          <span className="modal-total-price-mobile">
+          <span className="modal-total-price-desktop">
             R$ {product.price ? product.price.toFixed(2) : "Preço indisponível"}
           </span>
         </div>
@@ -197,4 +176,4 @@ const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
   );
 };
 
-export default ProductModalMobile;
+export default ProductModalDesktop;
