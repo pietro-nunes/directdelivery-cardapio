@@ -1,0 +1,61 @@
+{
+  "clienteId": 1,
+  "itens": [
+    {
+      "id": 3,
+      "name": "Sanduíche de Frango",
+      "price": 12,
+      "image": "http://localhost:3000/images/food.jpg",
+      "description": "Sanduíche com filé de frango.",
+      "type": "pizza",
+      "sessions": [
+        {
+          "id": 1,
+          "title": "Molhos",
+          "allowed": 3,
+          "mandatory": 1,
+          "itens": [
+            { "id": 1, "name": "Kiwi", "price": 2 },
+            { "id": 6, "name": "Teste" },
+            { "id": 7, "name": "Teste2" }
+          ]
+        },
+        {
+          "id": 2,
+          "title": "Cremes",
+          "allowed": 1,
+          "mandatory": 1,
+          "itens": [
+            { "id": 4, "name": "Creme de Beterraba", "price": 5 },
+            { "id": 9, "name": "Banana" }
+          ]
+        }
+      ],
+      "selectedAccompaniments": [
+        { "id": 1, "name": "Kiwi", "price": 2 },
+        { "id": 6, "name": "Teste" },
+        { "id": 7, "name": "Teste2" },
+        { "id": 4, "name": "Creme de Beterraba", "price": 5 }
+      ],
+      "observation": "",
+      "totalPrice": 7,
+      "count": 1
+    }
+  ],
+  "total": 12,
+  "endereco": [
+    {
+      "tipo": "casa",
+      "apelido": "Casinha da vó",
+      "endereco": "Avenida paraguassu",
+      "numero": "1865",
+      "bairro": "",
+      "complemento": "Sala 804",
+      "cidade": "Capão da Canoa ",
+      "cep": "95555000",
+      "pontoReferencia": ""
+    }
+  ],
+  "formaPagamento": "2",
+  "troco": null
+}

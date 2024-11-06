@@ -3,6 +3,7 @@ import "./Checkout.css"; // Certifique-se de que esse arquivo existe e está est
 import ModalEndereco from "../../components/ModalEndereco/ModalEndereco"; // Importa o componente ModalEndereco
 import { useNavigate } from "react-router-dom"; // Importar useNavigate para navegação
 import ModalTroco from "../../components/ModalTroco/ModalTroco";
+import { Bounce, toast } from "react-toastify";
 
 const Checkout = ({ carrinho, onLogout }) => {
   const navigate = useNavigate();
@@ -52,11 +53,18 @@ const Checkout = ({ carrinho, onLogout }) => {
 
   const handleFinalizarPedido = () => {
     if (total === 0) {
-      alert("Adicione produtos ao carrinho antes de finalizar.");
+      toast.warn("Adicione produtos ao carrinho antes de finalizar.", {
+        theme: "colored",
+        transition: Bounce,
+      });
+
       return;
     }
     if (!formaPagamentoSelecionada) {
-      alert("Por favor, selecione uma forma de pagamento.");
+      toast.warn("Por favor, selecione uma forma de pagamento.", {
+        theme: "colored",
+        transition: Bounce,
+      });
       return;
     }
 
@@ -129,7 +137,7 @@ const Checkout = ({ carrinho, onLogout }) => {
         </button>
       </div>
 
-      <h3>Entrega</h3>
+      <h2>Entrega</h2>
       <div className="delivery-info">
         <div className="delivery-option">
           <label>
@@ -182,7 +190,7 @@ const Checkout = ({ carrinho, onLogout }) => {
         )}
       </div>
 
-      <h3>Escolha a forma de pagamento</h3>
+      <h2>Escolha a forma de pagamento</h2>
       <div className="payment-info">
         <select
           className="payment-select"
@@ -216,7 +224,7 @@ const Checkout = ({ carrinho, onLogout }) => {
         enderecoAtual={enderecos[0] || {}} // Passa o endereço atual, ou um objeto vazio se não houver
       />
 
-      <h3>Observação do pedido</h3>
+      <h2>Observação do pedido</h2>
       <textarea
         className="observations-mobile"
         placeholder="Ex.: Apertar campainha, não buzinar, etc."

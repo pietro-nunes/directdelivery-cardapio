@@ -7,6 +7,11 @@
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
+.checkout-container h2 {
+    font-size: 1rem;
+    color: black;
+}
+
 .customer-info,
 .delivery-info {
     padding: 15px;
@@ -120,7 +125,22 @@ textarea {
     display: flex;
     flex-direction: column;
     gap: 15px;
+    margin-top: 20px;
+    background-color: #1a9b9b0a;
+    padding: 10px;
+    border-radius: 5px;
 }
+
+.finish-order-info h3 {
+    font-size: 1.2rem;
+    color: #555;
+}
+
+.finish-order-info h2 {
+    font-size: 1.4rem;
+    color: #555;
+}
+
 
 /* Responsividade */
 @media (max-width: 768px) {
