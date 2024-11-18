@@ -4,6 +4,7 @@
   align-items: center; /* Alinha as categorias verticalmente */
   position: relative; /* Necessário para a linha embaixo */
   margin-bottom: 20px; /* Espaçamento inferior */
+  margin-top: 20px;
   justify-content: flex-start; /* Alinha as categorias à esquerda */
   overflow-x: auto; /* Permite rolagem horizontal */
   white-space: nowrap; /* Impede que as categorias quebrem para a linha seguinte */
@@ -14,9 +15,12 @@
   margin: 0 10px; /* Espaçamento reduzido entre categorias */
   padding: 5px 10px; /* Preenchimento interno menor */
   cursor: pointer; /* Indica que é clicável */
-  color: #555; /* Cor padrão do texto mais suave */
+  color: #28a745; /* Cor padrão do texto mais suave */
   transition: color 0.3s; /* Transição suave ao mudar a cor */
   display: inline-block; /* Permite que os itens sejam tratados como inline */
+  border: 1px solid #28a745;
+  border-radius: 5px;
+  font-weight: bold; /* Deixa a categoria ativa em negrito */
 }
 
 .category-item:hover {
@@ -24,14 +28,6 @@
 }
 
 .category-item.active {
-  color: #28a745; /* Cor da categoria ativa */
-  font-weight: bold; /* Deixa a categoria ativa em negrito */
-}
-
-.underline {
-  height: 2px; /* Altura da linha */
-  background-color: #28a745; /* Cor da linha */
-  position: absolute; /* Posiciona a linha abaixo da categoria ativa */
-  bottom: 0; /* Coloca a linha diretamente abaixo */
-  transition: left 0.3s, width 0.3s; /* Transição suave ao mover a linha e alterar a largura */
+  color: white; /* Cor da categoria ativa */
+  background-color: #28a745;
 }

@@ -108,10 +108,10 @@ const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
             {product.name || "Nome indisponível"}
           </h3>
           <p className="modal-product-price-mobile">
-            R$ {product.price ? product.price.toFixed(2) : "Preço indisponível"}
+            R$ {product.price ? product.price : "Preço indisponível"}
           </p>
           <p className="modal-product-description-mobile">
-            {product.description || "Descrição indisponível"}
+            {product.description || ""}
           </p>
 
           {product.sessions &&
@@ -189,7 +189,7 @@ const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
             Adicionar ao Carrinho
           </div>
           <span className="modal-total-price-mobile">
-            R$ {product.price ? product.price.toFixed(2) : "Preço indisponível"}
+            R$ {product.price ? product.price : "Preço indisponível"}
           </span>
         </div>
       </div>

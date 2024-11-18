@@ -1,44 +1,31 @@
 import React, { useState, useEffect } from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./components/Header/Header";
-import Home from "./pages/Home/Home";
-import Cart from "./pages/Cart/Cart"; // Importando o componente Cart
-import FabButton from "./components/FabButton/FabButton";
-import Checkout from "./pages/Checkout/Checkout";
-import Login from "./pages/Login/Login";
+import TenantRoutes from "./TenantRoutes";
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; // Importa os estilos
+import "react-toastify/dist/ReactToastify.css";
 
-function App() {
+const App = () => {
   const [cartItems, setCartItems] = useState(() => {
     const carrinhoSalvo = localStorage.getItem("carrinho");
     return carrinhoSalvo ? JSON.parse(carrinhoSalvo) : [];
   });
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  useEffect(() => {
+  // Verifica no localStorage se o token está presente
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
     const token = localStorage.getItem("token");
-    if (token) {
-      setIsLoggedIn(true); // Verifica se o usuário está logado
-    }
+    return !!token; // Define true se o token existe, caso contrário false
+  });
 
-    localStorage.setItem("carrinho", JSON.stringify(cartItems));
-  }, [cartItems]);
-
-  const handleLogin = () => {
+  const handleLogin = (token) => {
+    localStorage.setItem("token", token); // Salva o token no localStorage
     setIsLoggedIn(true); // Atualiza o estado para logado
   };
 
   const handleLogout = () => {
-    setIsLoggedIn(false);  
-    const token = localStorage.removeItem("token")
-  }
+    localStorage.removeItem("token"); // Remove o token do localStorage
+    setIsLoggedIn(false); // Atualiza o estado para deslogado
+  };
 
   const addToCart = (product) => {
     setCartItems((prevItems) => {
@@ -53,31 +40,26 @@ function App() {
   };
 
   return (
-      <Router>
-        <ToastContainer />
-        <Header />
-        <Routes>
-          <Route path="/" element={<Home addToCart={addToCart} />} />
-          <Route
-            path="/cart"
-            element={<Cart cartItems={cartItems} setCartItems={setCartItems} />}
-          />{" "}
-          {/* Rota para o Cart */}
-          <Route path="/checkout" element={<Checkout carrinho={cartItems} onLogout={handleLogout} />} />
-          <Route
-            path="/login"
-            element={
-              isLoggedIn ? (
-                <Navigate to="/checkout" />
-              ) : (
-                <Login onLogin={handleLogin} />
-              )
-            }
-          />
-        </Routes>
-        <FabButton cartItems={cartItems} />
-      </Router>
+    <Router>
+      <ToastContainer />
+      <Header />
+      <Routes>
+        <Route
+          path="/:slug/*"
+          element={
+            <TenantRoutes
+              addToCart={addToCart}
+              cartItems={cartItems}
+              setCartItems={setCartItems}
+              handleLogin={handleLogin}
+              handleLogout={handleLogout}
+              isLoggedIn={isLoggedIn} // Passa o estado de login como prop
+            />
+          }
+        />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;

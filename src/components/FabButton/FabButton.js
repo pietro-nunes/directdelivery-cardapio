@@ -1,22 +1,23 @@
 import React from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import "./FabButton.css"; // Estilo do FAB
 import { FaShoppingCart } from "react-icons/fa";
 
 const FabButton = ({ cartItems }) => {
   const navigate = useNavigate();
-
+  const { slug } = useParams(); // Captura o slug diretamente da URL
+  
   const handleClick = () => {
-    navigate("/cart", { state: { cartItems } }); // Mudando para /cart
+    navigate(`/${slug}/cart`, { state: { cartItems } }); // Mudando para /cart
   };
 
   const location = useLocation(); // Use o hook para obter a localização atual
 
   // Não exibir o FAB se estiver na rota /checkout
   if (
-    location.pathname === "/checkout" ||
-    location.pathname === "/cart" ||
-    location.pathname === "/login"
+    location.pathname === `/${slug}/checkout` ||
+    location.pathname === `/${slug}/cart` ||
+    location.pathname === `/${slug}/login`
   ) {
     return null;
   }

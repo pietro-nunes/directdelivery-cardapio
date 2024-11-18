@@ -53,7 +53,7 @@
 
 .restaurant-details h2 {
   margin: 0;
-  font-size: 28px;
+  font-size: 22px;
   color: #1a9b9b; /* Combina com a cor principal */
 }
 
@@ -64,7 +64,6 @@
 
 .status {
   font-weight: bold;
-  font-size: 18px;
 }
 
 .status.open {

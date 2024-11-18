@@ -1,8 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Cart.css';
+import config from '../../config';
 
-const Cart = ({ cartItems, setCartItems, isLoggedIn }) => {
+const Cart = ({ cartItems, setCartItems, isLoggedIn, tenantData }) => {
     const navigate = useNavigate();
 
     const handleIncrement = (id) => {
@@ -32,11 +33,13 @@ const Cart = ({ cartItems, setCartItems, isLoggedIn }) => {
 
     const handleProceedToCheckout = () => {
         if (isLoggedIn) {
-            navigate('/checkout');
+            navigate(`/${tenantData.slug}/checkout`);
         } else {
-            navigate('/login');
+            navigate(`/${tenantData.slug}/login`);
         }
     };
+
+    console.log(tenantData);
     return (
         <div className="cart">
             <h2>Seu Carrinho</h2>
@@ -46,12 +49,12 @@ const Cart = ({ cartItems, setCartItems, isLoggedIn }) => {
                 <div className="cart-items">
                     {cartItems.map(item => (
                         <div key={item.id} className="cart-item">
-                            <img src={item.image} alt={item.name} className="cart-item-image" />
+                            <img src={config.baseURL + item.image} alt={item.name} className="cart-item-image" />
                             <div className="item-details">
                                 <p className="cart-item-name">{item.name}</p>
                                 <p className="cart-item-obs"> {item.observation &&  `Obs: ${item.observation}`}</p>
                                 <div className="quantity-controls">
-                                <p className="cart-item-price">R$ {item.price.toFixed(2)}</p>
+                                <p className="cart-item-price">R$ {item.price}</p>
                                     <div className="quantity-control">
                                         <button className="decrement-button" onClick={() => handleDecrement(item.id)}>-</button>
                                         <span className="quantity-display">{item.count}</span>
