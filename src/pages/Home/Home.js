@@ -3,19 +3,22 @@ import React, { useEffect, useState } from "react";
 import ProductCard from "../../components/ProductCard/ProductCard";
 import Categories from "../../components/Categories/Categories";
 import RestaurantInfo from "../../components/RestaurantInfo/RestaurantInfo";
+import { useFetchWithLoading } from "../../contexts/fetchWithLoading";
 
 const Home = ({ addToCart, tenantData }) => {
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState();
   const [categories, setCategories] = useState([]); // Estado para armazenar categorias e produtos
+  const { fetchWithLoading } = useFetchWithLoading();
 
   // Função para buscar as categorias com produtos
   const fetchCategories = async () => {
     try {
-      const categoriesResponse = await fetch(
+      const categoriesResponse = await fetchWithLoading(
         `http://localhost:3333/categories/with-products/${tenantData.id}`
       );
       const categoriesData = await categoriesResponse.json();
       setCategories(categoriesData);
+      setSelectedCategory(categoriesData[0]?.name)
     } catch (error) {
       console.error("Erro ao buscar categorias:", error);
     }

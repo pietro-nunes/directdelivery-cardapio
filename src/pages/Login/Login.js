@@ -2,14 +2,16 @@ import React, { useState } from "react";
 import MaskedInput from "react-text-mask"; // Biblioteca para máscara
 import "./Login.css"; // Estilos personalizados
 import { useNavigate } from "react-router-dom"; // Importando useNavigate
+import { useFetchWithLoading } from "../../contexts/fetchWithLoading";
 
-const Login = ({ onLogin }) => {
+const Login = ({ onLogin, tenantData }) => {
   const [username, setUsername] = useState("");
   const [number, setNumber] = useState("");
   const [error, setError] = useState("");
   const [isChecking, setIsChecking] = useState(false); // Estado para verificar cliente
   const [clientExists, setClientExists] = useState(false); // Estado para cliente existente
   const navigate = useNavigate(); // Usando useNavigate
+  const { fetchWithLoading } = useFetchWithLoading();
 
   // Máscara para o número de telefone no Brasil
   const phoneMask = [
@@ -44,20 +46,15 @@ const Login = ({ onLogin }) => {
 
     setIsChecking(true); // Define o estado de verificação como ativo
     try {
-      const response = await fetch(
+      const response = await fetchWithLoading(
         `http://localhost:3333/customers/phone/${cleanedNumber}`
       );
-      if (response.ok) {
-        const data = await response.json();
-        setClientExists(true); // Define cliente como existente
-        setUsername(data.name); // Preenche o nome do cliente automaticamente
-      } else {
-        setClientExists(false);
-        setUsername(""); // Limpa o nome caso o cliente não exista
-        console.error("Erro ao verificar cliente:", response.status);
-      }
+      const data = await response.json();
+      setClientExists(true); // Define cliente como existente
+      setUsername(data.name); // Preenche o nome do cliente automaticamente
     } catch (error) {
-      console.error("Erro na consulta à API:", error);
+      setClientExists(false);
+      setUsername(""); // Limpa o nome caso o cliente não exista
     } finally {
       setIsChecking(false); // Finaliza a verificação
     }
@@ -76,7 +73,7 @@ const Login = ({ onLogin }) => {
     setIsChecking(true); // Exibe estado de carregamento
     try {
       // Consulta a API para buscar os dados do cliente novamente
-      const response = await fetch(
+      const response = await fetchWithLoading(
         `http://localhost:3333/customers/phone/${cleanedNumber}`
       );
 
@@ -88,10 +85,9 @@ const Login = ({ onLogin }) => {
           nome: data.name,
           telefone: cleanedNumber,
         });
-        localStorage.setItem("token", tokenData); // Salva o token completo
-        localStorage.setItem("username", data.name); // Salva o nome
-        onLogin(); // Chama a função de callback passada como props
-        navigate("/checkout"); // Navega para a página de checkout
+
+        onLogin(tokenData); // Chama a função de callback passada como props
+        navigate(`/${tenantData.slug}/checkout`); // Navega para a página de checkout
       } else {
         console.error("Erro ao buscar cliente:", response.status);
         setError("Não foi possível concluir o login. Tente novamente.");
@@ -119,9 +115,7 @@ const Login = ({ onLogin }) => {
               placeholder="(XX) 9 XXXX-XXXX"
               className="masked-input"
             />
-            {isChecking && (
-              <p className="info-message">Verificando login...</p>
-            )}
+            {isChecking && <p className="info-message">Verificando login...</p>}
           </div>
           <div className="input-group">
             <label>Nome e sobrenome:</label>

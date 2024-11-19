@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./components/Header/Header";
 import TenantRoutes from "./TenantRoutes";
+import { LoadingProvider } from "./contexts/LoadingContext";
+import LoadingAnimation from "./components/Loading/LoadingAnimation";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -40,9 +42,11 @@ const App = () => {
   };
 
   return (
+    <LoadingProvider>
     <Router>
       <ToastContainer />
       <Header />
+      <LoadingAnimation />
       <Routes>
         <Route
           path="/:slug/*"
@@ -59,6 +63,7 @@ const App = () => {
         />
       </Routes>
     </Router>
+    </LoadingProvider>
   );
 };
 

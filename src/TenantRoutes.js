@@ -5,6 +5,7 @@ import Cart from "./pages/Cart/Cart";
 import Checkout from "./pages/Checkout/Checkout";
 import FabButton from "./components/FabButton/FabButton";
 import Login from "./pages/Login/Login";
+import { useFetchWithLoading } from "./contexts/fetchWithLoading";
 
 const TenantRoutes = ({
   addToCart,
@@ -18,18 +19,19 @@ const TenantRoutes = ({
   const [tenantData, setTenantData] = useState(null); // Dados do tenant
   const [isLoadingTenant, setIsLoadingTenant] = useState(true); // Estado de carregamento
   const [hasError, setHasError] = useState(false); // Flag para erro de carregamento
+  const { fetchWithLoading } = useFetchWithLoading();
 
   // Função para buscar os dados do tenant
   const fetchTenantData = async (slug) => {
     try {
-      console.log(`[INFO] Buscando tenant para o slug: ${slug}`);
+      // console.log(`[INFO] Buscando tenant para o slug: ${slug}`);
       const response = await fetch(`http://localhost:3333/tenants/${slug}`);
       if (!response.ok) {
         console.error(`[ERROR] API retornou status ${response.status}`);
         throw new Error(`Erro ao buscar tenant: ${response.status}`);
       }
       const tenant = await response.json();
-      console.log("[SUCCESS] Tenant encontrado:", tenant);
+      // console.log("[SUCCESS] Tenant encontrado:", tenant);
       setTenantData(tenant);
       setHasError(false); // Resetar o estado de erro
     } catch (error) {
@@ -55,8 +57,8 @@ const TenantRoutes = ({
 
   // Enquanto o tenant está carregando
   if (isLoadingTenant) {
-    console.log("[INFO] Carregando dados do tenant...");
-    return <div>Carregando dados do tenant...</div>;
+    // console.log("[INFO] Carregando dados do tenant...");
+    return null;
   }
 
   // Se houve erro ao carregar os dados
@@ -71,7 +73,7 @@ const TenantRoutes = ({
     return <Navigate to="/" />;
   }
 
-  console.log("[SUCCESS] Tenant carregado com sucesso:", tenantData);
+  // console.log("[SUCCESS] Tenant carregado com sucesso:", tenantData);
 
   return (
     <>
@@ -98,7 +100,13 @@ const TenantRoutes = ({
         />
         <Route
           path="login"
-          element={<Login onLogin={handleLogin} isLoggedIn={isLoggedIn} />}
+          element={
+            <Login
+              tenantData={tenantData}
+              onLogin={handleLogin}
+              isLoggedIn={isLoggedIn}
+            />
+          }
         />
       </Routes>
     </>
