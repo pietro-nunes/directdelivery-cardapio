@@ -1,11 +1,10 @@
 .categories-container {
-  display: flex;
   flex-direction: row; /* Mantém as categorias em linha */
   align-items: center; /* Alinha as categorias verticalmente */
   position: relative; /* Necessário para a linha embaixo */
   margin-bottom: 20px; /* Espaçamento inferior */
   margin-top: 20px;
-  justify-content: flex-start; /* Alinha as categorias à esquerda */
+  justify-content: center; /* Alinha as categorias à esquerda */
   overflow-x: auto; /* Permite rolagem horizontal */
   white-space: nowrap; /* Impede que as categorias quebrem para a linha seguinte */
 }
