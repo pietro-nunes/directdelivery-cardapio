@@ -5,7 +5,7 @@ import Categories from "../../components/Categories/Categories";
 import RestaurantInfo from "../../components/RestaurantInfo/RestaurantInfo";
 import { useFetchWithLoading } from "../../contexts/fetchWithLoading";
 
-const Home = ({ addToCart, tenantData }) => {
+const Home = ({ addToCart, tenantData, setIsRestaurantOpen }) => {
   const [selectedCategory, setSelectedCategory] = useState();
   const [categories, setCategories] = useState([]); // Estado para armazenar categorias e produtos
   const { fetchWithLoading } = useFetchWithLoading();
@@ -18,7 +18,7 @@ const Home = ({ addToCart, tenantData }) => {
       );
       const categoriesData = await categoriesResponse.json();
       setCategories(categoriesData);
-      setSelectedCategory(categoriesData[0]?.name)
+      setSelectedCategory(categoriesData[0]?.name);
     } catch (error) {
       console.error("Erro ao buscar categorias:", error);
     }
@@ -48,7 +48,9 @@ const Home = ({ addToCart, tenantData }) => {
             name: tenantData.legalName,
             openingTime: tenantData.openingTime,
             closingTime: tenantData.closingTime,
+            openingDays: tenantData.openingDays,
           }}
+          setIsRestaurantOpen={setIsRestaurantOpen}
         />
       )}
 

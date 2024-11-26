@@ -21,17 +21,24 @@ const ProductCard = ({ product, addToCart }) => {
       <div className="product-card" onClick={handleOpenModal}>
         <div className="product-info">
           <h3>{product.name}</h3>
-          <p className="product-description">
-            {product.description}
-          </p>
+          <p className="product-description">{product.description}</p>
           <p className="product-price">
-            <span className="discounted-price">
-              por R$ {product.price}
-            </span>
+            <span className="discounted-price">por R$ {product.price}</span>
           </p>
         </div>
         <div className="product-image">
-          <img src={config.baseURL + product.image} alt={product.name} />
+          <img
+            src={
+              product.image
+                ? `${config.baseURL}${product.image}`
+                : "/images/pizza_placeholder.png"
+            }
+            alt={product.name || "Placeholder"}
+            onError={(e) => {
+              e.target.onerror = null; // Remove o listener de erro para evitar loops infinitos
+              e.target.src = "/images/pizza_placeholder.png"; // Define o placeholder no caso de erro ao carregar a imagem
+            }}
+          />
         </div>
       </div>
 

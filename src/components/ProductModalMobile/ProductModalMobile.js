@@ -46,7 +46,11 @@ const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
       .filter((relation) => selectedAdditionals.includes(relation.id))
       .reduce((total, relation) => total + parseFloat(relation.price || 0), 0);
 
-    return parseFloat(product.price) + additionalPrice;
+    const flavorPrice = flavors
+      .filter((relation) => selectedFlavors.includes(relation.id))
+      .reduce((total, relation) => total + parseFloat(relation.price || 0), 0);
+
+    return parseFloat(product.price) + additionalPrice + flavorPrice;
   };
 
   // Validação e adição ao carrinho
@@ -132,7 +136,10 @@ const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
                       />
                       <span className="checkbox-custom-mobile"></span>
                       <span className="flavor-name-mobile">
-                        {relation.relatedProduct.name}
+                        {relation.relatedProduct.name}{" "}
+                        {parseFloat(relation.price) > 0 && (
+                          <> - R$ {parseFloat(relation.price).toFixed(2)}</>
+                        )}
                       </span>
                     </label>
                   </div>

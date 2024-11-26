@@ -14,6 +14,8 @@ const TenantRoutes = ({
   handleLogin,
   handleLogout,
   isLoggedIn,
+  setIsRestaurantOpen,
+  isRestaurantOpen
 }) => {
   const { slug } = useParams();
   const [tenantData, setTenantData] = useState(null); // Dados do tenant
@@ -81,7 +83,13 @@ const TenantRoutes = ({
       <Routes>
         <Route
           path="/"
-          element={<Home tenantData={tenantData} addToCart={addToCart} />}
+          element={
+            <Home
+              tenantData={tenantData}
+              addToCart={addToCart}
+              setIsRestaurantOpen={setIsRestaurantOpen}
+            />
+          }
         />
         <Route
           path="cart"
@@ -91,14 +99,15 @@ const TenantRoutes = ({
               cartItems={cartItems}
               setCartItems={setCartItems}
               isLoggedIn={isLoggedIn}
+              isRestaurantOpen={isRestaurantOpen}
             />
           }
         />
         <Route
           path="checkout"
           element={
-            !isLoggedIn ? (
-              <Navigate to={`/${tenantData.slug}/login`} />
+            !isLoggedIn || !isRestaurantOpen ? (
+              <Navigate to={`/${tenantData.slug}`} />
             ) : (
               <Checkout
                 cartItems={cartItems}
