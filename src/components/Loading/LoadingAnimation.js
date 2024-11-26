@@ -24,7 +24,7 @@ const styles = {
     height: "100%",
     backgroundColor: "rgba(255, 255, 255, 0.5)", // Fundo branco translúcido com blur
     backdropFilter: "blur(5px)",
-    webkitBackdropFilter: "blur(5px)",
+    WebkitBackdropFilter: "blur(5px)",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",

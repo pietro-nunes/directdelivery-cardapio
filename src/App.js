@@ -31,15 +31,36 @@ const App = () => {
 
   const addToCart = (product) => {
     setCartItems((prevItems) => {
-      const existingItem = prevItems.find((item) => item.id === product.id);
+      // Identificar o produto com base nas combinações de sabores e adicionais
+      const productKey = `${product.id}-${JSON.stringify(product.selectedFlavors)}-${JSON.stringify(product.selectedAdditionals)}`;
+      
+      // Verificar se o item já existe no carrinho com a mesma combinação
+      const existingItem = prevItems.find((item) => item.uniqueKey === productKey);
+  
       if (existingItem) {
+        // Incrementar a quantidade apenas se a combinação já existir
         return prevItems.map((item) =>
-          item.id === product.id ? { ...item, count: item.count + 1 } : item
+          item.uniqueKey === productKey
+            ? { ...item, count: item.count + 1 }
+            : item
         );
       }
-      return [...prevItems, { ...product, count: 1 }];
+  
+      // Adicionar como um novo item no carrinho, criando uma chave única
+      return [
+        ...prevItems,
+        {
+          ...product,
+          count: 1,
+          uniqueKey: productKey, // Chave única baseada na combinação
+        },
+      ];
     });
   };
+
+  useEffect(() => {
+    localStorage.setItem("carrinho", JSON.stringify(cartItems));
+  }, [cartItems]);
 
   return (
     <LoadingProvider>

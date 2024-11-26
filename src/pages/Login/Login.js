@@ -8,7 +8,6 @@ const Login = ({ onLogin, tenantData }) => {
   const [username, setUsername] = useState("");
   const [number, setNumber] = useState("");
   const [error, setError] = useState("");
-  const [isChecking, setIsChecking] = useState(false); // Estado para verificar cliente
   const [clientExists, setClientExists] = useState(false); // Estado para cliente existente
   const navigate = useNavigate(); // Usando useNavigate
   const { fetchWithLoading } = useFetchWithLoading();
@@ -44,7 +43,6 @@ const Login = ({ onLogin, tenantData }) => {
 
     if (!cleanedNumber || cleanedNumber.length < 11) return; // Valida se o número é válido
 
-    setIsChecking(true); // Define o estado de verificação como ativo
     try {
       const response = await fetchWithLoading(
         `http://localhost:3333/customers/phone/${cleanedNumber}`
@@ -55,8 +53,6 @@ const Login = ({ onLogin, tenantData }) => {
     } catch (error) {
       setClientExists(false);
       setUsername(""); // Limpa o nome caso o cliente não exista
-    } finally {
-      setIsChecking(false); // Finaliza a verificação
     }
   };
 
@@ -70,34 +66,49 @@ const Login = ({ onLogin, tenantData }) => {
       return;
     }
 
-    setIsChecking(true); // Exibe estado de carregamento
     try {
       // Consulta a API para buscar os dados do cliente novamente
       const response = await fetchWithLoading(
         `http://localhost:3333/customers/phone/${cleanedNumber}`
       );
 
-      if (response.ok) {
+      if (response.headers.get("Content-Length") === "0") {
+        const postResponse = await fetchWithLoading(
+          `http://localhost:3333/customers`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name: username,
+              phone: cleanedNumber,
+            }),
+          }
+        );
+
+        if (postResponse.ok) {
+          const data = await postResponse.json();
+          // Salva os dados no localStorage
+          const tokenData = JSON.stringify(data);
+
+          onLogin(tokenData); // Chama a função de callback passada como props
+          navigate(`/${tenantData.slug}/checkout`); // Navega para a página de checkout
+        } else {
+          throw new Error("Erro ao cadastrar o cliente.");
+        }
+      } else {
         const data = await response.json();
         // Salva os dados no localStorage
-        const tokenData = JSON.stringify({
-          id: data.id,
-          nome: data.name,
-          telefone: cleanedNumber,
-        });
+        const tokenData = JSON.stringify(data);
 
         onLogin(tokenData); // Chama a função de callback passada como props
         navigate(`/${tenantData.slug}/checkout`); // Navega para a página de checkout
-      } else {
-        console.error("Erro ao buscar cliente:", response.status);
-        setError("Não foi possível concluir o login. Tente novamente.");
       }
     } catch (error) {
       console.error("Erro na consulta à API:", error);
       setError("Erro ao se conectar com o servidor. Tente novamente.");
-    } finally {
-      setIsChecking(false); // Finaliza o carregamento
-    }
+    } 
   };
 
   return (
@@ -115,7 +126,6 @@ const Login = ({ onLogin, tenantData }) => {
               placeholder="(XX) 9 XXXX-XXXX"
               className="masked-input"
             />
-            {isChecking && <p className="info-message">Verificando login...</p>}
           </div>
           <div className="input-group">
             <label>Nome e sobrenome:</label>

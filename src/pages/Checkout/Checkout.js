@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from "react";
-import "./Checkout.css"; // Certifique-se de que esse arquivo existe e está estilizado corretamente.
-import ModalEndereco from "../../components/ModalEndereco/ModalEndereco"; // Importa o componente ModalEndereco
-import { useNavigate } from "react-router-dom"; // Importar useNavigate para navegação
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import "./Checkout.css";
+import ModalEndereco from "../../components/ModalEndereco/ModalEndereco";
+import { useNavigate } from "react-router-dom";
 import ModalTroco from "../../components/ModalTroco/ModalTroco";
 import { Bounce, toast } from "react-toastify";
 
-const Checkout = ({ carrinho, onLogout }) => {
+const Checkout = ({ cartItems, onLogout, tenantData }) => {
   const navigate = useNavigate();
   const [enderecos, setEnderecos] = useState([]);
-  const [error, setError] = useState("");
+  const [taxaEntrega, setTaxaEntrega] = useState(0);
+  const enderecosRef = useRef(enderecos);
   const [formasPagamento, setFormasPagamento] = useState([]);
   const [formaPagamentoSelecionada, setFormaPagamentoSelecionada] =
     useState("");
@@ -20,8 +21,7 @@ const Checkout = ({ carrinho, onLogout }) => {
 
   useEffect(() => {
     const formasPagamentoFake = [
-      { id: "1", nome: "Cartão de Crédito" },
-      { id: "2", nome: "Boleto Bancário" },
+      { id: "1", nome: "Cartão de Crédito/Débito" },
       { id: "3", nome: "Pix" },
       { id: "4", nome: "Dinheiro na Entrega" },
     ];
@@ -30,6 +30,10 @@ const Checkout = ({ carrinho, onLogout }) => {
     const clienteLocalStorage = JSON.parse(localStorage.getItem("token"));
     setCliente(clienteLocalStorage);
   }, []);
+
+  useEffect(() => {
+    enderecosRef.current = enderecos;
+  }, [enderecos]);
 
   const formatarTelefone = (telefone) => {
     const apenasNumeros = telefone.replace(/\D/g, "");
@@ -40,13 +44,16 @@ const Checkout = ({ carrinho, onLogout }) => {
     return telefone;
   };
 
+  // Função para calcular o total
   const calcularTotal = () => {
-    if (!Array.isArray(carrinho) || carrinho.length === 0) return 0;
-    return carrinho.reduce((acc, item) => {
-      const preco = item.price || 0;
-      const quantidade = item.count || 0;
-      return acc + preco * quantidade;
+    if (!Array.isArray(cartItems) || cartItems.length === 0) return 0;
+
+    const subtotal = cartItems.reduce((total, item) => {
+      const itemTotal = item.totalPrice * item.count; // Preço total de cada item
+      return total + itemTotal;
     }, 0);
+
+    return subtotal + parseFloat(taxaEntrega); // Inclui a taxa de entrega no total
   };
 
   const total = calcularTotal();
@@ -57,7 +64,6 @@ const Checkout = ({ carrinho, onLogout }) => {
         theme: "colored",
         transition: Bounce,
       });
-
       return;
     }
     if (!formaPagamentoSelecionada) {
@@ -70,9 +76,9 @@ const Checkout = ({ carrinho, onLogout }) => {
 
     const pedido = {
       clienteId: cliente?.id,
-      itens: carrinho,
+      itens: cartItems,
       total,
-      endereco: enderecos[0] || "", // Usa o primeiro endereço
+      endereco: enderecos[0] || "",
       formaPagamento: formaPagamentoSelecionada,
       troco: formaPagamentoSelecionada === "4" ? troco : null,
     };
@@ -86,7 +92,7 @@ const Checkout = ({ carrinho, onLogout }) => {
 
   const handleLogout = () => {
     onLogout();
-    navigate("/login");
+    navigate(`/${tenantData.slug}/login`);
   };
 
   const handleFormaPagamentoChange = (e) => {
@@ -101,8 +107,36 @@ const Checkout = ({ carrinho, onLogout }) => {
     }
   };
 
-  const handleTrocoChange = (e) => {
-    setTroco(e.target.value);
+  const handleAddressSubmit = useCallback((endereco) => {
+    if (
+      !endereco.endereco ||
+      !endereco.numero ||
+      !endereco.bairro ||
+      !endereco.cidade
+    ) {
+      toast.warn("Por favor, preencha todos os campos obrigatórios.", {
+        theme: "colored",
+        transition: Bounce,
+      });
+      return;
+    }
+
+    setEnderecos([endereco]);
+    setTipoEntrega("entrega");
+    enderecosRef.current = [endereco];
+    setTaxaEntrega(parseFloat(endereco.deliveryFee) || 0);
+    setModalEnderecoVisible(false);
+  }, []);
+
+  const handleEntregaChange = () => {
+    setModalEnderecoVisible(true);
+  };
+
+  const handleModalEnderecoClose = () => {
+    if (!enderecosRef.current.length || !enderecosRef.current[0]?.endereco) {
+      setTipoEntrega("");
+    }
+    setModalEnderecoVisible(false);
   };
 
   const handleTrocoSubmit = (e) => {
@@ -114,20 +148,14 @@ const Checkout = ({ carrinho, onLogout }) => {
     setModalTrocoVisible(false);
   };
 
-  const handleAddressSubmit = (endereco) => {
-    // Define um único endereço no estado
-    setEnderecos([endereco]); // Substitui o array de endereços pelo novo
-    setModalEnderecoVisible(false); // Fecha o modal após submeter
-  };
-
   return (
     <div className="checkout-container">
       <h2>Este pedido será entregue a:</h2>
       <div className="customer-info">
         {cliente ? (
           <>
-            <p>{cliente.nome}</p>
-            <p>{formatarTelefone(cliente.telefone)}</p>
+            <p>{cliente.name}</p>
+            <p>{formatarTelefone(cliente.phone)}</p>
           </>
         ) : (
           <p>Carregando informações do cliente...</p>
@@ -145,10 +173,7 @@ const Checkout = ({ carrinho, onLogout }) => {
               type="radio"
               value="entrega"
               checked={tipoEntrega === "entrega"}
-              onChange={() => {
-                setTipoEntrega("entrega");
-                setModalEnderecoVisible(true); // Abre o modal para endereço
-              }}
+              onChange={handleEntregaChange}
             />
             <span>Entrega</span>
           </label>
@@ -159,7 +184,10 @@ const Checkout = ({ carrinho, onLogout }) => {
               type="radio"
               value="retirada"
               checked={tipoEntrega === "retirada"}
-              onChange={() => setTipoEntrega("retirada")}
+              onChange={() => {
+                setTipoEntrega("retirada");
+                setTaxaEntrega(0);
+              }}
             />
             <span>Retirada no local</span>
           </label>
@@ -179,7 +207,7 @@ const Checkout = ({ carrinho, onLogout }) => {
         {tipoEntrega === "entrega" && (
           <>
             <p>Você escolheu entrega.</p>
-            {enderecos.length > 0 && ( // Exibe o endereço, se existir
+            {enderecos && enderecos.length > 0 && (
               <span>
                 *{enderecos[0].endereco}, {enderecos[0].numero},{" "}
                 {enderecos[0].bairro}, {enderecos[0].complemento},{" "}
@@ -206,7 +234,6 @@ const Checkout = ({ carrinho, onLogout }) => {
         </select>
       </div>
 
-      {/* Substitua o trecho do modal de troco existente pelo seguinte */}
       <ModalTroco
         isVisible={modalTrocoVisible}
         onClose={() => setModalTrocoVisible(false)}
@@ -216,12 +243,13 @@ const Checkout = ({ carrinho, onLogout }) => {
         handleNoTroco={handleNoTroco}
       />
 
-      {/* Modal para Endereço */}
       <ModalEndereco
         isVisible={modalEnderecoVisible}
-        onClose={() => setModalEnderecoVisible(false)}
+        onClose={handleModalEnderecoClose}
         onAddressSubmit={handleAddressSubmit}
-        enderecoAtual={enderecos[0] || {}} // Passa o endereço atual, ou um objeto vazio se não houver
+        enderecoAtual={enderecos[0] || {}}
+        tenantData={tenantData}
+        enderecos={cliente?.addresses || []}
       />
 
       <h2>Observação do pedido</h2>
@@ -231,9 +259,9 @@ const Checkout = ({ carrinho, onLogout }) => {
       />
 
       <div className="finish-order-info">
-        <h3>Subtotal: R$ {total.toFixed(2)}</h3>
-        <h3>Taxa de entrega: R$ 5,00</h3>
-        <h2>Total: R$ {total + 5.0}</h2>
+        <h3>Subtotal: R$ {(calcularTotal() - taxaEntrega).toFixed(2)}</h3>
+        <h3>Taxa de entrega: R$ {taxaEntrega.toFixed(2)}</h3>
+        <h2>Total: R$ {total.toFixed(2)}</h2>
 
         {formaPagamentoSelecionada === "4" && troco && (
           <h3>Troco: R$ {troco}</h3>

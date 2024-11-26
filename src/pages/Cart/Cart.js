@@ -6,29 +6,32 @@ import config from '../../config';
 const Cart = ({ cartItems, setCartItems, isLoggedIn, tenantData }) => {
     const navigate = useNavigate();
 
-    const handleIncrement = (id) => {
-        setCartItems((prevItems) => 
-            prevItems.map(item =>
-                item.id === id ? { ...item, count: item.count + 1 } : item
+    const handleIncrement = (uniqueKey) => {
+        setCartItems((prevItems) =>
+            prevItems.map((item) =>
+                item.uniqueKey === uniqueKey ? { ...item, count: item.count + 1 } : item
             )
         );
     };
 
-    const handleDecrement = (id) => {
+    const handleDecrement = (uniqueKey) => {
         setCartItems((prevItems) => {
-            const itemToRemove = prevItems.find(item => item.id === id);
+            const itemToRemove = prevItems.find((item) => item.uniqueKey === uniqueKey);
             if (itemToRemove.count > 1) {
-                return prevItems.map(item =>
-                    item.id === id ? { ...item, count: item.count - 1 } : item
+                return prevItems.map((item) =>
+                    item.uniqueKey === uniqueKey ? { ...item, count: item.count - 1 } : item
                 );
             } else {
-                return prevItems.filter(item => item.id !== id);
+                return prevItems.filter((item) => item.uniqueKey !== uniqueKey);
             }
         });
     };
 
     const calculateTotal = () => {
-        return cartItems.reduce((total, item) => total + item.price * item.count, 0).toFixed(2);
+        return cartItems.reduce((total, item) => {
+            const itemTotal = item.totalPrice * item.count; // Preço total do item considerando a quantidade
+            return total + itemTotal;
+        }, 0).toFixed(2); // Formatar para duas casas decimais
     };
 
     const handleProceedToCheckout = () => {
@@ -39,7 +42,6 @@ const Cart = ({ cartItems, setCartItems, isLoggedIn, tenantData }) => {
         }
     };
 
-    console.log(tenantData);
     return (
         <div className="cart">
             <h2>Seu Carrinho</h2>
@@ -47,18 +49,66 @@ const Cart = ({ cartItems, setCartItems, isLoggedIn, tenantData }) => {
                 <p>Seu carrinho está vazio.</p>
             ) : (
                 <div className="cart-items">
-                    {cartItems.map(item => (
-                        <div key={item.id} className="cart-item">
-                            <img src={config.baseURL + item.image} alt={item.name} className="cart-item-image" />
+                    {cartItems.map((item) => (
+                        <div key={item.uniqueKey} className="cart-item">
+                            <img
+                                src={config.baseURL + item.image}
+                                alt={item.name}
+                                className="cart-item-image"
+                            />
                             <div className="item-details">
                                 <p className="cart-item-name">{item.name}</p>
-                                <p className="cart-item-obs"> {item.observation &&  `Obs: ${item.observation}`}</p>
+
+                                {/* Exibir Sabores */}
+                                {item.selectedFlavors?.length > 0 && (
+                                    <p className="cart-item-flavors">
+                                        <strong>Sabores:</strong>{" "}
+                                        {item.selectedFlavors
+                                            .map((flavor) => flavor.relatedProduct.name)
+                                            .join(", ")}
+                                    </p>
+                                )}
+
+                                {/* Exibir Adicionais */}
+                                {item.selectedAdditionals?.length > 0 && (
+                                    <p className="cart-item-additionals">
+                                        <strong>Adicionais:</strong>{" "}
+                                        {item.selectedAdditionals
+                                            .map(
+                                                (additional) =>
+                                                    `${additional.relatedProduct.name} (R$ ${parseFloat(
+                                                        additional.price
+                                                    ).toFixed(2)})`
+                                            )
+                                            .join(", ")}
+                                    </p>
+                                )}
+
+                                {/* Observações */}
+                                {item.observation && (
+                                    <p className="cart-item-obs">
+                                        <strong>Obs:</strong> {item.observation}
+                                    </p>
+                                )}
+
                                 <div className="quantity-controls">
-                                <p className="cart-item-price">R$ {item.price}</p>
+                                    <p className="cart-item-price">
+                                        R$ {item.totalPrice.toFixed(2)}
+                                    </p>
                                     <div className="quantity-control">
-                                        <button className="decrement-button" onClick={() => handleDecrement(item.id)}>-</button>
+                                        <button
+                                            className="decrement-button"
+                                            onClick={() => handleDecrement(item.uniqueKey)}
+                                        >
+                                            -
+                                        </button>
                                         <span className="quantity-display">{item.count}</span>
-                                        <button className="increment-button" onClick={() => handleIncrement(item.id)}>+</button>
+                                        <button
+                                            className="increment-button"
+                                            onClick={() => handleIncrement(item.uniqueKey)}
+                                        >
+                                            +
+                                        </button>
                                     </div>
                                 </div>
                             </div>

@@ -103,3 +103,18 @@
 .checkout-button:hover {
     background-color: #007B9A; /* Cor ao passar o mouse */
 }
+
+.cart-item-flavors,
+.cart-item-additionals,
+.cart-item-obs {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 5px;
+}
+
+.cart-item-flavors strong,
+.cart-item-additionals strong,
+.cart-item-obs strong {
+    color: #333;
+    font-weight: bold;
+}

@@ -96,16 +96,30 @@ const TenantRoutes = ({
         />
         <Route
           path="checkout"
-          element={<Checkout cartItems={cartItems} tenantData={tenantData} />}
+          element={
+            !isLoggedIn ? (
+              <Navigate to={`/${tenantData.slug}/login`} />
+            ) : (
+              <Checkout
+                cartItems={cartItems}
+                tenantData={tenantData}
+                onLogout={handleLogout}
+              />
+            )
+          }
         />
         <Route
           path="login"
           element={
-            <Login
-              tenantData={tenantData}
-              onLogin={handleLogin}
-              isLoggedIn={isLoggedIn}
-            />
+            isLoggedIn ? (
+              <Navigate to={`/${tenantData.slug}/checkout`} />
+            ) : (
+              <Login
+                tenantData={tenantData}
+                onLogin={handleLogin}
+                isLoggedIn={isLoggedIn}
+              />
+            )
           }
         />
       </Routes>

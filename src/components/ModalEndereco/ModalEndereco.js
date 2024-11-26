@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
-import "./ModalEndereco.css"; // Certifique-se de ter um CSS para estilizar o modal
+import { Bounce, toast } from "react-toastify";
+import "./ModalEndereco.css";
 
 const ModalEndereco = ({
   isVisible,
   onClose,
   onAddressSubmit,
   enderecoAtual,
+  tenantData,
+  enderecos = [], // Define um valor padrão vazio
 }) => {
   const [endereco, setEndereco] = useState("");
   const [numero, setNumero] = useState("");
@@ -15,12 +18,12 @@ const ModalEndereco = ({
   const [cep, setCep] = useState("");
   const [ptReferencia, setPtReferencia] = useState("");
   const [apelidoEndereco, setApelidoEndereco] = useState("");
-  const [tipoEndereco, setTipoEndereco] = useState("casa"); // Tipo de endereço padrão
+  const [tipoEndereco, setTipoEndereco] = useState("casa");
+  const [deliveryFee, setDeliveryFee] = useState(0); // Para armazenar a taxa de entrega
 
-  // Efeito para preencher os campos quando o modal é aberto
   useEffect(() => {
     if (isVisible && enderecoAtual) {
-      setEndereco(enderecoAtual.endereco || ""); // Preenche o campo ou define como string vazia
+      setEndereco(enderecoAtual.endereco || "");
       setNumero(enderecoAtual.numero || "");
       setBairro(enderecoAtual.bairro || "");
       setComplemento(enderecoAtual.complemento || "");
@@ -28,9 +31,9 @@ const ModalEndereco = ({
       setCep(enderecoAtual.cep || "");
       setPtReferencia(enderecoAtual.pontoReferencia || "");
       setApelidoEndereco(enderecoAtual.apelido || "");
-      setTipoEndereco(enderecoAtual.tipo || "casa"); // Tipo padrão
+      setTipoEndereco(enderecoAtual.tipo || "casa");
+      setDeliveryFee(enderecoAtual.deliveryFee || 0); // Carrega a taxa de entrega, se existir
     } else {
-      // Reseta os campos se o modal não estiver visível
       setEndereco("");
       setNumero("");
       setBairro("");
@@ -40,11 +43,20 @@ const ModalEndereco = ({
       setPtReferencia("");
       setApelidoEndereco("");
       setTipoEndereco("casa");
+      setDeliveryFee(0);
     }
   }, [isVisible, enderecoAtual]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!endereco || !numero || !bairro || !cidade) {
+      toast.warn("Por favor, preencha todos os campos obrigatórios.", {
+        theme: "colored",
+        transition: Bounce,
+      });
+      return; // Não submete se os campos obrigatórios estiverem vazios
+    }
+
     const enderecoCompleto = {
       tipo: tipoEndereco,
       apelido: apelidoEndereco,
@@ -55,9 +67,47 @@ const ModalEndereco = ({
       cidade,
       cep,
       pontoReferencia: ptReferencia,
+      deliveryFee, // Adiciona a taxa de entrega selecionada
     };
-    onAddressSubmit(enderecoCompleto); // Passa o endereço completo para o componente pai
-    onClose(); // Fecha o modal após o envio
+
+    onAddressSubmit(enderecoCompleto); // Salva o endereço e a taxa de entrega
+    onClose(); // Fecha o modal
+  };
+
+  const handleApelidoChange = (e) => {
+    const apelidoSelecionado = e.target.value;
+    setApelidoEndereco(apelidoSelecionado);
+
+    // Encontra o endereço salvo baseado no apelido selecionado
+    const enderecoSelecionado = enderecos.find(
+      (end) => end.nickname === apelidoSelecionado
+    );
+    if (enderecoSelecionado) {
+      setEndereco(enderecoSelecionado.address || "");
+      setNumero(enderecoSelecionado.number || "");
+      setBairro(enderecoSelecionado.neighborhood.name || "");
+      setComplemento(enderecoSelecionado.complement || "");
+      setCidade(enderecoSelecionado.city.name || "");
+      setCep(enderecoSelecionado.zipcode || "");
+      setPtReferencia(enderecoSelecionado.referencePoint || "");
+
+      // Atualiza a taxa de entrega baseada no bairro do endereço selecionado
+      const neighborhood = tenantData?.neighborhoods?.find(
+        (n) => n.name === enderecoSelecionado.neighborhood.name
+      );
+      setDeliveryFee(neighborhood?.deliveryFee || 0);
+    }
+  };
+
+  const handleBairroChange = (e) => {
+    const selectedBairro = e.target.value;
+    setBairro(selectedBairro);
+
+    // Atualiza a taxa de entrega com base no bairro selecionado
+    const neighborhood = tenantData?.neighborhoods?.find(
+      (n) => n.name === selectedBairro
+    );
+    setDeliveryFee(neighborhood?.deliveryFee || 0);
   };
 
   if (!isVisible) return null;
@@ -84,68 +134,83 @@ const ModalEndereco = ({
         <form onSubmit={handleSubmit}>
           <h4>Digite o endereço de entrega</h4>
 
-          <select
-            value={tipoEndereco}
-            onChange={(e) => setTipoEndereco(e.target.value)}
-            required
-          >
-            <option value="casa">Casa</option>
-            <option value="trabalho">Trabalho</option>
-            <option value="outra">Outra</option>
-          </select>
+          {/* Select para escolher o apelido do endereço salvo */}
+          {enderecos?.length > 0 && (
+            <select
+              value={apelidoEndereco}
+              onChange={handleApelidoChange}
+              required
+            >
+              <option value="">Selecione um endereço salvo</option>
+              {enderecos.map((end) => (
+                <option key={end.id} value={end.nickname}>
+                  {end.nickname}
+                </option>
+              ))}
+            </select>
+          )}
+
           <input
             type="text"
-            value={apelidoEndereco}
+            value={apelidoEndereco || ""}
             onChange={(e) => setApelidoEndereco(e.target.value)}
             placeholder="Apelido do endereço (obrigatório)"
             required
           />
           <input
             type="text"
-            value={endereco}
+            value={endereco || ""}
             onChange={(e) => setEndereco(e.target.value)}
             placeholder="Endereço"
             required
           />
           <input
             type="text"
-            value={numero}
+            value={numero || ""}
             onChange={(e) => setNumero(e.target.value)}
             placeholder="Número"
             required
           />
-          <select
-            value={bairro}
-            onChange={(e) => setBairro(e.target.value)}
-            required
-          >
-            <option value="">Selecione o bairro</option>
-            <option value="capao">Centro</option>
-            <option value="xgla">Xangri-lá</option>
-          </select>
+
+          {/* Select de bairros com taxa de entrega */}
+          {tenantData?.neighborhoods?.length > 0 && (
+            <select
+              value={bairro}
+              onChange={handleBairroChange}
+              required
+            >
+              <option value="">Selecione um bairro</option>
+              {tenantData.neighborhoods.map((neighborhood) => (
+                <option key={neighborhood.id} value={neighborhood.name}>
+                  {neighborhood.name} - Taxa: R$ {Number(neighborhood.deliveryFee).toFixed(2)}
+                </option>
+              ))}
+            </select>
+          )}
+
           <input
             type="text"
-            value={complemento}
+            value={complemento || ""}
             onChange={(e) => setComplemento(e.target.value)}
             placeholder="Complemento"
           />
           <input
             type="text"
-            value={cidade}
+            value={cidade || ""}
             onChange={(e) => setCidade(e.target.value)}
             placeholder="Cidade"
             required
           />
           <input
             type="text"
-            value={cep}
+            value={cep || ""}
             onChange={(e) => setCep(e.target.value)}
             placeholder="CEP"
             required
           />
           <input
             type="text"
-            value={ptReferencia}
+            value={ptReferencia || ""}
             onChange={(e) => setPtReferencia(e.target.value)}
             placeholder="Ponto de referência"
           />

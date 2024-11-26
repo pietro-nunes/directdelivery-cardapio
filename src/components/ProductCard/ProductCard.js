@@ -21,9 +21,9 @@ const ProductCard = ({ product, addToCart }) => {
       <div className="product-card" onClick={handleOpenModal}>
         <div className="product-info">
           <h3>{product.name}</h3>
-          {/* <p className="product-description">
+          <p className="product-description">
             {product.description}
-          </p> */}
+          </p>
           <p className="product-price">
             <span className="discounted-price">
               por R$ {product.price}
