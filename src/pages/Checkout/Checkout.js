@@ -4,6 +4,7 @@ import ModalEndereco from "../../components/ModalEndereco/ModalEndereco";
 import { useNavigate } from "react-router-dom";
 import ModalTroco from "../../components/ModalTroco/ModalTroco";
 import { Bounce, toast } from "react-toastify";
+import { useFetchWithLoading } from "../../contexts/fetchWithLoading";
 
 const Checkout = ({ cartItems, onLogout, tenantData }) => {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ const Checkout = ({ cartItems, onLogout, tenantData }) => {
   const [modalEnderecoVisible, setModalEnderecoVisible] = useState(false);
   const [cliente, setCliente] = useState(null);
   const [tipoEntrega, setTipoEntrega] = useState("");
+  const { fetchWithLoading } = useFetchWithLoading();
 
   useEffect(() => {
     const formasPagamentoFake = [
@@ -58,7 +60,7 @@ const Checkout = ({ cartItems, onLogout, tenantData }) => {
 
   const total = calcularTotal();
 
-  const handleFinalizarPedido = () => {
+  const handleFinalizarPedido = async () => {
     if (total === 0) {
       toast.warn("Adicione produtos ao carrinho antes de finalizar.", {
         theme: "colored",
@@ -75,7 +77,8 @@ const Checkout = ({ cartItems, onLogout, tenantData }) => {
     }
 
     const pedido = {
-      clienteId: cliente?.id,
+      customerId: cliente?.id,
+      tenantId: tenantData.id,
       itens: cartItems,
       total,
       endereco: enderecos[0] || "",
@@ -83,11 +86,32 @@ const Checkout = ({ cartItems, onLogout, tenantData }) => {
       troco: formaPagamentoSelecionada === "4" ? troco : null,
     };
 
-    console.log(
-      `Pedido finalizado! Total: R$ ${total.toFixed(
-        2
-      )}\nDados do pedido: ${JSON.stringify(pedido)}`
-    );
+
+    try {
+      const postResponse = await fetchWithLoading(
+        `http://localhost:3333/orders`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(pedido),
+        }
+      );
+
+      if (postResponse.ok) {
+        toast.success("Pedido criado com sucesso! Aguarde que iremos lhe atualizar sobre a entrega.", {
+          theme: "colored",
+          transition: Bounce,
+        });
+
+        localStorage.removeItem('carrinho');
+        navigate(`/${tenantData.slug}`);
+      }
+    } catch (error) {
+      console.error("Erro na consulta à API:", error);
+    }
+
   };
 
   const handleLogout = () => {

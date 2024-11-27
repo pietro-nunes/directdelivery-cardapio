@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./ProductCard.css"; // Estilo do ProductCard
-import ProductModal from "../ProductModal/ProductModal"; // Importa o componente de modal
+import ProductModalMobile from "../ProductModalMobile/ProductModalMobile"; // Importa o componente de modal
 import config from "../../config";
 
 const ProductCard = ({ product, addToCart }) => {
@@ -44,7 +44,7 @@ const ProductCard = ({ product, addToCart }) => {
 
       {/* Renderiza o modal se o estado isModalOpen for true */}
       {isModalOpen && (
-        <ProductModal
+        <ProductModalMobile
           product={product}
           closeModal={handleCloseModal}
           addToCart={addToCart}

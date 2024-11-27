@@ -1,0 +1,71 @@
+{
+    "customerId": 1,
+    "tenantId": 2,
+    "itens": [
+        {
+            "id": 7,
+            "name": "Pizza Média",
+            "price": "40.00",
+            "selectedFlavors": [
+                {
+                    "id": 13,
+                    "relatedProductId": 25,
+                    "type": "flavor",
+                    "price": "0.00",
+                    "quantity": "1.00",
+                    "relatedProduct": {
+                        "id": 25,
+                        "name": "Catupiry",
+                        "description": "",
+                        "price": "3.00",
+                        "isActive": true,
+                        "tenantId": 2,
+                        "categoryId": null,
+                        "image": null,
+                        "flavorMandatory": 0,
+                        "flavorAllowed": 1
+                    }
+                }
+            ],
+            "selectedAdditionals": [
+                {
+                    "id": 16,
+                    "relatedProductId": 28,
+                    "type": "additional",
+                    "price": "3.00",
+                    "quantity": "1.00",
+                    "relatedProduct": {
+                        "id": 28,
+                        "name": "Borda de Catupiry",
+                        "description": "",
+                        "price": "0.00",
+                        "isActive": true,
+                        "tenantId": 2,
+                        "categoryId": null,
+                        "image": null,
+                        "flavorMandatory": 0,
+                        "flavorAllowed": 1
+                    }
+                }
+            ],
+            "observation": "",
+            "totalPrice": 43,
+            "count": 1
+        }
+    ],
+    "total": 43,
+    "endereco": {
+        "tipo": "casa",
+        "apelido": "Casa",
+        "endereco": "Avenida Circular 2",
+        "numero": "341",
+        "bairro": "Centro",
+        "complemento": "Quadra O2 Lote 21",
+        "cidade": "Capão da Canoa",
+        "cep": "95555000",
+        "pontoReferencia": "",
+        "deliveryFee": 0
+    },
+    "formaPagamento": 3,
+    "troco": null
+}
