@@ -8,6 +8,7 @@ import FabButton from "./components/FabButton/FabButton";
 import Login from "./pages/Login/Login";
 import { useFetchWithLoading } from "./contexts/fetchWithLoading";
 import config from "./config";
+import FabButtonWhats from "./components/FabButtonWhats/FabButtonWhats";
 
 const TenantRoutes = ({
   addToCart,
@@ -82,6 +83,7 @@ const TenantRoutes = ({
   return (
     <>  
       <Header tenantData={tenantData}/>
+      <FabButtonWhats tenantData={tenantData} message={"Olá! Gostaria que me enviasse o cardápio."}/>
       <FabButton slug={tenantData.slug} cartItems={cartItems} />
       <Routes>
         <Route

@@ -1,0 +1,21 @@
+.fab-button-whats {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background-color: #45a049; /* Cor do botão */
+    color: white; /* Cor do texto */
+    border-radius: 50%; /* Forma circular */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* Sombra do botão */
+    cursor: pointer; /* Cursor de pointer */
+    font-size: 24px; /* Tamanho do ícone */
+    transition: background-color 0.3s; /* Transição suave */
+}
+
+.fab-button-whats:hover {
+    background-color: #45a049; /* Cor ao passar o mouse */
+}
