@@ -17,7 +17,8 @@ const FabButton = ({ cartItems }) => {
   if (
     location.pathname === `/${slug}/checkout` ||
     location.pathname === `/${slug}/cart` ||
-    location.pathname === `/${slug}/login`
+    location.pathname === `/${slug}/login` ||
+    location.pathname === `/${slug}/orderCompleted`
   ) {
     return null;
   }

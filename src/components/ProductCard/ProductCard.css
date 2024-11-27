@@ -13,9 +13,9 @@
     margin: 10px auto; /* Centraliza o card */
 }
 
-.product-card:hover {
+/* .product-card:hover {
     transform: scale(1.02);
-}
+} */
 
 .product-info {
     flex: 1;

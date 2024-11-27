@@ -1,0 +1,49 @@
+.order-completed {
+    text-align: center;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.order-summary {
+    margin: 20px 0;
+    text-align: left;
+    display: inline-block;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    width: 80%;
+}
+
+.order-summary p {
+    margin: 10px 0;
+}
+
+.action-buttons {
+    margin-top: 20px;
+}
+
+.btn-primary {
+    background-color: #45a049;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-primary svg {
+    margin-right: 5px;
+}
+
+.btn-primary:hover {
+    background-color: #45a049;
+}

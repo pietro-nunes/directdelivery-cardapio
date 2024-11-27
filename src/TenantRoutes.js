@@ -9,6 +9,8 @@ import Login from "./pages/Login/Login";
 import { useFetchWithLoading } from "./contexts/fetchWithLoading";
 import config from "./config";
 import FabButtonWhats from "./components/FabButtonWhats/FabButtonWhats";
+import OrdersList from "./pages/OrdersList/OrdersList";
+import OrderCompleted from "./pages/OrderCompleted/OrderCompleted";
 
 const TenantRoutes = ({
   addToCart,
@@ -18,7 +20,9 @@ const TenantRoutes = ({
   handleLogout,
   isLoggedIn,
   setIsRestaurantOpen,
-  isRestaurantOpen
+  isRestaurantOpen,
+  lastOrder,
+  setLastOrder
 }) => {
   const { slug } = useParams();
   const [tenantData, setTenantData] = useState(null); // Dados do tenant
@@ -81,9 +85,9 @@ const TenantRoutes = ({
   // console.log("[SUCCESS] Tenant carregado com sucesso:", tenantData);
 
   return (
-    <>  
-      <Header tenantData={tenantData}/>
-      <FabButtonWhats tenantData={tenantData} message={"Olá! Gostaria que me enviasse o cardápio."}/>
+    <>
+      <Header tenantData={tenantData} isLoggedIn={isLoggedIn} />
+      <FabButtonWhats tenantData={tenantData} message={"Olá! Gostaria que me enviasse o cardápio."} />
       <FabButton slug={tenantData.slug} cartItems={cartItems} />
       <Routes>
         <Route
@@ -93,6 +97,23 @@ const TenantRoutes = ({
               tenantData={tenantData}
               addToCart={addToCart}
               setIsRestaurantOpen={setIsRestaurantOpen}
+            />
+          }
+        />
+        <Route
+          path="orders"
+          element={
+            <OrdersList
+              tenantData={tenantData}
+            />
+          }
+        />
+        <Route
+          path="orderCompleted"
+          element={
+            <OrderCompleted
+              tenantData={tenantData}
+              orderDetails={lastOrder} sendWhatsApp
             />
           }
         />
@@ -116,8 +137,10 @@ const TenantRoutes = ({
             ) : (
               <Checkout
                 cartItems={cartItems}
+                setCartItems={setCartItems}
                 tenantData={tenantData}
                 onLogout={handleLogout}
+                setLastOrder={setLastOrder}
               />
             )
           }

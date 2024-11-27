@@ -19,6 +19,8 @@ const App = () => {
 
   const [isRestaurantOpen, setIsRestaurantOpen] = useState(false); // Estado global
 
+  const [lastOrder, setLastOrder] = useState({}); // Estado global
+
   const handleLogin = (token) => {
     localStorage.setItem("token", token);
     setIsLoggedIn(true);
@@ -75,6 +77,8 @@ const App = () => {
                 isLoggedIn={isLoggedIn}
                 isRestaurantOpen={isRestaurantOpen}
                 setIsRestaurantOpen={setIsRestaurantOpen} // Passa a função para atualizar o estado
+                lastOrder={lastOrder}
+                setLastOrder={setLastOrder}
               />
             }
           />

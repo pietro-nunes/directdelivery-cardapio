@@ -7,7 +7,7 @@ import { Bounce, toast } from "react-toastify";
 import { useFetchWithLoading } from "../../contexts/fetchWithLoading";
 import config from "../../config";
 
-const Checkout = ({ cartItems, onLogout, tenantData }) => {
+const Checkout = ({ cartItems, setCartItems, onLogout, tenantData, setLastOrder }) => {
   const navigate = useNavigate();
   const [enderecos, setEnderecos] = useState([]);
   const [taxaEntrega, setTaxaEntrega] = useState(0);
@@ -101,13 +101,11 @@ const Checkout = ({ cartItems, onLogout, tenantData }) => {
       );
 
       if (postResponse.ok) {
-        toast.success("Pedido criado com sucesso! Aguarde que iremos lhe atualizar sobre a entrega.", {
-          theme: "colored",
-          transition: Bounce,
-        });
-
+        const order = await postResponse.json();
         localStorage.removeItem('carrinho');
-        navigate(`/${tenantData.slug}`);
+        setCartItems([])
+        setLastOrder(order);
+        navigate(`/${tenantData.slug}/orderCompleted`);
       }
     } catch (error) {
       console.error("Erro na consulta à API:", error);

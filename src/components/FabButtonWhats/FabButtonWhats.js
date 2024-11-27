@@ -1,7 +1,6 @@
 import React from "react";
-import { useNavigate, useLocation, useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import "./FabButtonWhats.css"; // Estilo do FAB
-import { FaShoppingCart } from "react-icons/fa";
 import { FaWhatsapp } from "react-icons/fa";
 
 const FabButtonWhats = ({ tenantData, message }) => {
@@ -16,6 +15,18 @@ const FabButtonWhats = ({ tenantData, message }) => {
         // Abre a URL em uma nova aba
         window.open(shareUrl, "_blank");
     };
+
+    const location = useLocation(); // Use o hook para obter a localização atual
+
+    // Não exibir o FAB se estiver na rota /checkout
+    if (
+        location.pathname === `/${tenantData.slug}/checkout` ||
+        location.pathname === `/${tenantData.slug}/cart` ||
+        location.pathname === `/${tenantData.slug}/login` ||
+        location.pathname === `/${tenantData.slug}/orderCompleted`
+    ) {
+        return null;
+    }
 
 
     return (
