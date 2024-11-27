@@ -4,6 +4,7 @@ import ProductCard from "../../components/ProductCard/ProductCard";
 import Categories from "../../components/Categories/Categories";
 import RestaurantInfo from "../../components/RestaurantInfo/RestaurantInfo";
 import { useFetchWithLoading } from "../../contexts/fetchWithLoading";
+import config from "../../config";
 
 const Home = ({ addToCart, tenantData, setIsRestaurantOpen }) => {
   const [selectedCategory, setSelectedCategory] = useState();
@@ -14,7 +15,7 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen }) => {
   const fetchCategories = async () => {
     try {
       const categoriesResponse = await fetchWithLoading(
-        `http://localhost:3333/categories/with-products/${tenantData.id}`
+        `${config.baseURL}/categories/with-products/${tenantData.id}`
       );
       const categoriesData = await categoriesResponse.json();
       setCategories(categoriesData);
@@ -49,6 +50,7 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen }) => {
             openingTime: tenantData.openingTime,
             closingTime: tenantData.closingTime,
             openingDays: tenantData.openingDays,
+            address: `${tenantData.address}, ${tenantData.number}, ${tenantData.neighborhood} - ${tenantData.city}`
           }}
           setIsRestaurantOpen={setIsRestaurantOpen}
         />

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Header from "./components/Header/Header";
 import TenantRoutes from "./TenantRoutes";
 import { LoadingProvider } from "./contexts/LoadingContext";
 import LoadingAnimation from "./components/Loading/LoadingAnimation";
@@ -62,7 +61,6 @@ const App = () => {
     <LoadingProvider>
       <Router>
         <ToastContainer />
-        <Header />
         <LoadingAnimation />
         <Routes>
           <Route

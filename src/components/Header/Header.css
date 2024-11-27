@@ -69,6 +69,30 @@
     z-index: 999; /* Para garantir que fique acima */
 }
 
+.buttons-header-wrap {
+    display: flex;
+    gap: 10px;
+}
+
+.button-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all .3s;
+}
+
+.button-header:hover {
+    background-color: #d8d8d8;
+}
+
+.button-header .with-text {
+    margin-right: 5px;
+}
+
 /* Responsividade */
 @media (max-width: 768px) {
     .menu-toggle {

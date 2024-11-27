@@ -3,6 +3,7 @@ import MaskedInput from "react-text-mask"; // Biblioteca para máscara
 import "./Login.css"; // Estilos personalizados
 import { useNavigate } from "react-router-dom"; // Importando useNavigate
 import { useFetchWithLoading } from "../../contexts/fetchWithLoading";
+import config from "../../config";
 
 const Login = ({ onLogin, tenantData }) => {
   const [username, setUsername] = useState("");
@@ -45,7 +46,7 @@ const Login = ({ onLogin, tenantData }) => {
 
     try {
       const response = await fetchWithLoading(
-        `http://localhost:3333/customers/phone/${cleanedNumber}`
+        `${config.baseURL}/customers/phone/${cleanedNumber}`
       );
       const data = await response.json();
       setClientExists(true); // Define cliente como existente
@@ -69,12 +70,12 @@ const Login = ({ onLogin, tenantData }) => {
     try {
       // Consulta a API para buscar os dados do cliente novamente
       const response = await fetchWithLoading(
-        `http://localhost:3333/customers/phone/${cleanedNumber}`
+        `${config.baseURL}/customers/phone/${cleanedNumber}`
       );
 
       if (response.headers.get("Content-Length") === "0") {
         const postResponse = await fetchWithLoading(
-          `http://localhost:3333/customers`,
+          `${config.baseURL}/customers`,
           {
             method: "POST",
             headers: {

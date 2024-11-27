@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Routes, Route, Navigate, useParams } from "react-router-dom";
 import Home from "./pages/Home/Home";
 import Cart from "./pages/Cart/Cart";
+import Header from "./components/Header/Header";
 import Checkout from "./pages/Checkout/Checkout";
 import FabButton from "./components/FabButton/FabButton";
 import Login from "./pages/Login/Login";
 import { useFetchWithLoading } from "./contexts/fetchWithLoading";
+import config from "./config";
 
 const TenantRoutes = ({
   addToCart,
@@ -27,7 +29,7 @@ const TenantRoutes = ({
   const fetchTenantData = async (slug) => {
     try {
       // console.log(`[INFO] Buscando tenant para o slug: ${slug}`);
-      const response = await fetch(`http://localhost:3333/tenants/${slug}`);
+      const response = await fetch(`${config.baseURL}/tenants/${slug}`);
       if (!response.ok) {
         console.error(`[ERROR] API retornou status ${response.status}`);
         throw new Error(`Erro ao buscar tenant: ${response.status}`);
@@ -78,7 +80,8 @@ const TenantRoutes = ({
   // console.log("[SUCCESS] Tenant carregado com sucesso:", tenantData);
 
   return (
-    <>
+    <>  
+      <Header tenantData={tenantData}/>
       <FabButton slug={tenantData.slug} cartItems={cartItems} />
       <Routes>
         <Route

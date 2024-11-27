@@ -7,12 +7,14 @@
   font-weight: bold;
   color: #1a9b9b;
   margin-bottom: 10px;
-  text-align: center; /* Alinha o título da categoria à esquerda */
+  text-align: center;
+  /* Alinha o título da categoria à esquerda */
 }
 
 /* Estilo das categorias */
 .category {
-  text-align: left; /* Garante que todos os itens dentro da categoria, incluindo o título, fiquem à esquerda */
+  text-align: left;
+  /* Garante que todos os itens dentro da categoria, incluindo o título, fiquem à esquerda */
   margin-bottom: 40px;
   padding: 0px 10px;
 }
@@ -29,6 +31,7 @@
   .product-list {
     flex-direction: column;
   }
+
   .restaurant-info {
     flex-direction: column;
     text-align: center;
@@ -42,10 +45,15 @@
 
   .restaurant-details h2 {
     font-size: 24px;
+    text-align: center;
   }
 
-  .restaurant-details p {
-    font-size: 14px;
+  .restaurant-details .info {
+    text-align: center;
+  }
+
+  .restaurant-details .status {
+    text-align: center;
   }
 
   .category-title {

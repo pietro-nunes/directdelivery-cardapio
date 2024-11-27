@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
 import "./RestaurantInfo.css";
 import config from "../../config";
+import { FiClock } from "react-icons/fi";
+import { MdLocationPin } from "react-icons/md";
 
 const RestaurantInfo = ({ restaurantInfo, setIsRestaurantOpen }) => {
   const isRestaurantOpen = (openingTime, closingTime, openingDays) => {
@@ -61,14 +63,16 @@ const RestaurantInfo = ({ restaurantInfo, setIsRestaurantOpen }) => {
         />
       </div>
       <div className="restaurant-details">
-        <h2>{restaurantInfo.name}</h2>
+        <h2 className="restaurant-name">{restaurantInfo.name}</h2>
         <p className={`status ${isOpen ? "open" : "closed"}`}>
           {isOpen ? "Estamos abertos 😁" : "Estamos fechados 😔"}
         </p>
-        <p>
-          Horário de funcionamento:{" "}
-          {formatTime(restaurantInfo.openingTime)} -{" "}
+        <p className="info">
+          <FiClock size={14}/> {"  "} {formatTime(restaurantInfo.openingTime)} -{" "}
           {formatTime(restaurantInfo.closingTime)}
+        </p>
+        <p className="info">
+        <MdLocationPin  size={14}/> {"  "} {restaurantInfo.address}
         </p>
       </div>
     </div>

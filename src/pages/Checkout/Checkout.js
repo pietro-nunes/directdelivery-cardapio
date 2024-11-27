@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import ModalTroco from "../../components/ModalTroco/ModalTroco";
 import { Bounce, toast } from "react-toastify";
 import { useFetchWithLoading } from "../../contexts/fetchWithLoading";
+import config from "../../config";
 
 const Checkout = ({ cartItems, onLogout, tenantData }) => {
   const navigate = useNavigate();
@@ -89,7 +90,7 @@ const Checkout = ({ cartItems, onLogout, tenantData }) => {
 
     try {
       const postResponse = await fetchWithLoading(
-        `http://localhost:3333/orders`,
+        `${config.baseURL}/orders`,
         {
           method: "POST",
           headers: {

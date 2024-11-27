@@ -51,19 +51,25 @@
   text-align: center;
 }
 
-.restaurant-details h2 {
+.restaurant-name {
   margin: 0;
-  font-size: 22px;
+  font-size: 26px;
   color: #1a9b9b; /* Combina com a cor principal */
+  text-align: left;
 }
 
-.restaurant-details p {
-  margin: 5px 0;
-  font-size: 16px;
+.info {
+  font-size: 14px;
+  color: #666;
+  margin-top: 8px;
+  text-align: left;
 }
 
 .status {
   font-weight: bold;
+  font-size: 14px;
+  margin: 5px 0;
+  text-align: left;
 }
 
 .status.open {

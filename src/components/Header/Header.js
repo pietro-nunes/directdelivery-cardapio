@@ -1,32 +1,20 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Header.css';
-import { HiOutlineMenuAlt3 } from "react-icons/hi";
+import { IoTicket } from "react-icons/io5";
+import { TiHome } from "react-icons/ti";
+import { PiChefHatLight } from "react-icons/pi";
 
-const Header = () => {
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-    const toggleMenu = () => {
-        setIsMenuOpen(!isMenuOpen);
-    };
-
-    // Função para fechar o menu
-    const closeMenu = () => {
-        setIsMenuOpen(false);
-    };
-
+const Header = ({ tenantData }) => {
+    const navigate = useNavigate();
     return (
         <header className="header">
             <div className="header-content">
-                <h1 className="logo">DirectDelivery</h1>
-                <HiOutlineMenuAlt3 className='menu-toggle' size={30} color='white' onClick={toggleMenu}/>
-                <nav className={`nav ${isMenuOpen ? 'open' : ''}`}>
-                    <ul className="nav-links">
-                        <li>
-                            <Link to="/" onClick={closeMenu}>Início</Link>
-                        </li>
-                    </ul>
-                </nav>
+                <h1 className="logo"> <PiChefHatLight /> DirectDelivery</h1>
+                <div className='buttons-header-wrap'>
+                    <button onClick={() => navigate(`/${tenantData.slug}`)} className='button-header'><TiHome color='#148f8f' size={15}/></button>
+                    <button className='button-header'><IoTicket className="with-text" color='#148f8f' size={15} /> Meus pedidos</button>
+                </div>
             </div>
         </header>
     );
