@@ -3,9 +3,11 @@ import React, { useEffect, useState } from "react";
 import { useFetchWithLoading } from "../../contexts/fetchWithLoading";
 import config from "../../config";
 import Cookies from "js-cookie";
+import { FiRefreshCw } from "react-icons/fi";
 
 const OrdersList = ({ tenantData }) => {
   const [orders, setOrders] = useState([]);
+  const [timeLeft, setTimeLeft] = useState(60); // Tempo restante em segundos
   const { fetchWithLoading } = useFetchWithLoading();
 
   const statusSteps = ["created", "accepted", "preparing", "enroute", "delivered"];
@@ -56,7 +58,14 @@ const OrdersList = ({ tenantData }) => {
       fetchOrders();
     }, 60000); // Atualiza a cada 60.000 ms (1 minuto)
 
-    return () => clearInterval(intervalId); // Limpa o intervalo quando o componente for desmontado
+    const countdownInterval = setInterval(() => {
+      setTimeLeft(prevTime => (prevTime > 0 ? prevTime - 1 : 60)); // Decrementa o tempo e reinicia em 60 segundos
+    }, 1000); // Atualiza a cada segundo
+
+    return () => {
+      clearInterval(intervalId); // Limpa o intervalo de pedidos
+      clearInterval(countdownInterval); // Limpa o intervalo do cronômetro
+    };
   }, [tenantData]);
 
   const getStatusIndex = (status) => {
@@ -67,6 +76,7 @@ const OrdersList = ({ tenantData }) => {
   return (
     <div className="orders-list">
       <h2 className="orders-title">Seus Pedidos</h2>
+      <p className="update-timer"> <FiRefreshCw /> Buscando atualizações dos pedidos em: {timeLeft}s</p>
       {orders.length > 0 ? (
         orders.map((order) => {
           return (

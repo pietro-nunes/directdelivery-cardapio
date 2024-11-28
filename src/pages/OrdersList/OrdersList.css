@@ -92,6 +92,11 @@
     font-weight: bold;
 }
 
+.update-timer {
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
 
 /* Responsividade */
 @media (max-width: 768px) {
