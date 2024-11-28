@@ -6,6 +6,8 @@ import ModalTroco from "../../components/ModalTroco/ModalTroco";
 import { Bounce, toast } from "react-toastify";
 import { useFetchWithLoading } from "../../contexts/fetchWithLoading";
 import config from "../../config";
+import { MdLocationPin } from "react-icons/md";
+import Cookies from "js-cookie";
 
 const Checkout = ({ cartItems, setCartItems, onLogout, tenantData, setLastOrder }) => {
   const navigate = useNavigate();
@@ -21,6 +23,7 @@ const Checkout = ({ cartItems, setCartItems, onLogout, tenantData, setLastOrder 
   const [cliente, setCliente] = useState(null);
   const [tipoEntrega, setTipoEntrega] = useState("");
   const { fetchWithLoading } = useFetchWithLoading();
+  const [observation, setObservation] = useState("");
 
   useEffect(() => {
     const formasPagamentoFake = [
@@ -30,7 +33,7 @@ const Checkout = ({ cartItems, setCartItems, onLogout, tenantData, setLastOrder 
     ];
     setFormasPagamento(formasPagamentoFake);
 
-    const clienteLocalStorage = JSON.parse(localStorage.getItem("token"));
+    const clienteLocalStorage = JSON.parse(Cookies.get("token"));
     setCliente(clienteLocalStorage);
   }, []);
 
@@ -82,9 +85,11 @@ const Checkout = ({ cartItems, setCartItems, onLogout, tenantData, setLastOrder 
       tenantId: tenantData.id,
       itens: cartItems,
       total,
-      endereco: enderecos[0] || "",
+      retirada: tipoEntrega === 'retirada' ? true : false,
+      endereco: enderecos[0] || "{}",
       formaPagamento: formaPagamentoSelecionada,
       troco: formaPagamentoSelecionada === "4" ? troco : null,
+      observacaoPedido: observation
     };
 
 
@@ -102,9 +107,10 @@ const Checkout = ({ cartItems, setCartItems, onLogout, tenantData, setLastOrder 
 
       if (postResponse.ok) {
         const order = await postResponse.json();
-        localStorage.removeItem('carrinho');
+        localStorage.removeItem('carrinho-'+tenantData.slug);
         setCartItems([])
         setLastOrder(order);
+
         navigate(`/${tenantData.slug}/orderCompleted`);
       }
     } catch (error) {
@@ -222,7 +228,7 @@ const Checkout = ({ cartItems, setCartItems, onLogout, tenantData, setLastOrder 
           <>
             <p>Você escolheu retirar o pedido no local.</p>
             <span>
-              *Avenida Paraguassú 1865, Sala 804, Centro, Capão da Canoa
+            <MdLocationPin  size={14}/>  {tenantData.address}, {tenantData.number}, {tenantData.neighborhood} - {tenantData.city}
             </span>
           </>
         )}
@@ -279,6 +285,8 @@ const Checkout = ({ cartItems, setCartItems, onLogout, tenantData, setLastOrder 
       <textarea
         className="observations-mobile"
         placeholder="Ex.: Apertar campainha, não buzinar, etc."
+        value={observation}
+        onChange={(e) => setObservation(e.target.value)}
       />
 
       <div className="finish-order-info">

@@ -73,7 +73,9 @@
 
 .order-status {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
     padding: 10px 0;
 }
 
@@ -85,7 +87,7 @@
 }
 
 .status-step.active {
-    color: #1a9b9b;
+    color: #e63946;
     /* Cor destaque para o status atual */
     font-weight: bold;
 }

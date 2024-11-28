@@ -19,13 +19,16 @@ const ModalEndereco = ({
   const [ptReferencia, setPtReferencia] = useState("");
   const [apelidoEndereco, setApelidoEndereco] = useState("");
   const [tipoEndereco, setTipoEndereco] = useState("casa");
+  const [bairroId, setBairroId] = useState(null);
   const [deliveryFee, setDeliveryFee] = useState(0); // Para armazenar a taxa de entrega
+  const [isNewEndereco, setIsNewEndereco] = useState(false); // Para controlar se é um novo endereço
 
   useEffect(() => {
     if (isVisible && enderecoAtual) {
       setEndereco(enderecoAtual.endereco || "");
       setNumero(enderecoAtual.numero || "");
       setBairro(enderecoAtual.bairro || "");
+      setBairroId(enderecoAtual.bairroId || null);
       setComplemento(enderecoAtual.complemento || "");
       setCidade(enderecoAtual.cidade || "");
       setCep(enderecoAtual.cep || "");
@@ -33,7 +36,9 @@ const ModalEndereco = ({
       setApelidoEndereco(enderecoAtual.apelido || "");
       setTipoEndereco(enderecoAtual.tipo || "casa");
       setDeliveryFee(enderecoAtual.deliveryFee || 0); // Carrega a taxa de entrega, se existir
+      setIsNewEndereco(false); // Se estamos editando um endereço existente, é falso
     } else {
+      // Se o modal é aberto para adicionar um novo endereço
       setEndereco("");
       setNumero("");
       setBairro("");
@@ -44,6 +49,8 @@ const ModalEndereco = ({
       setApelidoEndereco("");
       setTipoEndereco("casa");
       setDeliveryFee(0);
+      setBairroId(null);
+      setIsNewEndereco(true); // Marca como novo endereço
     }
   }, [isVisible, enderecoAtual]);
 
@@ -63,6 +70,7 @@ const ModalEndereco = ({
       endereco,
       numero,
       bairro,
+      bairroId,
       complemento,
       cidade,
       cep,
@@ -108,6 +116,7 @@ const ModalEndereco = ({
       (n) => n.name === selectedBairro
     );
     setDeliveryFee(neighborhood?.deliveryFee || 0);
+    setBairroId(neighborhood?.id || null)
   };
 
   if (!isVisible) return null;
@@ -134,8 +143,30 @@ const ModalEndereco = ({
         <form onSubmit={handleSubmit}>
           <h4>Digite o endereço de entrega</h4>
 
-          {/* Select para escolher o apelido do endereço salvo */}
-          {enderecos?.length > 0 && (
+          {/* Botão para adicionar um novo endereço */}
+          <button
+            type="button"
+            className="add-new-button" 
+            onClick={() => {
+              setEndereco(""); // Limpa os campos
+              setNumero("");
+              setBairro("");
+              setComplemento("");
+              setCidade("");
+              setCep("");
+              setPtReferencia("");
+              setApelidoEndereco("");
+              setTipoEndereco("casa"); // Define o tipo padrão
+              setDeliveryFee(0); // Zera a taxa de entrega
+              setIsNewEndereco(true); // Marca como novo endereço
+            }}
+          >
+            Adicionar Novo Endereço
+          </button>
+
+
+          {/* Condicional para exibir o select de endereço salvo ou não */}
+          {!isNewEndereco && enderecos?.length > 0 && (
             <select
               value={apelidoEndereco}
               onChange={handleApelidoChange}

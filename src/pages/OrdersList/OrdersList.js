@@ -2,21 +2,32 @@ import "./OrdersList.css";
 import React, { useEffect, useState } from "react";
 import { useFetchWithLoading } from "../../contexts/fetchWithLoading";
 import config from "../../config";
+import Cookies from "js-cookie";
 
 const OrdersList = ({ tenantData }) => {
   const [orders, setOrders] = useState([]);
   const { fetchWithLoading } = useFetchWithLoading();
 
-  // Função para buscar customerId do local storage
-  const getCustomerId = () => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      const parsedToken = JSON.parse(token);
-      return parsedToken.id; // Retorna o customerId do token
-    }
-    return null;
+  const statusSteps = ["created", "accepted", "preparing", "enroute", "delivered"];
+  const statusTranslations = {
+    created: "Criado",
+    accepted: "Aceito",
+    preparing: "Em preparo",
+    enroute: "Em rota para entrega",
+    delivered: "Entregue"
   };
 
+
+  // Função para buscar customerId do cookie
+  const getCustomerId = () => {
+    const token = Cookies.get("token"); // Obtendo o token do cookie
+    if (token) {
+      const parsedToken = JSON.parse(token); // Parse do token
+      return parsedToken.id; // Retorna o customerId do token
+    }
+    return null; // Retorna null se o token não existir
+  };
+  
   // Função para buscar os pedidos
   const fetchOrders = async () => {
     const customerId = getCustomerId();
@@ -44,8 +55,8 @@ const OrdersList = ({ tenantData }) => {
   }, [tenantData]);
 
   const getStatusIndex = (status) => {
-    const statusSteps = ["Aceito", "Em preparo", "Em rota para entrega", "Entregue"];
-    return statusSteps.indexOf(status);
+    const filteredStatusSteps = statusSteps.filter((s) => s !== "created");
+    return filteredStatusSteps.indexOf(status);
   };
 
   return (
@@ -53,9 +64,6 @@ const OrdersList = ({ tenantData }) => {
       <h2 className="orders-title">Seus Pedidos</h2>
       {orders.length > 0 ? (
         orders.map((order) => {
-          const currentStatus = order.status || "Aceito"; // Status inicial se não houver um ainda
-          const statusIndex = getStatusIndex(currentStatus);
-
           return (
             <div key={order.id} className="order-card">
               <h3>Pedido #{order.id}</h3>
@@ -74,19 +82,19 @@ const OrdersList = ({ tenantData }) => {
                 ))}
               </div>
               <div className="order-status">
-                {["Aceito", "Em preparo", "Em rota para entrega", "Entregue"].map(
-                  (status, index) => (
+                {statusSteps
+                  .filter((status) => status !== "created") // Exclui "created"
+                  .map((status, index) => (
                     <span
                       key={status}
-                      className={`status-step ${
-                        index <= statusIndex ? "active" : ""
-                      }`}
+                      className={`status-step ${index <= getStatusIndex(order.status) ? "active" : ""
+                        }`}
                     >
-                      {status}
+                      {statusTranslations[status]} {/* Exibe a tradução */}
                     </span>
-                  )
-                )}
+                  ))}
               </div>
+
             </div>
           );
         })

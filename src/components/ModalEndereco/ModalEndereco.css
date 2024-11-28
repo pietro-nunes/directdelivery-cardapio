@@ -4,20 +4,27 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5); /* Cor do fundo */
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Cor do fundo */
     display: flex;
     justify-content: center;
-    align-items: flex-end; /* Alinha o modal no fundo da tela */
-    z-index: 1000; /* Para ficar acima de outros elementos */
+    align-items: flex-end;
+    /* Alinha o modal no fundo da tela */
+    z-index: 1000;
+    /* Para ficar acima de outros elementos */
 }
 
 .end__modal-content {
     background: white;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    width: 100%; /* Ocupar toda a largura do modal */
-    height: 100%; /* Ocupar toda a altura da tela */
-    animation: slide-in 0.3s ease forwards; /* Animação ao abrir */
-    overflow-y: auto; /* Permite rolagem se o conteúdo exceder a altura */
+    width: 100%;
+    /* Ocupar toda a largura do modal */
+    height: 100%;
+    /* Ocupar toda a altura da tela */
+    animation: slide-in 0.3s ease forwards;
+    /* Animação ao abrir */
+    overflow-y: auto;
+    /* Permite rolagem se o conteúdo exceder a altura */
 }
 
 .end__modal-content select,
@@ -29,8 +36,10 @@
     border: 1px solid #ccc;
     border-radius: 5px;
     display: flex;
-    justify-content: space-between; /* Espaçamento entre os botões */
-    margin-top: 15px; /* Margem superior */
+    justify-content: space-between;
+    /* Espaçamento entre os botões */
+    margin-top: 15px;
+    /* Margem superior */
     font-size: 1rem;
 }
 
@@ -40,8 +49,10 @@
 
 .modal-buttons {
     display: flex;
-    justify-content: space-between; /* Espaçamento entre os botões */
-    margin-top: 15px; /* Margem superior */
+    justify-content: space-between;
+    /* Espaçamento entre os botões */
+    margin-top: 15px;
+    /* Margem superior */
 }
 
 .modal-buttons button {
@@ -53,29 +64,67 @@
     color: white;
 }
 
+.add-new-button {
+    width: auto;
+    padding: 8px 16px;
+    background-color: #28a745;
+    /* Cor de fundo mais suave, verde */
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: center;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    /* Espaçamento entre o botão e os outros elementos */
+    display: inline-block;
+    /* Permite o botão ocupar apenas o necessário */
+}
+
+.add-new-button:hover {
+    background-color: #218838;
+    /* Cor de fundo mais escura ao passar o mouse */
+    transform: translateY(-2px);
+    /* Leve efeito de elevação */
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
+    /* Sombra suave */
+}
+
+.add-new-button:active {
+    background-color: #1e7e34;
+    /* Cor ainda mais escura quando pressionado */
+    transform: translateY(0);
+    /* Retorna à posição original */
+}
+
+.add-new-button:focus {
+    outline: none;
+    /* Remove o contorno padrão */
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.5);
+    /* Sombra de foco para destacar o botão */
+}
+
+
 @keyframes slide-in {
     from {
-        transform: translateY(100%); /* Começa fora da tela (para baixo) */
+        transform: translateY(100%);
+        /* Começa fora da tela (para baixo) */
     }
+
     to {
-        transform: translateY(0); /* Move para a posição visível */
+        transform: translateY(0);
+        /* Move para a posição visível */
     }
 }
 
 /* Estilos responsivos */
 @media (min-width: 768px) {
     .modal-content {
-        height: 50vh; /* Ocupar metade da altura da tela em desktops */
-        overflow-y: auto; /* Permite rolagem se o conteúdo exceder a altura */
+        height: 50vh;
+        /* Ocupar metade da altura da tela em desktops */
+        overflow-y: auto;
+        /* Permite rolagem se o conteúdo exceder a altura */
     }
-}
-
-.back-button-mobile {
-    cursor: pointer;
-    padding: 20px;
-}
-
-.back-icon-mobile {
-    width: 24px;
-    height: 24px;
 }

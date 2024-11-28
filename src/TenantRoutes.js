@@ -13,6 +13,8 @@ import OrdersList from "./pages/OrdersList/OrdersList";
 import OrderCompleted from "./pages/OrderCompleted/OrderCompleted";
 
 const TenantRoutes = ({
+  tenantData,
+  setTenantData,
   addToCart,
   cartItems,
   setCartItems,
@@ -25,10 +27,8 @@ const TenantRoutes = ({
   setLastOrder
 }) => {
   const { slug } = useParams();
-  const [tenantData, setTenantData] = useState(null); // Dados do tenant
   const [isLoadingTenant, setIsLoadingTenant] = useState(true); // Estado de carregamento
   const [hasError, setHasError] = useState(false); // Flag para erro de carregamento
-  const { fetchWithLoading } = useFetchWithLoading();
 
   // Função para buscar os dados do tenant
   const fetchTenantData = async (slug) => {

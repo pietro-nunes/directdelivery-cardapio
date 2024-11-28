@@ -84,6 +84,8 @@
     cursor: pointer;
     transition: all .3s;
     font: black;
+    background-color: #ececec;
+    color: black;
 }
 
 .button-header:hover {

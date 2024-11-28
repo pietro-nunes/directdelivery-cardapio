@@ -57,7 +57,6 @@ const Login = ({ onLogin, tenantData }) => {
     }
   };
 
-  // Função para verificar novamente e salvar no localStorage no clique do botão
   const handleSubmit = async (e) => {
     e.preventDefault();
     const cleanedNumber = cleanPhoneNumber(number); // Limpa o número
@@ -90,7 +89,6 @@ const Login = ({ onLogin, tenantData }) => {
 
         if (postResponse.ok) {
           const data = await postResponse.json();
-          // Salva os dados no localStorage
           const tokenData = JSON.stringify(data);
 
           onLogin(tokenData); // Chama a função de callback passada como props
@@ -100,7 +98,6 @@ const Login = ({ onLogin, tenantData }) => {
         }
       } else {
         const data = await response.json();
-        // Salva os dados no localStorage
         const tokenData = JSON.stringify(data);
 
         onLogin(tokenData); // Chama a função de callback passada como props
