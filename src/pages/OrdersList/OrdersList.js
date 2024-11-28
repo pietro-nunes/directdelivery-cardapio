@@ -17,7 +17,6 @@ const OrdersList = ({ tenantData }) => {
     delivered: "Entregue"
   };
 
-
   // Função para buscar customerId do cookie
   const getCustomerId = () => {
     const token = Cookies.get("token"); // Obtendo o token do cookie
@@ -52,6 +51,12 @@ const OrdersList = ({ tenantData }) => {
     if (tenantData) {
       fetchOrders();
     }
+
+    const intervalId = setInterval(() => {
+      fetchOrders();
+    }, 60000); // Atualiza a cada 60.000 ms (1 minuto)
+
+    return () => clearInterval(intervalId); // Limpa o intervalo quando o componente for desmontado
   }, [tenantData]);
 
   const getStatusIndex = (status) => {
@@ -94,7 +99,6 @@ const OrdersList = ({ tenantData }) => {
                     </span>
                   ))}
               </div>
-
             </div>
           );
         })
