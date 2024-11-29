@@ -1,130 +1,219 @@
 .end__modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    /* Cor do fundo */
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    /* Alinha o modal no fundo da tela */
-    z-index: 1000;
-    /* Para ficar acima de outros elementos */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  /* Fundo com transparência */
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  /* Alinha o modal no fundo da tela */
+  z-index: 1000;
+  /* Garante que o modal fique acima de outros elementos */
 }
 
 .end__modal-content {
-    background: white;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    /* Ocupar toda a largura do modal */
-    height: 100%;
-    /* Ocupar toda a altura da tela */
-    animation: slide-in 0.3s ease forwards;
-    /* Animação ao abrir */
-    overflow-y: auto;
-    /* Permite rolagem se o conteúdo exceder a altura */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background: white;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  /* Sombra para dar profundidade */
+  width: 100%;
+  /* Ocupar toda a largura no mobile */
+  height: 100%;
+  /* Ocupar toda a altura da tela no mobile */
+  animation: slide-in 0.3s ease forwards;
+  /* Animação ao abrir */
+  overflow-y: auto;
+  /* Permite rolagem se o conteúdo exceder a altura */
+  padding: 10px;
+  /* Espaçamento interno */
+  box-sizing: border-box;
+}
+
+.end__modal-content h4 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+  /* Cor do texto */
 }
 
 .end__modal-content select,
 .end__modal-content input {
-    width: 100%;
-    padding: 10px;
-    box-sizing: border-box;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    display: flex;
-    justify-content: space-between;
-    /* Espaçamento entre os botões */
-    margin-top: 15px;
-    /* Margem superior */
-    font-size: 1rem;
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
 }
 
 .end__modal-content form {
-    padding: 15px;
+  padding: 15px;
+}
+
+.delivery-fee-display {
+  margin: 10px 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #007bff;
+  /* Azul para destacar a taxa de entrega */
+  text-align: right;
 }
 
 .modal-buttons {
-    display: flex;
-    justify-content: space-between;
-    /* Espaçamento entre os botões */
-    margin-top: 15px;
-    /* Margem superior */
+  display: flex;
+  justify-content: space-between;
+  /* Espaçamento entre os botões */
+  margin-top: 15px;
+  /* Margem superior */
 }
 
 .modal-buttons button {
-    width: 100%;
-    border: none;
-    border-radius: 5px;
-    padding: 10px;
-    background-color: #28a745;
-    color: white;
+  width: 100%;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  background-color: #28a745;
+  /* Cor verde */
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.modal-buttons button:hover {
+  background-color: #218838;
+  /* Verde mais escuro ao passar o mouse */
 }
 
 .add-new-button {
-    width: auto;
-    padding: 8px 16px;
-    background-color: #28a745;
-    /* Cor de fundo mais suave, verde */
-    color: white;
-    font-size: 1rem;
-    font-weight: 600;
-    text-align: center;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-top: 10px;
-    /* Espaçamento entre o botão e os outros elementos */
-    display: inline-block;
-    /* Permite o botão ocupar apenas o necessário */
+  width: auto;
+  padding: 8px 16px;
+  background-color: #007bff;
+  /* Azul padrão */
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 10px;
+  display: inline-block;
+  /* Botão ajustado ao conteúdo */
 }
 
 .add-new-button:hover {
-    background-color: #218838;
-    /* Cor de fundo mais escura ao passar o mouse */
-    transform: translateY(-2px);
-    /* Leve efeito de elevação */
-    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
-    /* Sombra suave */
+  background-color: #0056b3;
+  /* Azul mais escuro */
+  transform: translateY(-2px);
+  /* Leve elevação */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  /* Sombra ao passar o mouse */
 }
 
 .add-new-button:active {
-    background-color: #1e7e34;
-    /* Cor ainda mais escura quando pressionado */
-    transform: translateY(0);
-    /* Retorna à posição original */
+  background-color: #004085;
+  /* Azul ainda mais escuro quando pressionado */
+  transform: translateY(0);
+  /* Volta à posição original */
 }
 
 .add-new-button:focus {
-    outline: none;
-    /* Remove o contorno padrão */
-    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.5);
-    /* Sombra de foco para destacar o botão */
+  outline: none;
+  /* Remove o contorno padrão */
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
+  /* Destaque no foco */
 }
 
+.back-button-mobile {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.back-icon-mobile {
+  width: 24px;
+  height: 24px;
+}
+
+/* Remove o estilo padrão do select */
+.custom-combo {
+  appearance: none; /* Remove o estilo de seleção padrão no iPhone e outros dispositivos */
+  -webkit-appearance: none; /* Para iOS */
+  -moz-appearance: none; /* Para Firefox */
+  background-color: #fff; /* Cor de fundo do campo */
+  border: 1px solid #ccc; /* Borda leve */
+  border-radius: 5px; /* Bordas arredondadas */
+  padding: 10px; /* Padding interno */
+  font-size: 16px; /* Tamanho de fonte */
+  width: 100%; /* Largura do campo */
+  cursor: pointer; /* Cursor de clique */
+  transition: all 0.3s ease; /* Transição suave */
+}
+
+/* Adiciona um ícone personalizado no lado direito */
+.custom-combo::after {
+  content: '▼'; /* O símbolo de seta */
+  font-size: 18px;
+  color: #555;
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+/* Cria um contêiner relativo para o select */
+.custom-combo-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .custom-combo {
+    font-size: 14px; /* Ajusta o tamanho da fonte em dispositivos menores */
+    padding: 8px; /* Ajusta o padding para telas menores */
+  }
+}
 
 @keyframes slide-in {
-    from {
-        transform: translateY(100%);
-        /* Começa fora da tela (para baixo) */
-    }
+  from {
+    transform: translateY(100%);
+    /* Começa fora da tela (embaixo) */
+  }
 
-    to {
-        transform: translateY(0);
-        /* Move para a posição visível */
-    }
+  to {
+    transform: translateY(0);
+    /* Fica visível */
+  }
 }
 
 /* Estilos responsivos */
 @media (min-width: 768px) {
-    .modal-content {
-        height: 50vh;
-        /* Ocupar metade da altura da tela em desktops */
-        overflow-y: auto;
-        /* Permite rolagem se o conteúdo exceder a altura */
-    }
+  .end__modal-content {
+    width: 50%;
+    /* Metade da largura da tela em desktops */
+    height: auto;
+    /* Ajusta a altura com o conteúdo */
+    border-radius: 10px;
+    /* Bordas arredondadas completas */
+    padding: 30px;
+    /* Espaçamento maior */
+  }
+
+  .delivery-fee-display {
+    text-align: left;
+    /* Alinha à esquerda em telas maiores */
+  }
 }

@@ -8,9 +8,12 @@
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease-in-out;
     cursor: pointer;
-    width: 100%; /* Garante que o card ocupe 100% da largura disponível */
+    width: 100%;
+    /* Garante que o card ocupe 100% da largura disponível */
     max-width: 500px;
-    margin: 10px auto; /* Centraliza o card */
+    margin: 10px auto;
+    /* Centraliza o card */
+    animation: fadeInUp 400ms ease-out;
 }
 
 /* .product-card:hover {
@@ -57,7 +60,8 @@
     .product-card {
         flex-direction: row;
         align-items: center;
-        width: 90%; /* O card ocupa toda a largura da tela em dispositivos móveis */
+        width: 90%;
+        /* O card ocupa toda a largura da tela em dispositivos móveis */
     }
 
     .product-info {
@@ -72,5 +76,17 @@
     .product-image img {
         width: 70px;
         height: 70px;
+    }
+}
+
+@keyframes fadeInUp {
+    0% {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0px);
+        opacity: 1;
     }
 }

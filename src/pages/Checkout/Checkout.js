@@ -235,10 +235,10 @@ const Checkout = ({ cartItems, setCartItems, onLogout, tenantData, setLastOrder 
 
         {tipoEntrega === "entrega" && (
           <>
-            <p>Você escolheu entrega.</p>
+            <p>O pedido será entregue em:   </p>
             {enderecos && enderecos.length > 0 && (
               <span>
-                *{enderecos[0].endereco}, {enderecos[0].numero},{" "}
+                 <MdLocationPin  size={14}/>  {enderecos[0].endereco}, {enderecos[0].numero},{" "}
                 {enderecos[0].bairro}, {enderecos[0].complemento},{" "}
                 {enderecos[0].cidade}
               </span>
@@ -250,7 +250,7 @@ const Checkout = ({ cartItems, setCartItems, onLogout, tenantData, setLastOrder 
       <h2>Escolha a forma de pagamento</h2>
       <div className="payment-info">
         <select
-          className="payment-select"
+          className="custom-combo"
           onChange={handleFormaPagamentoChange}
           value={formaPagamentoSelecionada}
         >

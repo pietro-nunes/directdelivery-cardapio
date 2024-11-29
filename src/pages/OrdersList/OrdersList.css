@@ -20,6 +20,7 @@
     padding: 20px;
     margin-bottom: 20px;
     text-align: left;
+    animation: fadeInUp 400ms ease-out;
 }
 
 .order-card h3 {
@@ -111,5 +112,17 @@
 
     .order-item span {
         margin-bottom: 5px;
+    }
+}
+
+@keyframes fadeInUp {
+    0% {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0px);
+        opacity: 1;
     }
 }
