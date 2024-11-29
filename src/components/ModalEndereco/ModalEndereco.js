@@ -143,18 +143,19 @@ const ModalEndereco = ({
             />
           </svg>
         </div>
-        <h4>Digite o endereço de entrega</h4>
-        <button
-          type="button"
-          className="add-new-button"
-          onClick={() => {
-            resetForm();
-            setIsNewEndereco(true);
-          }}
-        >
-          Adicionar Novo Endereço
-        </button>
-        <form onSubmit={handleSubmit}>
+
+        <form className="formModal" onSubmit={handleSubmit}>
+          <h4>Digite o endereço de entrega</h4>
+          <button
+            type="button"
+            className="add-new-button"
+            onClick={() => {
+              resetForm();
+              setIsNewEndereco(true);
+            }}
+          >
+            Adicionar Novo Endereço
+          </button>
           {!isNewEndereco && enderecos?.length > 0 && (
             <select value={apelidoEndereco} onChange={handleApelidoChange} className="custom-combo">
               <option value="">Selecione um endereço salvo</option>

@@ -54,6 +54,7 @@
 
 .end__modal-content form {
   padding: 15px;
+  margin-top: 60px;
 }
 
 .delivery-fee-display {
@@ -177,6 +178,7 @@
   position: relative;
   width: 100%;
 }
+
 
 /* Responsividade */
 @media (max-width: 768px) {
