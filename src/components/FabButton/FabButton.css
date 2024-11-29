@@ -14,7 +14,7 @@
     cursor: pointer; /* Cursor de pointer */
     font-size: 24px; /* Tamanho do ícone */
     transition: background-color 0.3s; /* Transição suave */
-    z-index: 100000;
+    z-index: 999;
 }
 
 .fab-button:hover {
@@ -25,9 +25,9 @@
     position: absolute;
     top: -5px;
     right: -10px;
-    background-color: red; /* Cor do badge */
+    background-color: #e74c3c; /* Cor do badge */
     color: white; /* Cor do texto */
     border-radius: 50%;
-    padding: 2px 6px;
+    padding: 3px 10px;
     font-size: 12px; /* Tamanho do texto */
 }
