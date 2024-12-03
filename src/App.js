@@ -29,7 +29,7 @@ const App = () => {
 
   const addToCart = (product) => {
     setCartItems((prevItems) => {
-      const productKey = `${product.id}-${JSON.stringify(product.selectedFlavors)}-${JSON.stringify(product.selectedAdditionals)}`;
+      const productKey = `${product.id}-${product.observation}-${JSON.stringify(product.selectedFlavors)}-${JSON.stringify(product.selectedAdditionals)}`;
       const existingItem = prevItems.find((item) => item.uniqueKey === productKey);
 
       if (existingItem) {
