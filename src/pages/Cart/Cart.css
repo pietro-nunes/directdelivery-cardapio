@@ -1,17 +1,23 @@
 .cart {
     padding: 20px;
-    background-color: #fff; /* Fundo branco para o carrinho */
-    border-radius: 8px; /* Bordas arredondadas */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    background-color: #fff;
+    /* Fundo branco para o carrinho */
+    border-radius: 8px;
+    /* Bordas arredondadas */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Sombra suave */
 }
 
 .cart h2 {
-    text-align: center; /* Centraliza o título */
-    margin-bottom: 20px; /* Espaço inferior */
+    text-align: center;
+    /* Centraliza o título */
+    margin-bottom: 20px;
+    /* Espaço inferior */
 }
 
 .cart-items {
-    overflow-y: auto; /* Adiciona rolagem se necessário */
+    overflow-y: auto;
+    /* Adiciona rolagem se necessário */
 }
 
 .cart-item {
@@ -27,21 +33,25 @@
     width: 60px;
     height: 60px;
     margin-right: 15px;
-    border-radius: 30px; /* Imagem arredondada */
+    border-radius: 30px;
+    /* Imagem arredondada */
 }
 
 .item-details {
     flex-grow: 1;
     display: flex;
-    flex-direction: column; /* Coloca os detalhes em coluna */
+    flex-direction: column;
+    /* Coloca os detalhes em coluna */
 }
 
 .cart-item-name {
-    font-weight: bold; /* Nome em negrito */
+    font-weight: bold;
+    /* Nome em negrito */
 }
 
 .cart-item-price {
-    color: #28a745; /* Cor verde para o preço */
+    color: #28a745;
+    /* Cor verde para o preço */
 }
 
 .cart-item-obs {
@@ -53,45 +63,62 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: 5px; /* Espaçamento superior */
+    margin-top: 5px;
+    /* Espaçamento superior */
 }
 
 .quantity-control {
     display: flex;
     align-items: center;
-    border: 1px solid #ccc; /* Borda ao redor do controle */
-    border-radius: 5px; /* Bordas arredondadas */
-    padding: 5px; /* Preenchimento interno */
+    border: 1px solid #ccc;
+    /* Borda ao redor do controle */
+    border-radius: 5px;
+    /* Bordas arredondadas */
+    padding: 5px;
+    /* Preenchimento interno */
 }
 
 .increment-button,
 .decrement-button {
-    background-color: transparent; /* Fundo transparente */
-    border: none; /* Remove a borda */
-    color: #007BFF; /* Cor azul */
-    font-size: 18px; /* Tamanho da fonte */
-    cursor: pointer; /* Indica que é clicável */
-    padding: 5px; /* Espaçamento interno */
+    background-color: transparent;
+    /* Fundo transparente */
+    border: none;
+    /* Remove a borda */
+    color: #007BFF;
+    /* Cor azul */
+    font-size: 18px;
+    /* Tamanho da fonte */
+    cursor: pointer;
+    /* Indica que é clicável */
+    padding: 5px;
+    /* Espaçamento interno */
 }
 
 .increment-button:hover,
 .decrement-button:hover {
-    color: #0056b3; /* Cor ao passar o mouse */
+    color: #0056b3;
+    /* Cor ao passar o mouse */
 }
 
 .quantity-display {
-    margin: 0 10px; /* Espaçamento ao redor da quantidade */
-    font-size: 16px; /* Tamanho da fonte para a quantidade */
-    color: #333; /* Cor do texto da quantidade */
+    margin: 0 10px;
+    /* Espaçamento ao redor da quantidade */
+    font-size: 16px;
+    /* Tamanho da fonte para a quantidade */
+    color: #333;
+    /* Cor do texto da quantidade */
 }
 
 .cart-summary {
-    margin-top: 20px; /* Espaçamento superior */
-    text-align: center; /* Centraliza o total */
+    margin-top: 20px;
+    /* Espaçamento superior */
+    text-align: center;
+    /* Centraliza o total */
 }
 
 .checkout-button {
-    background-color: #008CBA; /* Cor do botão */
+    background-color: #008CBA;
+    /* Cor do botão */
     color: white;
     border: none;
     padding: 10px 15px;
@@ -101,15 +128,8 @@
 }
 
 .checkout-button:hover {
-    background-color: #007B9A; /* Cor ao passar o mouse */
-}
-
-.cart-item-flavors,
-.cart-item-additionals,
-.cart-item-obs {
-    font-size: 0.9rem;
-    color: #666;
-    margin-top: 5px;
+    background-color: #007B9A;
+    /* Cor ao passar o mouse */
 }
 
 .cart-item-flavors strong,
@@ -117,4 +137,34 @@
 .cart-item-obs strong {
     color: #333;
     font-weight: bold;
+    font-size: 0.85rem;
+}
+
+.cart-item-flavors ul {
+    margin: 0;
+    padding-left: 20px;
+    /* Indenta a lista */
+}
+
+.cart-item-flavors li {
+    list-style-type: disc;
+    list-style-type: disc;
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 5px;
+    /* Usa bolinhas (•) como marcador */
+}
+
+.cart-item-additionals ul {
+    margin: 0;
+    padding-left: 20px;
+    /* Indenta a lista */
+}
+
+.cart-item-additionals li {
+    list-style-type: disc;
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 5px;
+    /* Usa bolinhas (•) como marcador */
 }

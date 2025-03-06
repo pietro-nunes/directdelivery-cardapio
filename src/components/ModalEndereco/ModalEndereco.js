@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Bounce, toast } from "react-toastify";
 import "./ModalEndereco.css";
 import MaskedInput from "react-text-mask"; // Biblioteca para máscara
+import { formatarNumero } from "../../utils/functions";
 
 const ModalEndereco = ({
   isVisible,
@@ -21,6 +22,7 @@ const ModalEndereco = ({
   const [apelidoEndereco, setApelidoEndereco] = useState("");
   const [tipoEndereco, setTipoEndereco] = useState("casa");
   const [bairroId, setBairroId] = useState(null);
+  const [cidadeId, setcidadeId] = useState(null);
   const [deliveryFee, setDeliveryFee] = useState(0);
   const [isNewEndereco, setIsNewEndereco] = useState(false);
   const cepMask = [/\d/, /\d/, /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/];
@@ -78,6 +80,7 @@ const ModalEndereco = ({
       bairroId,
       complemento,
       cidade,
+      cidadeId,
       cep,
       pontoReferencia: ptReferencia,
       deliveryFee,
@@ -122,7 +125,18 @@ const ModalEndereco = ({
     setBairroId(neighborhood?.id || null);
   };
 
-  if (!isVisible) return null;
+  const handleCityChange = (e) => {
+    const selectedCity = e.target.value;
+    setCidade(selectedCity);
+
+    const city = tenantData?.cities?.find(
+      (n) => n.name === selectedCity
+    );
+
+    setcidadeId(city?.id || null);
+  };
+
+  if (!isVisible) return null;  
 
   return (
     <div className="end__modal-overlay">
@@ -200,13 +214,13 @@ const ModalEndereco = ({
             </option>
             {tenantData?.neighborhoods?.map((neighborhood) => (
               <option key={neighborhood.id} value={neighborhood.name}>
-                {neighborhood.name} - Taxa: R$ {Number(neighborhood.deliveryFee).toFixed(2)}
+                {neighborhood.name} - Taxa: R$ {formatarNumero(neighborhood.deliveryFee)}
               </option>
             ))}
           </select>
 
           <div className="delivery-fee-display">
-            Taxa de Entrega: R$ {Number(deliveryFee).toFixed(2)}
+            Taxa de Entrega: R$ {formatarNumero(deliveryFee)}
           </div>
           <input
             type="text"
@@ -214,13 +228,21 @@ const ModalEndereco = ({
             onChange={(e) => setComplemento(e.target.value)}
             placeholder="Complemento"
           />
-          <input
-            type="text"
-            value={cidade || ""}
-            onChange={(e) => setCidade(e.target.value)}
-            placeholder="Cidade"
+          <select
+            value={cidade}
+            onChange={(e) => handleCityChange(e)}
+            className="custom-combo"
             required
-          />
+          >
+            <option value="" disabled hidden>
+              Selecione uma cidade
+            </option>
+            {tenantData?.cities?.map((city) => (
+              <option key={city.id} value={city.name}>
+                {city.name}
+              </option>
+            ))}
+          </select>
           <MaskedInput
             mask={cepMask} // Máscara para CEP
             value={cep} // Valor do CEP

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./ProductModalMobile.css";
 import { Bounce, toast } from "react-toastify";
+import { formatarNumero } from "../../utils/functions";
 
 const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
   const [selectedFlavors, setSelectedFlavors] = useState([]);
@@ -111,7 +112,7 @@ const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
             {product.name || "Nome indisponível"}
           </h3>
           <p className="modal-product-price-mobile">
-            R$ {parseFloat(product.price).toFixed(2)}
+            R$ {formatarNumero(product.price)}
           </p>
           <p className="modal-product-description-mobile">
             {product.description || ""}
@@ -138,7 +139,7 @@ const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
                       <span className="flavor-name-mobile">
                         {relation.relatedProduct.name}{" "}
                         {parseFloat(relation.price) > 0 && (
-                          <> - R$ {parseFloat(relation.price).toFixed(2)}</>
+                          <> - R$ {formatarNumero(relation.price)}</>
                         )}
                       </span>
                     </label>
@@ -165,7 +166,7 @@ const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
                       <span className="additional-name-mobile">
                         {relation.relatedProduct.name}{" "}
                         {parseFloat(relation.price) > 0 && (
-                          <> - R$ {parseFloat(relation.price).toFixed(2)}</>
+                          <> - R$ {formatarNumero(relation.price)}</>
                         )}
                       </span>
                     </label>
@@ -209,7 +210,7 @@ const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
             Adicionar ao Carrinho
           </button>
           <span className="modal-total-price-mobile">
-            Total: R$ {calculateTotalPrice().toFixed(2)}
+            Total: R$ {formatarNumero(calculateTotalPrice())}
           </span>
         </div>
       </div>

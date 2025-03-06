@@ -8,6 +8,7 @@ import { useFetchWithLoading } from "../../contexts/fetchWithLoading";
 import config from "../../config";
 import { MdLocationPin } from "react-icons/md";
 import Cookies from "js-cookie";
+import { formatarNumero } from "../../utils/functions";
 
 const Checkout = ({ cartItems, setCartItems, onLogout, tenantData, setLastOrder }) => {
   const navigate = useNavigate();
@@ -290,12 +291,12 @@ const Checkout = ({ cartItems, setCartItems, onLogout, tenantData, setLastOrder 
       />
 
       <div className="finish-order-info">
-        <h3>Subtotal: R$ {(calcularTotal() - taxaEntrega).toFixed(2)}</h3>
-        <h3>Taxa de entrega: R$ {taxaEntrega.toFixed(2)}</h3>
-        <h2>Total: R$ {total.toFixed(2)}</h2>
+        <h3>Subtotal: R$ {formatarNumero(calcularTotal() - taxaEntrega)}</h3>
+        <h3>Taxa de entrega: R$ {formatarNumero(taxaEntrega)}</h3>
+        <h2>Total: R$ {formatarNumero(total)}</h2>
 
         {formaPagamentoSelecionada === "4" && troco && (
-          <h3>Troco: R$ {troco}</h3>
+          <h3>Troco: R$ {formatarNumero(troco)}</h3>
         )}
 
         <button onClick={handleFinalizarPedido} className="finalizar-button">

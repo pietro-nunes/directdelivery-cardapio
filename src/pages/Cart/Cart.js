@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./Cart.css";
 import config from "../../config";
 import { toast, Bounce } from "react-toastify";
+import { formatarNumero } from "../../utils/functions";
 
 const Cart = ({ cartItems, setCartItems, isLoggedIn, tenantData, isRestaurantOpen }) => {
   const navigate = useNavigate();
@@ -82,26 +83,28 @@ const Cart = ({ cartItems, setCartItems, isLoggedIn, tenantData, isRestaurantOpe
               <div className="item-details">
                 <p className="cart-item-name">{item.name}</p>
                 {item.selectedFlavors?.length > 0 && (
-                  <p className="cart-item-flavors">
-                    <strong>Sabores:</strong>{" "}
-                    {item.selectedFlavors
-                      .map((flavor) => flavor.relatedProduct.name)
-                      .join(", ")}
-                  </p>
+                  <div className="cart-item-flavors">
+                    <strong>Sabores:</strong>
+                    <ul>
+                      {item.selectedFlavors.map((flavor, index) => (
+                        <li key={index}>{flavor.relatedProduct.name}</li>
+                      ))}
+                    </ul>
+                  </div>
                 )}
                 {item.selectedAdditionals?.length > 0 && (
-                  <p className="cart-item-additionals">
-                    <strong>Adicionais:</strong>{" "}
-                    {item.selectedAdditionals
-                      .map(
-                        (additional) =>
-                          `${additional.relatedProduct.name} (R$ ${parseFloat(
-                            additional.price
-                          ).toFixed(2)})`
-                      )
-                      .join(", ")}
-                  </p>
+                  <div className="cart-item-additionals">
+                    <strong>Adicionais:</strong>
+                    <ul>
+                      {item.selectedAdditionals.map((additional, index) => (
+                        <li key={index}>
+                          {additional.relatedProduct.name} (R$ {formatarNumero(additional.price)})
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 )}
+
                 {item.observation && (
                   <p className="cart-item-obs">
                     <strong>Obs:</strong> {item.observation}
@@ -109,7 +112,7 @@ const Cart = ({ cartItems, setCartItems, isLoggedIn, tenantData, isRestaurantOpe
                 )}
                 <div className="quantity-controls">
                   <p className="cart-item-price">
-                    R$ {item.totalPrice.toFixed(2)}
+                    R$ {formatarNumero(item.totalPrice)}
                   </p>
                   <div className="quantity-control">
                     <button
@@ -131,7 +134,7 @@ const Cart = ({ cartItems, setCartItems, isLoggedIn, tenantData, isRestaurantOpe
             </div>
           ))}
           <div className="cart-summary">
-            <h3>Total: R$ {calculateTotal()}</h3>
+            <h3>Total: R$ {formatarNumero(calculateTotal())}</h3>
             <button
               className="checkout-button"
               onClick={handleProceedToCheckout}

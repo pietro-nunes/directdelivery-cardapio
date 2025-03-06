@@ -3,6 +3,7 @@ import "./OrderCompleted.css";
 import Lottie from "lottie-react";
 import loadingAnimation from "../../lottie/completed.json"; // Substitua pelo seu arquivo Lottie
 import { FaWhatsapp } from "react-icons/fa";
+import { formatarNumero } from "../../utils/functions";
 
 const OrderCompleted = ({ tenantData, orderDetails, sendWhatsApp }) => {
     // Função para formatar a mensagem de WhatsApp
@@ -25,7 +26,7 @@ const OrderCompleted = ({ tenantData, orderDetails, sendWhatsApp }) => {
 
         message += `*Itens do Pedido*:\n`;
         items.forEach((item) => {
-            message += `${item.quantity}x ${item.productName} - R$ ${item.totalPrice.toFixed(2)}\n`;
+            message += `${item.quantity}x ${item.productName} - R$ ${formatarNumero(item.totalPrice)}\n`;
             if (item.observation) {
                 message += `   - Observação: ${item.observation}\n`;
             }
@@ -37,7 +38,7 @@ const OrderCompleted = ({ tenantData, orderDetails, sendWhatsApp }) => {
                     message += `   - Sabores:\n`;
                     flavors.forEach((flavor) => {
                         message += `      - ${flavor.relatedProduct.name}${
-                            flavor.price > 0 ? ` (+R$ ${flavor.price.toFixed(2)})` : ""
+                            flavor.price > 0 ? ` (+R$ ${formatarNumero(flavor.price)})` : ""
                         }\n`;
                     });
                 }
@@ -46,7 +47,7 @@ const OrderCompleted = ({ tenantData, orderDetails, sendWhatsApp }) => {
                     message += `   - Adicionais:\n`;
                     additionals.forEach((add) => {
                         message += `      - ${add.relatedProduct.name}${
-                            add.price > 0 ? ` (+R$ ${add.price.toFixed(2)})` : ""
+                            add.price > 0 ? ` (+R$ ${formatarNumero(add.price)})` : ""
                         }\n`;
                     });
                 }
@@ -66,7 +67,7 @@ const OrderCompleted = ({ tenantData, orderDetails, sendWhatsApp }) => {
         if (paymentMethod === "4") {
             message += ` (Troco para R$ ${change})`;
         }
-        message += `\n*Total do Pedido*: R$ ${total.toFixed(2)}\n`;
+        message += `\n*Total do Pedido*: R$ ${formatarNumero(total)}\n`;
 
         return message;
     };
@@ -96,7 +97,7 @@ const OrderCompleted = ({ tenantData, orderDetails, sendWhatsApp }) => {
                     <strong>Data:</strong> {new Date(orderDetails.createdAt).toLocaleString()}
                 </p>
                 <p>
-                    <strong>Total: </strong> R$ {orderDetails.total.toFixed(2)}
+                    <strong>Total: </strong> R$ {formatarNumero(orderDetails.total)}
                 </p>
             </div>
             <div className="action-buttons">

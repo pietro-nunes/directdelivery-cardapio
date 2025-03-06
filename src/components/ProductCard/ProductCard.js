@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./ProductCard.css"; // Estilo do ProductCard
 import ProductModalMobile from "../ProductModalMobile/ProductModalMobile"; // Importa o componente de modal
 import config from "../../config";
+import { formatarNumero } from "../../utils/functions";
 
 const ProductCard = ({ product, addToCart }) => {
   const [isModalOpen, setIsModalOpen] = useState(false); // Estado para controlar a exibição do modal
@@ -23,7 +24,7 @@ const ProductCard = ({ product, addToCart }) => {
           <h3>{product.name}</h3>
           <p className="product-description">{product.description}</p>
           <p className="product-price">
-            <span className="discounted-price">por R$ {product.price}</span>
+            <span className="discounted-price">por R$ {formatarNumero(product.price)}</span>
           </p>
         </div>
         <div className="product-image">

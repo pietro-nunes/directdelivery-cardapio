@@ -4,6 +4,7 @@ import { useFetchWithLoading } from "../../contexts/fetchWithLoading";
 import config from "../../config";
 import Cookies from "js-cookie";
 import { FiRefreshCw } from "react-icons/fi";
+import { formatarNumero } from "../../utils/functions";
 
 const OrdersList = ({ tenantData }) => {
   const [orders, setOrders] = useState([]);
@@ -83,7 +84,7 @@ const OrdersList = ({ tenantData }) => {
             <div key={order.id} className="order-card">
               <h3>Pedido #{order.id}</h3>
               <p>Data: {new Date(order.createdAt).toLocaleString()}</p>
-              <p>Total: R$ {order.total}</p>
+              <p>Total: R$ {formatarNumero(order.total)}</p>
               <p>Método de Pagamento: {order.paymentMethod}</p>
               <div className="order-items">
                 <h4>Itens:</h4>
@@ -92,7 +93,7 @@ const OrdersList = ({ tenantData }) => {
                     <span>
                       {item.quantity}x {item.productName}
                     </span>
-                    <span>R$ {item.totalPrice}</span>
+                    <span>R$ {formatarNumero(item.totalPrice)}</span>
                   </div>
                 ))}
               </div>
