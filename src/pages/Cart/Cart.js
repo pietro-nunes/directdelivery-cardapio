@@ -82,6 +82,16 @@ const Cart = ({ cartItems, setCartItems, isLoggedIn, tenantData, isRestaurantOpe
               />
               <div className="item-details">
                 <p className="cart-item-name">{item.name}</p>
+                {item.removedCompositions?.length > 0 && (
+                  <div className="cart-item-flavors">
+                    <strong>Composições removidas:</strong>
+                    <ul>
+                      {item.removedCompositions.map((composition, index) => (
+                        <li key={index}>{composition.relatedProduct.name}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
                 {item.selectedFlavors?.length > 0 && (
                   <div className="cart-item-flavors">
                     <strong>Sabores:</strong>

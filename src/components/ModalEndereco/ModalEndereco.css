@@ -5,13 +5,10 @@
   right: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
-  /* Fundo com transparência */
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  /* Alinha o modal no fundo da tela */
   z-index: 1000;
-  /* Garante que o modal fique acima de outros elementos */
 }
 
 .end__modal-content {
@@ -20,25 +17,23 @@
   flex-direction: column;
   background: white;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  /* Sombra para dar profundidade */
   width: 100%;
-  /* Ocupar toda a largura no mobile */
   height: 100%;
-  /* Ocupar toda a altura da tela no mobile */
   animation: slide-in 0.3s ease forwards;
-  /* Animação ao abrir */
   overflow-y: auto;
-  /* Permite rolagem se o conteúdo exceder a altura */
   padding: 10px;
-  /* Espaçamento interno */
   box-sizing: border-box;
 }
 
 .end__modal-content h4 {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   color: #333;
-  /* Cor do texto */
+}
+
+.end__modal-content form {
+  padding: 15px;
+  margin-top: 60px;
 }
 
 .end__modal-content select,
@@ -52,85 +47,12 @@
   font-size: 1rem;
 }
 
-.end__modal-content form {
-  padding: 15px;
-  margin-top: 60px;
-}
-
 .delivery-fee-display {
   margin: 10px 0;
   font-size: 1rem;
   font-weight: 600;
   color: #007bff;
-  /* Azul para destacar a taxa de entrega */
   text-align: right;
-}
-
-.modal-buttons {
-  display: flex;
-  justify-content: space-between;
-  /* Espaçamento entre os botões */
-  margin-top: 15px;
-  /* Margem superior */
-}
-
-.modal-buttons button {
-  width: 100%;
-  border: none;
-  border-radius: 5px;
-  padding: 10px;
-  background-color: #28a745;
-  /* Cor verde */
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.modal-buttons button:hover {
-  background-color: #218838;
-  /* Verde mais escuro ao passar o mouse */
-}
-
-.add-new-button {
-  width: auto;
-  padding: 8px 16px;
-  background-color: #007bff;
-  /* Azul padrão */
-  color: white;
-  font-size: 1rem;
-  font-weight: 600;
-  text-align: center;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-bottom: 10px;
-  display: inline-block;
-  /* Botão ajustado ao conteúdo */
-}
-
-.add-new-button:hover {
-  background-color: #0056b3;
-  /* Azul mais escuro */
-  transform: translateY(-2px);
-  /* Leve elevação */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  /* Sombra ao passar o mouse */
-}
-
-.add-new-button:active {
-  background-color: #004085;
-  /* Azul ainda mais escuro quando pressionado */
-  transform: translateY(0);
-  /* Volta à posição original */
-}
-
-.add-new-button:focus {
-  outline: none;
-  /* Remove o contorno padrão */
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
-  /* Destaque no foco */
 }
 
 .back-button-mobile {
@@ -146,24 +68,151 @@
   height: 24px;
 }
 
-/* Remove o estilo padrão do select */
-.custom-combo {
-  appearance: none; /* Remove o estilo de seleção padrão no iPhone e outros dispositivos */
-  -webkit-appearance: none; /* Para iOS */
-  -moz-appearance: none; /* Para Firefox */
-  background-color: #fff; /* Cor de fundo do campo */
-  border: 1px solid #ccc; /* Borda leve */
-  border-radius: 5px; /* Bordas arredondadas */
-  padding: 10px; /* Padding interno */
-  font-size: 16px; /* Tamanho de fonte */
-  width: 100%; /* Largura do campo */
-  cursor: pointer; /* Cursor de clique */
-  transition: all 0.3s ease; /* Transição suave */
+.address-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
 }
 
-/* Adiciona um ícone personalizado no lado direito */
+.address-card {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 10px 14px;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  margin-top: 5px;
+}
+
+.address-card:hover {
+  background-color: #f1f1f1;
+}
+
+.address-card.selected {
+  border: 2px solid #28a745;
+  background-color: #eaffea;
+  box-shadow: 0 0 0 2px #28a74540;
+  transform: scale(1.01);
+}
+
+.address-card.selected::before {
+  content: "✔";
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-size: 1.2rem;
+  color: #28a745;
+  font-weight: bold;
+  opacity: 0;
+  transform: scale(0.8);
+  animation: checkAppear 0.3s forwards;
+}
+
+@keyframes checkAppear {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.address-card strong {
+  display: block;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.address-card p {
+  margin: 0;
+  color: #444;
+  font-size: 0.95rem;
+}
+
+.address-card small {
+  color: #777;
+  font-size: 0.85rem;
+}
+
+.address-instruction {
+  font-size: 0.95rem;
+  color: #555;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.add-new-button.green {
+  background-color: #28a745;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.add-new-button.green:hover {
+  background-color: #218838;
+}
+
+.confirm-button {
+  background-color: #007bff;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.confirm-button:hover {
+  background-color: #0056b3;
+}
+
+.modal-buttons-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.form-fields.hidden {
+  display: none;
+}
+
+.form-fields.visible {
+  display: block;
+}
+
+.input-label {
+  font-size: 0.85rem;
+  color: #999;
+  margin-bottom: 4px;
+  display: block;
+}
+
+/* Remove o estilo padrão do select */
+.custom-combo {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 16px;
+  width: 100%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
 .custom-combo::after {
-  content: '▼'; /* O símbolo de seta */
+  content: '▼';
   font-size: 18px;
   color: #555;
   position: absolute;
@@ -173,48 +222,37 @@
   pointer-events: none;
 }
 
-/* Cria um contêiner relativo para o select */
 .custom-combo-wrapper {
   position: relative;
   width: 100%;
 }
 
-
 /* Responsividade */
 @media (max-width: 768px) {
   .custom-combo {
-    font-size: 14px; /* Ajusta o tamanho da fonte em dispositivos menores */
-    padding: 8px; /* Ajusta o padding para telas menores */
+    font-size: 14px;
+    padding: 8px;
   }
 }
 
 @keyframes slide-in {
   from {
     transform: translateY(100%);
-    /* Começa fora da tela (embaixo) */
   }
-
   to {
     transform: translateY(0);
-    /* Fica visível */
   }
 }
 
-/* Estilos responsivos */
 @media (min-width: 768px) {
   .end__modal-content {
     width: 50%;
-    /* Metade da largura da tela em desktops */
     height: auto;
-    /* Ajusta a altura com o conteúdo */
     border-radius: 10px;
-    /* Bordas arredondadas completas */
     padding: 30px;
-    /* Espaçamento maior */
   }
 
   .delivery-fee-display {
     text-align: left;
-    /* Alinha à esquerda em telas maiores */
   }
 }

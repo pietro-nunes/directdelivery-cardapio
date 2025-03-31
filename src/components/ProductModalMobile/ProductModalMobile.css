@@ -27,7 +27,6 @@
 .back-button-mobile {
     cursor: pointer;
     padding: 15px;
-    position: static;
 }
 
 .back-icon-mobile {
@@ -46,6 +45,7 @@
     margin: 15px 0;
     text-align: center;
     font-weight: bold;
+    padding: 20px;
 }
 
 .modal-product-price-mobile {
@@ -93,6 +93,7 @@
     /* 2 itens por linha */
     display: flex;
     align-items: center;
+    justify-content: space-between;
     padding: 10px;
     background: white;
     border: 1px solid #ddd;
@@ -108,6 +109,23 @@
     transform: translateY(-2px);
     /* Elevação no hover */
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+
+.delete-button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #d9534f;
+    /* Vermelho */
+    display: flex;
+    align-items: center;
+    padding: 5px;
+}
+
+.delete-button:hover {
+    color: #c9302c;
+    /* Vermelho mais escuro no hover */
 }
 
 .custom-checkbox-mobile {

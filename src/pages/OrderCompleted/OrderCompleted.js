@@ -6,7 +6,6 @@ import { FaWhatsapp } from "react-icons/fa";
 import { formatarNumero } from "../../utils/functions";
 
 const OrderCompleted = ({ tenantData, orderDetails, sendWhatsApp }) => {
-    // Função para formatar a mensagem de WhatsApp
     const formatWhatsAppMessage = (orderDetails) => {
         const { id, createdAt, total, items, address, paymentMethod, change } = orderDetails;
 
@@ -20,57 +19,64 @@ const OrderCompleted = ({ tenantData, orderDetails, sendWhatsApp }) => {
         const payment = formasPagamentoFake.find((forma) => forma.id === paymentMethod);
         const paymentName = payment ? payment.nome : "Método de Pagamento Não Especificado";
 
-        let message = `Olá, acabei de fazer um pedido! Seguem os detalhes:\n\n`;
-        message += `*Número do Pedido*: ${id}\n`;
-        message += `*Data do Pedido*: ${new Date(createdAt).toLocaleString()}\n\n`;
+        let message = `*Novo Pedido Realizado!*\n\n`;
+        message += `📌 *Número do Pedido:* ${id}\n`;
+        message += `📅 *Data:* ${new Date(createdAt).toLocaleString()}\n\n`;
 
-        message += `*Itens do Pedido*:\n`;
+        message += `🍽️ *Itens do Pedido:*\n`;
         items.forEach((item) => {
-            message += `${item.quantity}x ${item.productName} - R$ ${formatarNumero(item.totalPrice)}\n`;
+            message += `- ${item.quantity}x ${item.productName} - R$ ${formatarNumero(item.totalPrice)}\n`;
             if (item.observation) {
-                message += `   - Observação: ${item.observation}\n`;
+                message += `   Observação: ${item.observation}\n`;
             }
             if (item.relations?.length > 0) {
                 const flavors = item.relations.filter((rel) => rel.type === "flavor");
                 const additionals = item.relations.filter((rel) => rel.type === "additional");
+                const compositions = item.relations.filter((rel) => rel.type === "composition");
 
                 if (flavors.length > 0) {
-                    message += `   - Sabores:\n`;
+                    message += `   Sabores:\n`;
                     flavors.forEach((flavor) => {
-                        message += `      - ${flavor.relatedProduct.name}${
-                            flavor.price > 0 ? ` (+R$ ${formatarNumero(flavor.price)})` : ""
-                        }\n`;
+                        message += `      - ${flavor.relatedProduct.name}${flavor.price > 0 ? ` (+R$ ${formatarNumero(flavor.price)})` : ""
+                            }\n`;
                     });
                 }
 
                 if (additionals.length > 0) {
-                    message += `   - Adicionais:\n`;
+                    message += `   Adicionais:\n`;
                     additionals.forEach((add) => {
-                        message += `      - ${add.relatedProduct.name}${
-                            add.price > 0 ? ` (+R$ ${formatarNumero(add.price)})` : ""
-                        }\n`;
+                        message += `      - ${add.relatedProduct.name}${add.price > 0 ? ` (+R$ ${formatarNumero(add.price)})` : ""
+                            }\n`;
+                    });
+                }
+
+                if (compositions.length > 0) {
+                    message += `   Composições Removidas:\n`;
+                    compositions.forEach((composition) => {
+                        message += `      - ${composition.relatedProduct.name}${composition.price > 0 ? ` (+R$ ${formatarNumero(composition.price)})` : ""
+                            }\n`;
                     });
                 }
             }
         });
 
-        message += `\n*Endereço de Entrega*:\n`;
-        message += `${address.tipo}: ${address.endereco}, ${address.numero} ${
-            address.complemento ? `- ${address.complemento}` : ""
-        }\n`;
+        message += `\n📍 *Endereço de Entrega:*\n`;
+        message += `${address.apelido}: ${address.endereco}, ${address.numero} ${address.complemento ? `- ${address.complemento}` : ""
+            }\n`;
         message += `${address.bairro} - ${address.cidade}, CEP: ${address.cep}\n`;
         if (address.pontoReferencia) {
             message += `Ponto de Referência: ${address.pontoReferencia}\n`;
         }
 
-        message += `\n*Forma de Pagamento*: ${paymentName}`;
+        message += `\n💳 *Forma de Pagamento:* ${paymentName}`;
         if (paymentMethod === "4") {
             message += ` (Troco para R$ ${change})`;
         }
-        message += `\n*Total do Pedido*: R$ ${formatarNumero(total)}\n`;
+        message += `\n🛒 *Total do Pedido:* R$ ${formatarNumero(total)}\n`;
 
         return message;
     };
+
 
     // Constante com a mensagem formatada
     const message = formatWhatsAppMessage(orderDetails);
@@ -102,7 +108,7 @@ const OrderCompleted = ({ tenantData, orderDetails, sendWhatsApp }) => {
             </div>
             <div className="action-buttons">
                 <button className="btn-primary" onClick={sendWhatsApp ? handleShare : null}>
-                    <FaWhatsapp size={20}/> Enviar pelo WhatsApp (Opcional)
+                    <FaWhatsapp size={20} /> Enviar pelo WhatsApp (Opcional)
                 </button>
             </div>
         </div>

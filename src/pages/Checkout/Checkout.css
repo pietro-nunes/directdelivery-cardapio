@@ -115,6 +115,7 @@ textarea {
 
 .delivery-type p {
     font-size: 1rem;
+    margin-top: 10px;
 }
 
 .delivery-type span {
@@ -142,6 +143,27 @@ textarea {
     color: #555;
 }
 
+.total-box {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+  }
+  
+  .total-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1rem;
+    color: #444;
+    margin-bottom: 8px;
+  }
+  
+  .total-row-highlight {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #000;
+  }
+
 
 /* Responsividade */
 @media (max-width: 768px) {
@@ -150,4 +172,3 @@ textarea {
         border-radius: 0px;
     }
 }
-  

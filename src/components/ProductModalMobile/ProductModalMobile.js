@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import "./ProductModalMobile.css";
 import { Bounce, toast } from "react-toastify";
 import { formatarNumero } from "../../utils/functions";
+import { FiTrash2, FiRotateCw } from "react-icons/fi";
 
 const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
   const [selectedFlavors, setSelectedFlavors] = useState([]);
   const [selectedAdditionals, setSelectedAdditionals] = useState([]);
+  const [removedCompositions, setRemovedCompositions] = useState([]);
   const [observation, setObservation] = useState("");
 
   // Filtrar relações por tipo
@@ -41,6 +43,16 @@ const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
     }
   };
 
+  const removeComposition = (relationId) => {
+    setRemovedCompositions((prev) => {
+      const isAlreadyRemoved = prev.includes(relationId);
+
+      return isAlreadyRemoved
+        ? prev.filter((id) => id !== relationId) // Remove se já estiver na lista
+        : [...prev, relationId]; // Adiciona se ainda não estiver
+    });
+  };
+
   // Calcular o preço total
   const calculateTotalPrice = () => {
     const additionalPrice = additionals
@@ -70,6 +82,9 @@ const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
         product.relations.find((relation) => relation.id === id)
       ),
       selectedAdditionals: selectedAdditionals.map((id) =>
+        product.relations.find((relation) => relation.id === id)
+      ),
+      removedCompositions: removedCompositions.map((id) =>
         product.relations.find((relation) => relation.id === id)
       ),
       observation,
@@ -128,22 +143,20 @@ const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
               </h4>
               <div className="flavors-list-mobile">
                 {flavors.map((relation) => (
-                  <div className="flavor-card-mobile" key={relation.id}>
-                    <label className="custom-checkbox-mobile">
-                      <input
-                        type="checkbox"
-                        checked={selectedFlavors.includes(relation.id)}
-                        onChange={() => toggleFlavor(relation.id)}
-                      />
-                      <span className="checkbox-custom-mobile"></span>
-                      <span className="flavor-name-mobile">
-                        {relation.relatedProduct.name}{" "}
-                        {parseFloat(relation.price) > 0 && (
-                          <> - R$ {formatarNumero(relation.price)}</>
-                        )}
-                      </span>
-                    </label>
-                  </div>
+                  <label className="custom-checkbox-mobile">
+                    <input
+                      type="checkbox"
+                      checked={selectedFlavors.includes(relation.id)}
+                      onChange={() => toggleFlavor(relation.id)}
+                    />
+                    <span className="checkbox-custom-mobile"></span>
+                    <span className="flavor-name-mobile">
+                      {relation.relatedProduct.name}{" "}
+                      {parseFloat(relation.price) > 0 && (
+                        <> - R$ {formatarNumero(relation.price)}</>
+                      )}
+                    </span>
+                  </label>
                 ))}
               </div>
             </div>
@@ -155,40 +168,48 @@ const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
               <h4>Adicionais:</h4>
               <div className="additionals-list-mobile">
                 {additionals.map((relation) => (
-                  <div className="additional-card-mobile" key={relation.id}>
-                    <label className="custom-checkbox-mobile">
-                      <input
-                        type="checkbox"
-                        checked={selectedAdditionals.includes(relation.id)}
-                        onChange={() => toggleAdditional(relation.id)}
-                      />
-                      <span className="checkbox-custom-mobile"></span>
-                      <span className="additional-name-mobile">
-                        {relation.relatedProduct.name}{" "}
-                        {parseFloat(relation.price) > 0 && (
-                          <> - R$ {formatarNumero(relation.price)}</>
-                        )}
-                      </span>
-                    </label>
-                  </div>
+                  <label className="custom-checkbox-mobile">
+                    <input
+                      type="checkbox"
+                      checked={selectedAdditionals.includes(relation.id)}
+                      onChange={() => toggleAdditional(relation.id)} // Permite marcar/desmarcar diretamente no checkbox
+                    />
+                    <span className="checkbox-custom-mobile"></span>
+                    <span className="additional-name-mobile">
+                      {relation.relatedProduct.name}{" "}
+                      {parseFloat(relation.price) > 0 && <> - R$ {formatarNumero(relation.price)}</>}
+                    </span>
+                  </label>
                 ))}
               </div>
             </div>
           )}
+
 
           {/* Composições */}
           {compositions.length > 0 && (
             <div className="compositions-section-mobile">
               <h4>Composições:</h4>
               <ul className="compositions-list-mobile">
-                {compositions.map((relation) => (
-                  <li className="composition-card-mobile" key={relation.id}>
-                    {relation.relatedProduct.name}
-                  </li>
-                ))}
+                {compositions.map((relation) => {
+                  const isRemoved = removedCompositions.includes(relation.id);
+
+                  return (
+                    <li className="composition-card-mobile" key={relation.id}>
+                      {relation.relatedProduct.name}
+                      <button
+                        className="delete-button"
+                        onClick={() => removeComposition(relation.id)}
+                      >
+                        {isRemoved ? <FiRotateCw size={20} color="green" /> : <FiTrash2 size={20} />}
+                      </button>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           )}
+
 
           {/* Observações */}
           <div className="observations-section-mobile">

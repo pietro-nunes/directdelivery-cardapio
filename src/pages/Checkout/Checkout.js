@@ -46,7 +46,7 @@ const Checkout = ({ cartItems, setCartItems, onLogout, tenantData, setLastOrder 
     const apenasNumeros = telefone.replace(/\D/g, "");
     const match = apenasNumeros.match(/(\d{2})(\d{5})(\d{4})/);
     if (match) {
-      return `(${match[1]}) ${match[2]}-${match[3]}`;
+      return (`${match[1]}) ${match[2]} -${match[3]}`);
     }
     return telefone;
   };
@@ -66,6 +66,14 @@ const Checkout = ({ cartItems, setCartItems, onLogout, tenantData, setLastOrder 
   const total = calcularTotal();
 
   const handleFinalizarPedido = async () => {
+    if (!tipoEntrega) {
+      toast.warn("Por favor, selecione se deseja entrega ou retirada.", {
+        theme: "colored",
+        transition: Bounce,
+      });
+      return;
+    }
+
     if (total === 0) {
       toast.warn("Adicione produtos ao carrinho antes de finalizar.", {
         theme: "colored",
@@ -73,6 +81,7 @@ const Checkout = ({ cartItems, setCartItems, onLogout, tenantData, setLastOrder 
       });
       return;
     }
+
     if (!formaPagamentoSelecionada) {
       toast.warn("Por favor, selecione uma forma de pagamento.", {
         theme: "colored",
@@ -86,13 +95,12 @@ const Checkout = ({ cartItems, setCartItems, onLogout, tenantData, setLastOrder 
       tenantId: tenantData.id,
       itens: cartItems,
       total,
-      retirada: tipoEntrega === 'retirada' ? true : false,
+      retirada: tipoEntrega === 'retirada',
       endereco: enderecos[0] || "{}",
       formaPagamento: formaPagamentoSelecionada,
       troco: formaPagamentoSelecionada === "4" ? troco : null,
       observacaoPedido: observation
     };
-
 
     try {
       const postResponse = await fetchWithLoading(
@@ -108,16 +116,14 @@ const Checkout = ({ cartItems, setCartItems, onLogout, tenantData, setLastOrder 
 
       if (postResponse.ok) {
         const order = await postResponse.json();
-        localStorage.removeItem('carrinho-'+tenantData.slug);
-        setCartItems([])
+        localStorage.removeItem('carrinho-' + tenantData.slug);
+        setCartItems([]);
         setLastOrder(order);
-
         navigate(`/${tenantData.slug}/orderCompleted`);
       }
     } catch (error) {
       console.error("Erro na consulta à API:", error);
     }
-
   };
 
   const handleLogout = () => {
@@ -196,40 +202,34 @@ const Checkout = ({ cartItems, setCartItems, onLogout, tenantData, setLastOrder 
       </div>
 
       <h2>Entrega</h2>
-      <div className="delivery-info">
-        <div className="delivery-option">
-          <label>
-            <input
-              type="radio"
-              value="entrega"
-              checked={tipoEntrega === "entrega"}
-              onChange={handleEntregaChange}
-            />
-            <span>Entrega</span>
-          </label>
+      <div className="delivery-card-list">
+        <div
+          className={`address-card ${tipoEntrega === "entrega" ? "selected" : ""}`}
+          onClick={handleEntregaChange}
+        >
+          <strong>Entrega</strong>
+          <p>Receber no seu endereço</p>
         </div>
-        <div className="delivery-option">
-          <label>
-            <input
-              type="radio"
-              value="retirada"
-              checked={tipoEntrega === "retirada"}
-              onChange={() => {
-                setTipoEntrega("retirada");
-                setTaxaEntrega(0);
-              }}
-            />
-            <span>Retirada no local</span>
-          </label>
+
+        <div
+          className={`address-card ${tipoEntrega === "retirada" ? "selected" : ""}`}
+          onClick={() => {
+            setTipoEntrega("retirada");
+            setTaxaEntrega(0);
+          }}
+        >
+          <strong>Retirada no local</strong>
+          <p>Buscar direto no balcão</p>
         </div>
       </div>
+
 
       <div className="delivery-type">
         {tipoEntrega === "retirada" && (
           <>
             <p>Você escolheu retirar o pedido no local.</p>
             <span>
-            <MdLocationPin  size={14}/>  {tenantData.address}, {tenantData.number}, {tenantData.neighborhood} - {tenantData.city}
+              <MdLocationPin size={14} />  {tenantData.address}, {tenantData.number}, {tenantData.neighborhood} - {tenantData.city}
             </span>
           </>
         )}
@@ -239,7 +239,7 @@ const Checkout = ({ cartItems, setCartItems, onLogout, tenantData, setLastOrder 
             <p>O pedido será entregue em:   </p>
             {enderecos && enderecos.length > 0 && (
               <span>
-                 <MdLocationPin  size={14}/>  {enderecos[0].endereco}, {enderecos[0].numero},{" "}
+                <MdLocationPin size={14} />  {enderecos[0].endereco}, {enderecos[0].numero},{" "}
                 {enderecos[0].bairro}, {enderecos[0].complemento},{" "}
                 {enderecos[0].cidade}
               </span>
@@ -250,18 +250,18 @@ const Checkout = ({ cartItems, setCartItems, onLogout, tenantData, setLastOrder 
 
       <h2>Escolha a forma de pagamento</h2>
       <div className="payment-info">
-        <select
-          className="custom-combo"
-          onChange={handleFormaPagamentoChange}
-          value={formaPagamentoSelecionada}
-        >
-          <option value="">Selecione uma forma de pagamento</option>
+        <div className="payment-card-list">
           {formasPagamento.map((forma) => (
-            <option key={forma.id} value={forma.id}>
-              {forma.nome}
-            </option>
+            <div
+              key={forma.id}
+              className={`address-card ${formaPagamentoSelecionada === forma.id ? 'selected' : ''}`}
+              onClick={() => handleFormaPagamentoChange({ target: { value: forma.id } })}
+            >
+              <strong>{forma.nome}</strong>
+            </div>
           ))}
-        </select>
+        </div>
+
       </div>
 
       <ModalTroco
@@ -291,13 +291,26 @@ const Checkout = ({ cartItems, setCartItems, onLogout, tenantData, setLastOrder 
       />
 
       <div className="finish-order-info">
-        <h3>Subtotal: R$ {formatarNumero(calcularTotal() - taxaEntrega)}</h3>
-        <h3>Taxa de entrega: R$ {formatarNumero(taxaEntrega)}</h3>
-        <h2>Total: R$ {formatarNumero(total)}</h2>
-
-        {formaPagamentoSelecionada === "4" && troco && (
-          <h3>Troco: R$ {formatarNumero(troco)}</h3>
-        )}
+        <div className="total-box">
+          <div className="total-row">
+            <span>Subtotal:</span>
+            <strong>R$ {formatarNumero(calcularTotal() - taxaEntrega)}</strong>
+          </div>
+          <div className="total-row">
+            <span>Taxa de entrega:</span>
+            <strong>R$ {formatarNumero(taxaEntrega)}</strong>
+          </div>
+          <div className="total-row total-row-highlight">
+            <span>Total:</span>
+            <strong>R$ {formatarNumero(total)}</strong>
+          </div>
+          {formaPagamentoSelecionada === "4" && troco && (
+            <div className="total-row">
+              <span>Troco:</span>
+              <strong>R$ {formatarNumero(troco)}</strong>
+            </div>
+          )}
+        </div>
 
         <button onClick={handleFinalizarPedido} className="finalizar-button">
           Finalizar Pedido
