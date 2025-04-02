@@ -110,8 +110,10 @@ const ModalEndereco = ({
       tipoEndereco: "casa",
     });
 
-    const n = tenantData?.neighborhoods?.find(n => n.name === end.neighborhood.name);
-    const c = tenantData?.cities?.find(c => c.name === end.city.name);
+    const n = tenantData?.neighborhoods?.find(
+      (n) => n.name === end.neighborhood.name
+    );
+    const c = tenantData?.cities?.find((c) => c.name === end.city.name);
     setDeliveryFee(n?.deliveryFee || 0);
     setBairroId(n?.id || null);
     setCidadeId(c?.id || null);
@@ -121,7 +123,7 @@ const ModalEndereco = ({
   const handleBairroChange = (e) => {
     const name = e.target.value;
     setForm({ ...form, bairro: name });
-    const n = tenantData?.neighborhoods?.find(n => n.name === name);
+    const n = tenantData?.neighborhoods?.find((n) => n.name === name);
     setDeliveryFee(n?.deliveryFee || 0);
     setBairroId(n?.id || null);
   };
@@ -129,7 +131,7 @@ const ModalEndereco = ({
   const handleCidadeChange = (e) => {
     const name = e.target.value;
     setForm({ ...form, cidade: name });
-    const c = tenantData?.cities?.find(c => c.name === name);
+    const c = tenantData?.cities?.find((c) => c.name === name);
     setCidadeId(c?.id || null);
   };
 
@@ -139,63 +141,130 @@ const ModalEndereco = ({
     <div className="end__modal-overlay">
       <div className="end__modal-content">
         <div className="back-button-mobile" onClick={onClose}>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="black" className="back-icon-mobile">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 12H3m0 0l6-6m-6 6l6 6" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            stroke="black"
+            className="back-icon-mobile"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M15 12H3m0 0l6-6m-6 6l6 6"
+            />
           </svg>
         </div>
 
         <form className="formModal" onSubmit={handleSubmit}>
           <h4>Endereço de Entrega</h4>
-          <p className="address-instruction">Selecione um endereço salvo abaixo ou clique em "Novo Endereço"</p>
-
-
+          <p className="address-instruction">
+            Selecione um endereço salvo abaixo ou clique em "Novo Endereço"
+          </p>
 
           {!isNewEndereco && enderecos.length > 0 && (
             <div className="address-list">
               {enderecos.map((end) => (
                 <div
                   key={end.id}
-                  className={`address-card ${form.apelidoEndereco === end.nickname ? 'selected' : ''}`}
+                  className={`address-card ${
+                    form.apelidoEndereco === end.nickname ? "selected" : ""
+                  }`}
                   onClick={() => handleEnderecoCardClick(end)}
                 >
                   <strong>{end.nickname}</strong>
-                  <p>{end.address}, {end.number}</p>
-                  <small>{end.neighborhood.name} - {end.city.name}</small>
+                  <p>
+                    {end.address}, {end.number}
+                  </p>
+                  <small>
+                    {end.neighborhood.name} - {end.city.name}
+                  </small>
                 </div>
               ))}
             </div>
           )}
 
-          <div className={`form-fields ${isNewEndereco || form.apelidoEndereco ? 'visible' : 'hidden'}`}>
+          <div
+            className={`form-fields ${
+              isNewEndereco || form.apelidoEndereco ? "visible" : "hidden"
+            }`}
+          >
             <label className="input-label">Apelido:</label>
-            <input type="text" name="apelidoEndereco" value={form.apelidoEndereco} onChange={handleChange} required />
+            <input
+              type="text"
+              name="apelidoEndereco"
+              value={form.apelidoEndereco}
+              onChange={handleChange}
+              required
+            />
 
             <label className="input-label">Endereço:</label>
-            <input type="text" name="endereco" value={form.endereco} onChange={handleChange} required />
+            <input
+              type="text"
+              name="endereco"
+              value={form.endereco}
+              onChange={handleChange}
+              required
+            />
 
             <label className="input-label">Número:</label>
-            <input type="text" name="numero" value={form.numero} onChange={handleChange} required />
+            <input
+              type="text"
+              name="numero"
+              value={form.numero}
+              onChange={handleChange}
+              required
+            />
 
             <label className="input-label">Bairro:</label>
-            <select value={form.bairro} onChange={handleBairroChange} className="custom-combo" required>
-              <option value="" disabled hidden>Selecione um bairro</option>
+            <select
+              value={form.bairro}
+              onChange={handleBairroChange}
+              className="custom-combo"
+              required
+            >
+              <option value="" disabled hidden>
+                Selecione um bairro
+              </option>
               {tenantData?.neighborhoods?.map((n) => (
-                <option key={n.id} value={n.name}>{n.name} - R$ {formatarNumero(n.deliveryFee)}</option>
+                <option key={n.id} value={n.name}>
+                  {n.name} - R$ {formatarNumero(n.deliveryFee)}
+                </option>
               ))}
             </select>
 
             <label className="input-label">Complemento:</label>
-            <input type="text" name="complemento" value={form.complemento} onChange={handleChange} />
+            <input
+              type="text"
+              name="complemento"
+              value={form.complemento}
+              onChange={handleChange}
+            />
 
             <label className="input-label">Taxa de Entrega:</label>
-            <div className="delivery-fee-display">R$ {formatarNumero(deliveryFee)}</div>
+            <div className="delivery-fee-display">
+              R$ {formatarNumero(deliveryFee)}
+            </div>
 
             <label className="input-label">Cidade:</label>
-            <select value={form.cidade} onChange={handleCidadeChange} className="custom-combo" required>
-              <option value="" disabled hidden>Selecione uma cidade</option>
-              {tenantData?.cities?.map((c) => (
-                <option key={c.id} value={c.name}>{c.name}</option>
-              ))}
+            <select
+              value={form.cidade}
+              onChange={handleCidadeChange}
+              className="custom-combo"
+              required
+            >
+              <option value="" disabled hidden>
+                Selecione uma cidade
+              </option>
+              {tenantData?.cities?.map(
+                (c) =>
+                  c.isActive && (
+                    <option key={c.id} value={c.name}>
+                      {c.name}
+                    </option>
+                  )
+              )}
             </select>
 
             <label className="input-label">CEP:</label>
@@ -208,16 +277,29 @@ const ModalEndereco = ({
             />
 
             <label className="input-label">Ponto de Referência:</label>
-            <input type="text" name="ptReferencia" value={form.ptReferencia} onChange={handleChange} />
+            <input
+              type="text"
+              name="ptReferencia"
+              value={form.ptReferencia}
+              onChange={handleChange}
+            />
           </div>
 
           <div className="modal-buttons-row">
-            <button type="button" className="add-new-button green" onClick={() => { resetForm(); setIsNewEndereco(true); }}>
+            <button
+              type="button"
+              className="add-new-button green"
+              onClick={() => {
+                resetForm();
+                setIsNewEndereco(true);
+              }}
+            >
               Novo Endereço
             </button>
-            <button type="submit" className="confirm-button">Confirmar</button>
+            <button type="submit" className="confirm-button">
+              Confirmar
+            </button>
           </div>
-
         </form>
       </div>
     </div>

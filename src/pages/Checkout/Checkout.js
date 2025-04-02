@@ -10,14 +10,20 @@ import { MdLocationPin } from "react-icons/md";
 import Cookies from "js-cookie";
 import { formatarNumero } from "../../utils/functions";
 
-const Checkout = ({ cartItems, setCartItems, onLogout, tenantData, setLastOrder }) => {
+const Checkout = ({
+  cartItems,
+  setCartItems,
+  onLogout,
+  tenantData,
+  setLastOrder,
+}) => {
   const navigate = useNavigate();
   const [enderecos, setEnderecos] = useState([]);
   const [taxaEntrega, setTaxaEntrega] = useState(0);
   const enderecosRef = useRef(enderecos);
-  const [formasPagamento, setFormasPagamento] = useState([]);
-  const [formaPagamentoSelecionada, setFormaPagamentoSelecionada] =
-    useState("");
+  const [formaPagamentoSelecionada, setFormaPagamentoSelecionada] = useState(
+    {}
+  );
   const [troco, setTroco] = useState("");
   const [modalTrocoVisible, setModalTrocoVisible] = useState(false);
   const [modalEnderecoVisible, setModalEnderecoVisible] = useState(false);
@@ -27,13 +33,6 @@ const Checkout = ({ cartItems, setCartItems, onLogout, tenantData, setLastOrder 
   const [observation, setObservation] = useState("");
 
   useEffect(() => {
-    const formasPagamentoFake = [
-      { id: "1", nome: "Cartão de Crédito/Débito" },
-      { id: "3", nome: "Pix" },
-      { id: "4", nome: "Dinheiro na Entrega" },
-    ];
-    setFormasPagamento(formasPagamentoFake);
-
     const clienteLocalStorage = JSON.parse(Cookies.get("token"));
     setCliente(clienteLocalStorage);
   }, []);
@@ -46,7 +45,7 @@ const Checkout = ({ cartItems, setCartItems, onLogout, tenantData, setLastOrder 
     const apenasNumeros = telefone.replace(/\D/g, "");
     const match = apenasNumeros.match(/(\d{2})(\d{5})(\d{4})/);
     if (match) {
-      return (`${match[1]}) ${match[2]} -${match[3]}`);
+      return `${match[1]}) ${match[2]} -${match[3]}`;
     }
     return telefone;
   };
@@ -82,7 +81,7 @@ const Checkout = ({ cartItems, setCartItems, onLogout, tenantData, setLastOrder 
       return;
     }
 
-    if (!formaPagamentoSelecionada) {
+    if (!formaPagamentoSelecionada.id) {
       toast.warn("Por favor, selecione uma forma de pagamento.", {
         theme: "colored",
         transition: Bounce,
@@ -95,28 +94,25 @@ const Checkout = ({ cartItems, setCartItems, onLogout, tenantData, setLastOrder 
       tenantId: tenantData.id,
       itens: cartItems,
       total,
-      retirada: tipoEntrega === 'retirada',
+      retirada: tipoEntrega === "retirada",
       endereco: enderecos[0] || "{}",
-      formaPagamento: formaPagamentoSelecionada,
-      troco: formaPagamentoSelecionada === "4" ? troco : null,
-      observacaoPedido: observation
+      formaPagamento: formaPagamentoSelecionada.id,
+      troco: formaPagamentoSelecionada.need_change ? troco : null,
+      observacaoPedido: observation,
     };
 
     try {
-      const postResponse = await fetchWithLoading(
-        `${config.baseURL}/orders`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(pedido),
-        }
-      );
+      const postResponse = await fetchWithLoading(`${config.baseURL}/orders`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(pedido),
+      });
 
       if (postResponse.ok) {
         const order = await postResponse.json();
-        localStorage.removeItem('carrinho-' + tenantData.slug);
+        localStorage.removeItem("carrinho-" + tenantData.slug);
         setCartItems([]);
         setLastOrder(order);
         navigate(`/${tenantData.slug}/orderCompleted`);
@@ -135,7 +131,7 @@ const Checkout = ({ cartItems, setCartItems, onLogout, tenantData, setLastOrder 
     const formaSelecionada = e.target.value;
     setFormaPagamentoSelecionada(formaSelecionada);
 
-    if (formaSelecionada === "4") {
+    if (formaSelecionada.need_change) {
       setModalTrocoVisible(true);
     } else {
       setModalTrocoVisible(false);
@@ -204,7 +200,9 @@ const Checkout = ({ cartItems, setCartItems, onLogout, tenantData, setLastOrder 
       <h2>Entrega</h2>
       <div className="delivery-card-list">
         <div
-          className={`address-card ${tipoEntrega === "entrega" ? "selected" : ""}`}
+          className={`address-card ${
+            tipoEntrega === "entrega" ? "selected" : ""
+          }`}
           onClick={handleEntregaChange}
         >
           <strong>Entrega</strong>
@@ -212,7 +210,9 @@ const Checkout = ({ cartItems, setCartItems, onLogout, tenantData, setLastOrder 
         </div>
 
         <div
-          className={`address-card ${tipoEntrega === "retirada" ? "selected" : ""}`}
+          className={`address-card ${
+            tipoEntrega === "retirada" ? "selected" : ""
+          }`}
           onClick={() => {
             setTipoEntrega("retirada");
             setTaxaEntrega(0);
@@ -223,25 +223,25 @@ const Checkout = ({ cartItems, setCartItems, onLogout, tenantData, setLastOrder 
         </div>
       </div>
 
-
       <div className="delivery-type">
         {tipoEntrega === "retirada" && (
           <>
             <p>Você escolheu retirar o pedido no local.</p>
             <span>
-              <MdLocationPin size={14} />  {tenantData.address}, {tenantData.number}, {tenantData.neighborhood} - {tenantData.city}
+              <MdLocationPin size={14} /> {tenantData.address},{" "}
+              {tenantData.number}, {tenantData.neighborhood} - {tenantData.city}
             </span>
           </>
         )}
 
         {tipoEntrega === "entrega" && (
           <>
-            <p>O pedido será entregue em:   </p>
+            <p>O pedido será entregue em: </p>
             {enderecos && enderecos.length > 0 && (
               <span>
-                <MdLocationPin size={14} />  {enderecos[0].endereco}, {enderecos[0].numero},{" "}
-                {enderecos[0].bairro}, {enderecos[0].complemento},{" "}
-                {enderecos[0].cidade}
+                <MdLocationPin size={14} /> {enderecos[0].endereco},{" "}
+                {enderecos[0].numero}, {enderecos[0].bairro},{" "}
+                {enderecos[0].complemento}, {enderecos[0].cidade}
               </span>
             )}
           </>
@@ -251,17 +251,23 @@ const Checkout = ({ cartItems, setCartItems, onLogout, tenantData, setLastOrder 
       <h2>Escolha a forma de pagamento</h2>
       <div className="payment-info">
         <div className="payment-card-list">
-          {formasPagamento.map((forma) => (
-            <div
-              key={forma.id}
-              className={`address-card ${formaPagamentoSelecionada === forma.id ? 'selected' : ''}`}
-              onClick={() => handleFormaPagamentoChange({ target: { value: forma.id } })}
-            >
-              <strong>{forma.nome}</strong>
-            </div>
-          ))}
+          {tenantData?.paymentTypes?.map(
+            (forma) =>
+              forma.isActive && (
+                <div
+                  key={forma.id}
+                  className={`address-card ${
+                    formaPagamentoSelecionada.id === forma.id ? "selected" : ""
+                  }`}
+                  onClick={() =>
+                    handleFormaPagamentoChange({ target: { value: forma } })
+                  }
+                >
+                  <strong>{forma.name}</strong>
+                </div>
+              )
+          )}
         </div>
-
       </div>
 
       <ModalTroco
@@ -304,7 +310,7 @@ const Checkout = ({ cartItems, setCartItems, onLogout, tenantData, setLastOrder 
             <span>Total:</span>
             <strong>R$ {formatarNumero(total)}</strong>
           </div>
-          {formaPagamentoSelecionada === "4" && troco && (
+          {formaPagamentoSelecionada.need_change && troco && (
             <div className="total-row">
               <span>Troco:</span>
               <strong>R$ {formatarNumero(troco)}</strong>
