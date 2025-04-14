@@ -1,0 +1,1 @@
+// Conteúdo de screens/FeedbackScreen.js - incluir novamente aqui
