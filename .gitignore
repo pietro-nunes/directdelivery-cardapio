@@ -1,52 +1,23 @@
-# Logs
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-# React Native
-node_modules/
-.expo/
-.expo-shared/
-dist/
-build/
-ios/build/
-android/app/build/
-*.keystore
-
-# OS
-.DS_Store
-Thumbs.db
-
-# VS Code
-.vscode/
-*.code-workspace
-
-# Environment
-.env
-.env.*
-
-# Metro / Cache
-.cache/
-babel.config.js
-
-# Expo
-*.expo
-*.turtle
-web-build/
-.expo-settings.json
-
-# Android
-android/.gradle
-android/.idea
-android/local.properties
-android/app/src/debug/
-android/app/src/androidTest/
-android/app/src/test/
-
-# iOS
-ios/Pods/
-ios/Podfile.lock
-ios/build/
-
-# TypeScript
-*.tsbuildinfo
