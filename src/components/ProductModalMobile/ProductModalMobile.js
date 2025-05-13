@@ -87,6 +87,7 @@ const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
       removedCompositions: removedCompositions.map((id) =>
         product.relations.find((relation) => relation.id === id)
       ),
+      selectedObservations: [],
       observation,
       totalPrice: calculateTotalPrice(),
     };

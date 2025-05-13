@@ -28,6 +28,7 @@ const App = () => {
   };
 
   const addToCart = (product) => {
+
     setCartItems((prevItems) => {
       const productKey = `
                 ${product.id}-${product.observation}-${JSON.stringify(product.selectedFlavors)}
