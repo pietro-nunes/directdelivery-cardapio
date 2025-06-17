@@ -1,150 +1,152 @@
 .orders-list {
-    padding: 20px;
-    max-width: 800px;
-    margin: 0 auto;
-    text-align: center;
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
 }
 
 .orders-title {
-    font-size: 28px;
-    font-weight: bold;
-    color: #1a9b9b;
-    margin-bottom: 20px;
+  font-size: 28px;
+  font-weight: bold;
+  color: #1a9b9b;
+  margin-bottom: 20px;
 }
 
 .order-card {
-    background-color: #ffffff;
-    border: 1px solid #e0e0e0;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    margin-bottom: 20px;
-    text-align: left;
-    animation: fadeInUp 400ms ease-out;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+  text-align: left;
+  animation: fadeInUp 400ms ease-out;
 }
 
 .order-card h3 {
-    font-size: 22px;
-    color: #333333;
-    margin-bottom: 10px;
+  font-size: 22px;
+  color: #333333;
+  margin-bottom: 10px;
 }
 
 .order-card p {
-    font-size: 16px;
-    color: #555555;
-    margin-bottom: 8px;
+  font-size: 16px;
+  color: #555555;
+  margin-bottom: 8px;
 }
 
 .order-items {
-    margin-top: 15px;
-    padding-top: 15px;
-    border-top: 1px solid #e0e0e0;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #e0e0e0;
 }
 
 .order-items h4 {
-    font-size: 18px;
-    font-weight: bold;
-    color: #1a9b9b;
-    margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #1a9b9b;
+  margin-bottom: 10px;
 }
 
 .order-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 0;
-    font-size: 16px;
-    color: #333333;
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: 16px;
+  color: #333333;
 }
 
 .order-item span {
-    display: inline-block;
+  display: inline-block;
 }
 
 .order-status {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 15px;
-    padding: 10px 0;
-    gap: 10px;
-    flex-wrap: wrap;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+  padding: 10px 0;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .status-step {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-size: 12px;
-    color: #bbb;
-    font-weight: 500;
-    width: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 12px;
+  color: #bbb;
+  font-weight: 500;
+  width: 60px;
 }
 
 .status-step .status-icon {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    border: 2px solid #ccc;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 4px;
-    font-size: 14px;
-    color: #fff;
-    background-color: #ccc;
-    transition: all 0.3s;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+  font-size: 14px;
+  color: #fff;
+  background-color: #ccc;
+  transition: all 0.3s;
 }
 
 .status-step.active .status-icon {
-    background-color: #1a9b9b;
-    border-color: #1a9b9b;
-    color: white;
-    font-weight: bold;
+  background-color: #1a9b9b;
+  border-color: #1a9b9b;
+  color: #fff !important;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 24px;
 }
 
 .status-step.active span {
-    color: #1a9b9b;
-    font-weight: bold;
+  color: #1a9b9b;
+  font-weight: bold;
 }
 
 .update-timer {
-    font-size: 14px;
-    margin-bottom: 10px;
-    color: #666;
+  font-size: 14px;
+  margin-bottom: 10px;
+  color: #666;
 }
 
 @media (max-width: 768px) {
-    .order-card {
-        padding: 15px;
-    }
+  .order-card {
+    padding: 15px;
+  }
 
-    .order-item {
-        flex-direction: column;
-        align-items: flex-start;
-    }
+  .order-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 
-    .order-item span {
-        margin-bottom: 5px;
-    }
+  .order-item span {
+    margin-bottom: 5px;
+  }
 
-    .order-status {
-        justify-content: flex-start;
-    }
+  .order-status {
+    justify-content: flex-start;
+  }
 
-    .status-step {
-        width: auto;
-        margin-right: 10px;
-    }
+  .status-step {
+    width: auto;
+    margin-right: 10px;
+  }
 }
 
 @keyframes fadeInUp {
-    0% {
-        transform: translateY(20px);
-        opacity: 0;
-    }
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
 
-    100% {
-        transform: translateY(0px);
-        opacity: 1;
-    }
+  100% {
+    transform: translateY(0px);
+    opacity: 1;
+  }
 }

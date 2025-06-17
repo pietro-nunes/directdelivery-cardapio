@@ -36,7 +36,15 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen }) => {
     setSelectedCategory(category);
     const categoryElement = document.getElementById(category);
     if (categoryElement) {
-      categoryElement.scrollIntoView({ behavior: "smooth" });
+      const headerOffset = 80; // Ajuste a altura conforme o tamanho do seu header
+      const elementPosition =
+        categoryElement.getBoundingClientRect().top + window.pageYOffset;
+      const offsetPosition = elementPosition - headerOffset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth",
+      });
     }
   };
 
@@ -50,7 +58,7 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen }) => {
             openingTime: tenantData.openingTime,
             closingTime: tenantData.closingTime,
             openingDays: tenantData.openingDays,
-            address: `${tenantData.address}, ${tenantData.number}, ${tenantData.neighborhood} - ${tenantData.city}`
+            address: `${tenantData.address}, ${tenantData.number}, ${tenantData.neighborhood} - ${tenantData.city}`,
           }}
           setIsRestaurantOpen={setIsRestaurantOpen}
         />
