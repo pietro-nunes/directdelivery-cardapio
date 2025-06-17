@@ -178,14 +178,15 @@ const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
                     <span className="checkbox-custom-mobile"></span>
                     <span className="additional-name-mobile">
                       {relation.relatedProduct.name}{" "}
-                      {parseFloat(relation.price) > 0 && <> - R$ {formatarNumero(relation.price)}</>}
+                      {parseFloat(relation.price) > 0 && (
+                        <> - R$ {formatarNumero(relation.price)}</>
+                      )}
                     </span>
                   </label>
                 ))}
               </div>
             </div>
           )}
-
 
           {/* Composições */}
           {compositions.length > 0 && (
@@ -196,13 +197,22 @@ const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
                   const isRemoved = removedCompositions.includes(relation.id);
 
                   return (
-                    <li className="composition-card-mobile" key={relation.id}>
+                    <li
+                      className={`composition-card-mobile ${
+                        isRemoved ? "removed-composition" : ""
+                      }`}
+                      key={relation.id}
+                    >
                       {relation.relatedProduct.name}
                       <button
                         className="delete-button"
                         onClick={() => removeComposition(relation.id)}
                       >
-                        {isRemoved ? <FiRotateCw size={20} color="green" /> : <FiTrash2 size={20} />}
+                        {isRemoved ? (
+                          <FiRotateCw size={20} color="green" />
+                        ) : (
+                          <FiTrash2 size={20} />
+                        )}
                       </button>
                     </li>
                   );
@@ -211,13 +221,13 @@ const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
             </div>
           )}
 
-
           {/* Observações */}
           <div className="observations-section-mobile">
             <h4>Observações:</h4>
             <textarea
               className="observations-mobile"
               placeholder="Ex.: Sem cebola, sem ovo, etc."
+              maxLength={150}
               value={observation}
               onChange={(e) => setObservation(e.target.value)}
             />

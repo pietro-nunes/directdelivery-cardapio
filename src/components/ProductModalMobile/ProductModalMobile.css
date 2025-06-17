@@ -40,6 +40,12 @@
     padding: 20px;
 }
 
+.removed-composition {
+  text-decoration: line-through;
+  color: #999;
+  opacity: 0.7;
+}
+
 .modal-product-name-mobile {
     font-size: 1.8rem;
     margin: 15px 0;

@@ -51,11 +51,13 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    background-color: #007BFF;
+    color: white;
 }
 
-.no-troco-button {
-    background-color: #f44336; /* Cor do botão "Não precisa de troco" */
-    color: white;
+#no-troco-button {
+    background-color: #ececec;
+    color: black; /* Cor do botão "Não precisa de troco" */
 }
 
 @keyframes slide-in {

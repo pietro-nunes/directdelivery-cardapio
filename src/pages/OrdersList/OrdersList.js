@@ -8,7 +8,7 @@ import { formatarNumero } from "../../utils/functions";
 
 const OrdersList = ({ tenantData }) => {
   const [orders, setOrders] = useState([]);
-  const [timeLeft, setTimeLeft] = useState(60); // Tempo restante em segundos
+  const [timeLeft, setTimeLeft] = useState(60);
   const { fetchWithLoading } = useFetchWithLoading();
 
   const statusSteps = ["created", "accepted", "preparing", "enroute", "delivered"];
@@ -16,25 +16,23 @@ const OrdersList = ({ tenantData }) => {
     created: "Criado",
     accepted: "Aceito",
     preparing: "Em preparo",
-    enroute: "Em rota para entrega",
+    enroute: "Em rota",
     delivered: "Entregue"
   };
 
-  // Função para buscar customerId do cookie
   const getCustomerId = () => {
-    const token = Cookies.get("token"); // Obtendo o token do cookie
+    const token = Cookies.get("token");
     if (token) {
-      const parsedToken = JSON.parse(token); // Parse do token
-      return parsedToken.id; // Retorna o customerId do token
+      const parsedToken = JSON.parse(token);
+      return parsedToken.id;
     }
-    return null; // Retorna null se o token não existir
+    return null;
   };
-  
-  // Função para buscar os pedidos
+
   const fetchOrders = async () => {
     const customerId = getCustomerId();
     if (!customerId) {
-      console.error("Erro: customerId não encontrado no local storage.");
+      console.error("Erro: customerId não encontrado.");
       return;
     }
 
@@ -49,23 +47,19 @@ const OrdersList = ({ tenantData }) => {
     }
   };
 
-  // Carregar pedidos quando os dados do tenant estiverem prontos
   useEffect(() => {
     if (tenantData) {
       fetchOrders();
     }
 
-    const intervalId = setInterval(() => {
-      fetchOrders();
-    }, 60000); // Atualiza a cada 60.000 ms (1 minuto)
-
+    const intervalId = setInterval(fetchOrders, 60000);
     const countdownInterval = setInterval(() => {
-      setTimeLeft(prevTime => (prevTime > 0 ? prevTime - 1 : 60)); // Decrementa o tempo e reinicia em 60 segundos
-    }, 1000); // Atualiza a cada segundo
+      setTimeLeft((prevTime) => (prevTime > 0 ? prevTime - 1 : 60));
+    }, 1000);
 
     return () => {
-      clearInterval(intervalId); // Limpa o intervalo de pedidos
-      clearInterval(countdownInterval); // Limpa o intervalo do cronômetro
+      clearInterval(intervalId);
+      clearInterval(countdownInterval);
     };
   }, [tenantData]);
 
@@ -77,41 +71,46 @@ const OrdersList = ({ tenantData }) => {
   return (
     <div className="orders-list">
       <h2 className="orders-title">Seus Pedidos</h2>
-      <p className="update-timer"> <FiRefreshCw /> Buscando atualizações dos pedidos em: {timeLeft}s</p>
+      <p className="update-timer">
+        <FiRefreshCw /> Atualizando em: {timeLeft}s
+      </p>
       {orders.length > 0 ? (
-        orders.map((order) => {
-          return (
-            <div key={order.id} className="order-card">
-              <h3>Pedido #{order.id}</h3>
-              <p>Data: {new Date(order.createdAt).toLocaleString()}</p>
-              <p>Total: R$ {formatarNumero(order.total)}</p>
-              <div className="order-items">
-                <h4>Itens:</h4>
-                {order.items.map((item) => (
-                  <div key={item.id} className="order-item">
-                    <span>
-                      {item.quantity}x {item.productName}
-                    </span>
-                    <span>R$ {formatarNumero(item.totalPrice)}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="order-status">
-                {statusSteps
-                  .filter((status) => status !== "created") // Exclui "created"
-                  .map((status, index) => (
-                    <span
-                      key={status}
-                      className={`status-step ${index <= getStatusIndex(order.status) ? "active" : ""
-                        }`}
-                    >
-                      {statusTranslations[status]} {/* Exibe a tradução */}
-                    </span>
-                  ))}
-              </div>
+        orders.map((order) => (
+          <div key={order.id} className="order-card">
+            <h3>Pedido #{order.id}</h3>
+            <p>Data: {new Date(order.createdAt).toLocaleString()}</p>
+            <p>Total: R$ {formatarNumero(order.total)}</p>
+            <div className="order-items">
+              <h4>Itens:</h4>
+              {order.items.map((item) => (
+                <div key={item.id} className="order-item">
+                  <span>
+                    {item.quantity}x {item.productName}
+                  </span>
+                  <span>R$ {formatarNumero(item.totalPrice)}</span>
+                </div>
+              ))}
             </div>
-          );
-        })
+            <div className="order-status">
+              {statusSteps
+                .filter((status) => status !== "created")
+                .map((status, index) => {
+                  const isActive = index <= getStatusIndex(order.status);
+                  return (
+                    <div
+                      key={status}
+                      className={`status-step ${isActive ? "active" : ""}`}
+                    >
+                      <div className="status-icon">
+                        {isActive ? "✔" : ""}
+                      </div>
+                      <span>{statusTranslations[status]}</span>
+                    </div>
+                  );
+                })}
+            </div>
+          </div>
+        ))
       ) : (
         <p>Nenhum pedido encontrado.</p>
       )}

@@ -21,9 +21,7 @@ const Checkout = ({
   const [enderecos, setEnderecos] = useState([]);
   const [taxaEntrega, setTaxaEntrega] = useState(0);
   const enderecosRef = useRef(enderecos);
-  const [formaPagamentoSelecionada, setFormaPagamentoSelecionada] = useState(
-    {}
-  );
+  const [formaPagamentoSelecionada, setFormaPagamentoSelecionada] = useState({});
   const [troco, setTroco] = useState("");
   const [modalTrocoVisible, setModalTrocoVisible] = useState(false);
   const [modalEnderecoVisible, setModalEnderecoVisible] = useState(false);
@@ -45,21 +43,24 @@ const Checkout = ({
     const apenasNumeros = telefone.replace(/\D/g, "");
     const match = apenasNumeros.match(/(\d{2})(\d{5})(\d{4})/);
     if (match) {
-      return `${match[1]}) ${match[2]} -${match[3]}`;
+      return `(${match[1]}) ${match[2]} -${match[3]}`;
     }
     return telefone;
   };
 
-  // Função para calcular o total
+  const parseCurrencyToNumber = (value) => {
+    if (!value) return 0;
+    const cleaned = value.replace(/[^\d,.-]/g, "").replace(/\./g, "").replace(",", ".");
+    return parseFloat(cleaned) || 0;
+  };
+
   const calcularTotal = () => {
     if (!Array.isArray(cartItems) || cartItems.length === 0) return 0;
-
     const subtotal = cartItems.reduce((total, item) => {
-      const itemTotal = item.totalPrice * item.count; // Preço total de cada item
+      const itemTotal = item.totalPrice * item.count;
       return total + itemTotal;
     }, 0);
-
-    return subtotal + parseFloat(taxaEntrega); // Inclui a taxa de entrega no total
+    return subtotal + parseFloat(taxaEntrega);
   };
 
   const total = calcularTotal();
@@ -97,7 +98,7 @@ const Checkout = ({
       retirada: tipoEntrega === "retirada",
       endereco: enderecos[0] || "{}",
       formaPagamento: formaPagamentoSelecionada.id,
-      troco: formaPagamentoSelecionada.need_change ? troco : null,
+      troco: formaPagamentoSelecionada.need_change ? parseCurrencyToNumber(troco) : null,
       observacaoPedido: observation,
     };
 
@@ -140,12 +141,7 @@ const Checkout = ({
   };
 
   const handleAddressSubmit = useCallback((endereco) => {
-    if (
-      !endereco.endereco ||
-      !endereco.numero ||
-      !endereco.bairro ||
-      !endereco.cidade
-    ) {
+    if (!endereco.endereco || !endereco.numero || !endereco.bairro || !endereco.cidade) {
       toast.warn("Por favor, preencha todos os campos obrigatórios.", {
         theme: "colored",
         transition: Bounce,
@@ -171,7 +167,7 @@ const Checkout = ({
     setModalEnderecoVisible(false);
   };
 
-  const handleTrocoSubmit = (e) => {
+  const handleTrocoSubmit = () => {
     setModalTrocoVisible(false);
   };
 
@@ -197,12 +193,10 @@ const Checkout = ({
         </button>
       </div>
 
-      <h2>Entrega</h2>
+      <h2>Escolha o tipo da entrega:</h2>
       <div className="delivery-card-list">
         <div
-          className={`address-card ${
-            tipoEntrega === "entrega" ? "selected" : ""
-          }`}
+          className={`address-card ${tipoEntrega === "entrega" ? "selected" : ""}`}
           onClick={handleEntregaChange}
         >
           <strong>Entrega</strong>
@@ -210,9 +204,7 @@ const Checkout = ({
         </div>
 
         <div
-          className={`address-card ${
-            tipoEntrega === "retirada" ? "selected" : ""
-          }`}
+          className={`address-card ${tipoEntrega === "retirada" ? "selected" : ""}`}
           onClick={() => {
             setTipoEntrega("retirada");
             setTaxaEntrega(0);
@@ -228,8 +220,8 @@ const Checkout = ({
           <>
             <p>Você escolheu retirar o pedido no local.</p>
             <span>
-              <MdLocationPin size={14} /> {tenantData.address},{" "}
-              {tenantData.number}, {tenantData.neighborhood} - {tenantData.city}
+              <MdLocationPin size={14} /> {tenantData.address}, {tenantData.number},{" "}
+              {tenantData.neighborhood} - {tenantData.city}
             </span>
           </>
         )}
@@ -239,16 +231,15 @@ const Checkout = ({
             <p>O pedido será entregue em: </p>
             {enderecos && enderecos.length > 0 && (
               <span>
-                <MdLocationPin size={14} /> {enderecos[0].endereco},{" "}
-                {enderecos[0].numero}, {enderecos[0].bairro},{" "}
-                {enderecos[0].complemento}, {enderecos[0].cidade}
+                <MdLocationPin size={14} /> {enderecos[0].endereco}, {enderecos[0].numero},{" "}
+                {enderecos[0].bairro}, {enderecos[0].complemento}, {enderecos[0].cidade}
               </span>
             )}
           </>
         )}
       </div>
 
-      <h2>Escolha a forma de pagamento</h2>
+      <h2>Escolha a forma de pagamento:</h2>
       <div className="payment-info">
         <div className="payment-card-list">
           {tenantData?.paymentTypes?.map(
@@ -288,10 +279,11 @@ const Checkout = ({
         enderecos={cliente?.addresses || []}
       />
 
-      <h2>Observação do pedido</h2>
+      <h2>Observação do pedido:</h2>
       <textarea
         className="observations-mobile"
         placeholder="Ex.: Apertar campainha, não buzinar, etc."
+        maxLength={150}
         value={observation}
         onChange={(e) => setObservation(e.target.value)}
       />
@@ -313,7 +305,7 @@ const Checkout = ({
           {formaPagamentoSelecionada.need_change && troco && (
             <div className="total-row">
               <span>Troco:</span>
-              <strong>R$ {formatarNumero(troco)}</strong>
+              <strong>R$ {formatarNumero(parseCurrencyToNumber(troco))}</strong>
             </div>
           )}
         </div>

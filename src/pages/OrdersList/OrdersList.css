@@ -60,46 +60,59 @@
     display: inline-block;
 }
 
-.order-item-relations {
-    margin-top: 5px;
-    padding-left: 20px;
-    font-size: 14px;
-    color: #777777;
-    list-style-type: disc;
-}
-
-.order-item-relations li {
-    padding: 2px 0;
-}
-
 .order-status {
     display: flex;
-    flex-direction: column;
-    gap: 10px;
-    align-items: flex-start;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
     padding: 10px 0;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
 .status-step {
-    text-align: center;
-    font-size: 14px;
-    color: #555;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 12px;
+    color: #bbb;
     font-weight: 500;
+    width: 60px;
 }
 
-.status-step.active {
-    color: #e63946;
-    /* Cor destaque para o status atual */
+.status-step .status-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 4px;
+    font-size: 14px;
+    color: #fff;
+    background-color: #ccc;
+    transition: all 0.3s;
+}
+
+.status-step.active .status-icon {
+    background-color: #1a9b9b;
+    border-color: #1a9b9b;
+    color: white;
+    font-weight: bold;
+}
+
+.status-step.active span {
+    color: #1a9b9b;
     font-weight: bold;
 }
 
 .update-timer {
     font-size: 14px;
     margin-bottom: 10px;
+    color: #666;
 }
 
-
-/* Responsividade */
 @media (max-width: 768px) {
     .order-card {
         padding: 15px;
@@ -112,6 +125,15 @@
 
     .order-item span {
         margin-bottom: 5px;
+    }
+
+    .order-status {
+        justify-content: flex-start;
+    }
+
+    .status-step {
+        width: auto;
+        margin-right: 10px;
     }
 }
 

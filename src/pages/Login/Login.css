@@ -57,6 +57,13 @@
     transition: background 0.3s;
 }
 
+.login-button.disabled {
+  background-color: #ccc;
+  color: #888;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
 .login-button:hover {
     background: #007B9A; /* Efeito hover */
 }
