@@ -1,132 +1,98 @@
-/* Header styling */
+/* Header Styling */
 .header {
-    background-color: white;
-    padding: 15px 20px;
-    color: #1a9b9b;
+    background-color: #ffffff; /* Fundo branco puro */
+    padding: 15px 25px;
     width: 100%;
     box-sizing: border-box;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08); /* Sombra suave */
     position: sticky;
     top: 0;
     z-index: 1000;
+    font-family: 'Arial', sans-serif;
 }
 
 .header-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 1200px;
+    max-width: 1300px;
     margin: 0 auto;
     width: 100%;
 }
 
 .logo {
-    font-size: 20px;
-    font-weight: bold;
+    font-size: 24px;
+    font-weight: 700;
+    color: #1a9b9b; /* Cor principal para a marca */
     cursor: pointer;
-}
-
-.nav-links {
-    list-style: none;
-    display: flex;
-    gap: 20px;
-}
-
-.nav-links li {
-    margin: 0;
-}
-
-.nav-links a {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-    padding: 8px 16px;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-    white-space: nowrap;
-}
-
-.nav-links a:hover {
-    background-color: #148f8f;
-}
-
-/* Estilo do botão sanduíche */
-.menu-toggle {
-    display: none; /* Ocultar no desktop */
-}
-
-/* Menu responsivo */
-.nav {
     display: flex;
     align-items: center;
+    gap: 8px;
+    transition: color 0.3s ease;
 }
 
-.nav.open {
-    position: absolute; /* Muda para posição absoluta quando aberto */
-    top: 60px; /* Distância do topo */
-    left: 0;
-    width: 100%;
-    background-color: #1a9b9b; /* Fundo do menu */
-    z-index: 999; /* Para garantir que fique acima */
+.logo:hover {
+    color: #148f8f;
+}
+
+/* Esconder elementos de navegação não usados atualmente no seu HTML */
+.nav-links, .menu-toggle, .nav {
+    display: none;
 }
 
 .buttons-header-wrap {
     display: flex;
-    gap: 10px;
+    gap: 15px;
+    align-items: center;
 }
 
 .button-header {
     display: flex;
     align-items: center;
     justify-content: center;
-    border: none;
-    padding: 5px;
-    border-radius: 5px;
+    border: 1px solid #e0e0e0; /* Borda sutil */
+    padding: 8px 15px;
+    border-radius: 25px; /* Estilo pílula */
     cursor: pointer;
-    transition: all .3s;
-    font: black;
-    background-color: #ececec;
-    color: black;
+    transition: all 0.3s ease;
+    background-color: #f8f8f8;
+    color: #555;
+    font-size: 15px;
+    font-weight: 500;
 }
 
 .button-header:hover {
-    background-color: #d8d8d8;
+    background-color: #e0f2f2;
+    color: #1a9b9b;
+    border-color: #1a9b9b;
+    box-shadow: 0 2px 8px rgba(26, 155, 155, 0.1);
 }
 
 .button-header .with-text {
-    margin-right: 5px;
+    margin-right: 8px;
+    font-size: 16px;
+    color: #1a9b9b; /* Ícone sempre da cor principal */
 }
 
 /* Responsividade */
 @media (max-width: 768px) {
-    .menu-toggle {
-        display: inline-block; /* Mostrar no mobile */
+    .header {
+        padding: 10px 15px;
     }
-
-    .nav-links {
-        display: none; /* Ocultar links no mobile */
-        flex-direction: column; /* Exibir em coluna ao abrir */
-        width: 100%; /* Largura total */
-        padding: 10px 0; /* Espaçamento vertical */
+    .logo {
+        font-size: 20px;
+        gap: 5px;
     }
-
-    .nav.open .nav-links {
-        display: flex; /* Mostrar links ao abrir o menu */
+    .buttons-header-wrap {
+        gap: 8px;
     }
-
-    .header-content {
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
+    .button-header {
+        padding: 6px 12px;
+        font-size: 14px;
+        border-radius: 20px;
     }
-}
-
-@media (min-width: 769px) {
-    .nav-links {
-        display: flex; /* Exibir links em linha no desktop */
-    }
-
-    .menu-toggle {
-        display: none; /* Ocultar no desktop */
+    .button-header .with-text {
+        margin-right: 5px;
+        font-size: 15px;
     }
 }

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import "./ProductModalMobile.css";
-import { Bounce, toast } from "react-toastify";
-import { formatarNumero } from "../../utils/functions";
-import { FiTrash2, FiRotateCw } from "react-icons/fi";
+import "./ProductModalMobile.css"; // Certifique-se de que o CSS está linkado corretamente
+import { Bounce, toast } from "react-toastify"; // Importe toast se estiver usando
+import { formatarNumero } from "../../utils/functions"; // Assumindo que este util existe
+import { FiTrash2, FiRotateCw } from "react-icons/fi"; // Assumindo que você usa react-icons
 
 const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
   const [selectedFlavors, setSelectedFlavors] = useState([]);
@@ -87,7 +87,7 @@ const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
       removedCompositions: removedCompositions.map((id) =>
         product.relations.find((relation) => relation.id === id)
       ),
-      selectedObservations: [],
+      selectedObservations: [], // Ou lógica para observações, se houver
       observation,
       totalPrice: calculateTotalPrice(),
     };
@@ -106,27 +106,31 @@ const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
         className="modal-content-mobile"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="modal-body-mobile">
-          <div className="back-button-mobile" onClick={closeModal}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={2}
-              stroke="black"
-              className="back-icon-mobile"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15 12H3m0 0l6-6m-6 6l6 6"
-              />
-            </svg>
-          </div>
+        {/* Botão de Voltar - FIXO NO TOPO DO MODAL-CONTENT-MOBILE */}
+        <div className="back-button-mobile" onClick={closeModal}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            stroke="black"
+            className="back-icon-mobile"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M15 12H3m0 0l6-6m-6 6l6 6"
+            />
+          </svg>
+        </div>
 
+        {/* Corpo do Modal - CONTEÚDO ROLÁVEL, INCLUI TÍTULO E PREÇO */}
+        <div className="modal-body-mobile">
+          {/* Título do Produto - MOVIDO PARA DENTRO DO modal-body-mobile */}
           <h3 className="modal-product-name-mobile">
             {product.name || "Nome indisponível"}
           </h3>
+          {/* Preço do Produto - MOVIDO PARA DENTRO DO modal-body-mobile */}
           <p className="modal-product-price-mobile">
             R$ {formatarNumero(product.price)}
           </p>
@@ -144,7 +148,7 @@ const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
               </h4>
               <div className="flavors-list-mobile">
                 {flavors.map((relation) => (
-                  <label className="custom-checkbox-mobile">
+                  <label className="custom-checkbox-mobile" key={relation.id}>
                     <input
                       type="checkbox"
                       checked={selectedFlavors.includes(relation.id)}
@@ -169,11 +173,11 @@ const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
               <h4>Adicionais:</h4>
               <div className="additionals-list-mobile">
                 {additionals.map((relation) => (
-                  <label className="custom-checkbox-mobile">
+                  <label className="custom-checkbox-mobile" key={relation.id}>
                     <input
                       type="checkbox"
                       checked={selectedAdditionals.includes(relation.id)}
-                      onChange={() => toggleAdditional(relation.id)} // Permite marcar/desmarcar diretamente no checkbox
+                      onChange={() => toggleAdditional(relation.id)}
                     />
                     <span className="checkbox-custom-mobile"></span>
                     <span className="additional-name-mobile">
@@ -234,6 +238,7 @@ const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
           </div>
         </div>
 
+        {/* Footer do Modal - FIXO NA PARTE INFERIOR DO MODAL-CONTENT-MOBILE */}
         <div className="modal-footer-mobile">
           <button
             onClick={handleAddToCart}

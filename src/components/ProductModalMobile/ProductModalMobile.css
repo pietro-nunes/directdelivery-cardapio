@@ -1,294 +1,402 @@
+/* Modal Overlay - Fundo escuro que cobre a tela */
 .modal-overlay-mobile {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    /* Fundo mais escuro para foco */
-    display: flex;
-    justify-content: center;
-    z-index: 1000;
-    animation: fadeIn 0.3s ease;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: flex-end; /* Alinha o modal à parte inferior da tela */
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
 }
 
+/* Modal Content - O container principal do modal */
 .modal-content-mobile {
-    width: 100%;
-    background: white;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    transform: translateY(100%);
-    animation: slideIn 0.4s forwards;
-    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.2);
-    /* Sombra para destaque */
+  width: 100%;
+  height: 100vh; /* Ocupa 100% da altura da viewport */
+  background: #ffffff;
+  display: flex;
+  flex-direction: column; /* Organiza os filhos em coluna (botão, body, footer) */
+  position: relative; /* Para a animação */
+  
+  /* Animação de entrada do modal */
+  transform: translateY(100%); 
+  animation: slideInUp 0.4s forwards ease-out; /* Nomeei a animação como slideInUp */
+  
+  border-top-left-radius: 0; /* Remove arredondamento superior para mobile full-screen */
+  border-top-right-radius: 0; /* Remove arredondamento superior para mobile full-screen */
+  box-shadow: 0 -8px 20px rgba(0, 0, 0, 0.25);
+  overflow: hidden; /* Garante que o conteúdo não vaze */
 }
 
+/* Botão de Voltar */
 .back-button-mobile {
-    cursor: pointer;
-    padding: 15px;
+  cursor: pointer;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  z-index: 10;
+  border-bottom: 1px solid #eee;
+  flex-shrink: 0; /* IMPEDIR que o botão encolha */
+  
+  /* Ajuste para "notch" em iOS */
+  padding-top: calc(15px + env(safe-area-inset-top)); 
 }
 
 .back-icon-mobile {
-    width: 30px;
-    height: 30px;
+  width: 28px;
+  height: 28px;
+  stroke: #555;
+  transition: stroke 0.2s ease;
 }
 
+.back-button-mobile:hover .back-icon-mobile {
+  stroke: #1a9b9b;
+}
+
+/* Corpo do Modal (conteúdo rolável) */
 .modal-body-mobile {
-    flex-grow: 1;
-    overflow-y: auto;
-    padding: 20px;
+  flex-grow: 1; /* Ocupa todo o espaço restante disponível no flex container */
+  overflow-y: auto; /* Permite rolagem apenas do corpo, não do botão ou footer */
+  padding: 0 20px; /* Padding horizontal. Padding vertical será nos elementos internos */
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.modal-body-mobile::-webkit-scrollbar {
+  display: none;
+}
+
+/* Informações do Produto (no topo do modal, dentro do modal-body) */
+.modal-product-name-mobile {
+  font-size: 1.5rem; /* REDUZIDO de 2rem */
+  font-weight: 700;
+  text-align: center;
+  color: #333;
+  margin-top: 20px; /* Adiciona espaço top dentro do modal-body */
+  margin-bottom: 8px;
+}
+
+.modal-product-price-mobile {
+  font-size: 1.3rem; /* REDUZIDO de 1.6rem */
+  color: #1a9b9b;
+  text-align: center;
+  font-weight: 700;
+  margin: 5px 0 15px 0;
+}
+
+.modal-product-description-mobile {
+  font-size: 0.95rem; /* Levemente REDUZIDO de 1rem */
+  text-align: center;
+  color: #666;
+  margin: 0 0 25px 0;
+  line-height: 1.5;
+}
+
+/* Seções de Opções (Sabores, Adicionais, Composições, Observações) */
+.flavors-section-mobile,
+.additionals-section-mobile,
+.compositions-section-mobile,
+.observations-section-mobile {
+  margin-bottom: 25px;
+  padding: 15px;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  border: 1px solid #ececec;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+h4 {
+  font-size: 1rem; /* REDUZIDO de 1.15rem */
+  font-weight: 600;
+  color: #444;
+  margin-top: 0;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.flavors-list-mobile,
+.additionals-list-mobile {
+  display: grid;
+  grid-template-columns: 1fr; /* Um item por linha (mobile) */
+  gap: 15px;
+}
+
+.compositions-list-mobile {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.composition-card-mobile {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+  font-size: 1rem;
+  color: #333;
+  transition: all 0.2s ease;
 }
 
 .removed-composition {
   text-decoration: line-through;
   color: #999;
   opacity: 0.7;
+  background-color: #f0f0f0;
+  border-color: #ccc;
 }
-
-.modal-product-name-mobile {
-    font-size: 1.8rem;
-    margin: 15px 0;
-    text-align: center;
-    font-weight: bold;
-}
-
-.modal-product-price-mobile {
-    font-size: 1.5rem;
-    color: #28a745;
-    text-align: center;
-    font-weight: bold;
-    margin: 5px 0;
-}
-
-.modal-product-description-mobile {
-    font-size: 1rem;
-    text-align: center;
-    color: #666;
-    margin: 10px 0;
-}
-
-.flavors-section-mobile,
-.additionals-section-mobile,
-.compositions-section-mobile {
-    margin: 15px 0;
-    padding: 10px;
-    background-color: #f8f8f8;
-    border-radius: 10px;
-    border: 1px solid #ddd;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    /* Sombra leve */
-}
-
-.flavors-list-mobile,
-.additionals-list-mobile,
-.compositions-list-mobile {
-    margin-top: 10px;
-    display: flex;
-    flex-wrap: wrap;
-    /* Ajusta os itens em múltiplas linhas */
-    gap: 10px;
-    /* Espaçamento entre os itens */
-}
-
-.flavor-card-mobile,
-.additional-card-mobile,
-.composition-card-mobile {
-    flex: 1 1 calc(50% - 10px);
-    /* 2 itens por linha */
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px;
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.flavor-card-mobile:hover,
-.additional-card-mobile:hover,
-.composition-card-mobile:hover {
-    transform: translateY(-2px);
-    /* Elevação no hover */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-}
-
 
 .delete-button {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    color: #d9534f;
-    /* Vermelho */
-    display: flex;
-    align-items: center;
-    padding: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.delete-button svg {
+  color: #d9534f;
+  font-size: 20px;
+}
+
+.removed-composition .delete-button svg {
+  color: #1a9b9b;
 }
 
 .delete-button:hover {
-    color: #c9302c;
-    /* Vermelho mais escuro no hover */
+  background-color: rgba(0, 0, 0, 0.05);
+  transform: scale(1.1);
 }
 
+/* Custom Checkbox (Sabores e Adicionais) */
 .custom-checkbox-mobile {
-    display: flex;
-    align-items: center;
-    position: relative;
-    margin-right: 10px;
-    /* Espaço entre o checkbox e o próximo elemento */
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  background-color: #ffffff;
+  padding: 12px 15px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.03);
+  transition: all 0.2s ease;
 }
 
-.checkbox-custom-mobile {
-    width: 20px;
-    height: 20px;
-    border: 2px solid #28a745;
-    border-radius: 5px;
-    background: white;
-    position: relative;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+.custom-checkbox-mobile:hover {
+  border-color: #1a9b9b;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 input[type="checkbox"] {
-    opacity: 0;
-    position: absolute;
+  opacity: 0;
+  position: absolute;
+  width: 0;
+  height: 0;
 }
 
-input[type="checkbox"]:checked+.checkbox-custom-mobile {
-    background: #28a745;
-    border-color: #28a745;
+.checkbox-custom-mobile {
+  width: 22px;
+  height: 22px;
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  background: white;
+  position: relative;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
 }
 
-input[type="checkbox"]:checked+.checkbox-custom-mobile::after {
-    content: '';
-    position: absolute;
-    left: 6px;
-    top: 2px;
-    width: 6px;
-    height: 10px;
-    border: solid white;
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
+input[type="checkbox"]:checked + .checkbox-custom-mobile {
+  background: #1a9b9b;
+  border-color: #1a9b9b;
 }
 
-/* Espaçamento corrigido */
+input[type="checkbox"]:checked + .checkbox-custom-mobile::after {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 3px;
+  width: 6px;
+  height: 12px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
 .flavor-name-mobile,
-.additional-name-mobile,
-.composition-name-mobile {
-    margin-left: 15px;
-    /* Espaçamento maior entre o checkbox e o texto */
-    font-size: 1rem;
-    /* Tamanho de fonte consistente */
-    color: #333;
-    /* Cor do texto */
+.additional-name-mobile {
+  margin-left: 12px;
+  font-size: 0.95rem; /* Levemente REDUZIDO de 1rem */
+  color: #333;
+  flex-grow: 1;
 }
 
-.observations-section-mobile {
-    margin-top: 20px;
-    padding: 10px;
-    background: #f8f8f8;
-    border-radius: 10px;
-    border: 1px solid #ddd;
+.flavor-name-mobile + span,
+.additional-name-mobile + span {
+  font-weight: 600;
+  color: #1a9b9b;
+  margin-left: auto;
+}
+
+.observations-section-mobile h4 {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 10px;
 }
 
 .observations-mobile {
-    margin-top: 5px;
-    width: 100%;
-    height: 60px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-    padding: 10px;
+  margin-top: 5px;
+  width: 100%;
+  min-height: 80px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  padding: 12px;
+  font-size: 0.95rem; /* Levemente REDUZIDO de 1rem */
+  resize: vertical;
+  font-family: 'Arial', sans-serif;
+  color: #555;
+  background-color: #ffffff;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
+.observations-mobile::placeholder {
+  color: #aaa;
+}
+
+/* Footer do Modal (botão e total) */
 .modal-footer-mobile {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px;
-    background-color: #fff;
-    border-top: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 20px;
+  background-color: #f8f8f8;
+  border-top: 1px solid #eee;
+  box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.05);
+  flex-shrink: 0; /* IMPEDIR que o footer não encolha */
 }
 
 .add-to-cart-button-mobile {
-    width: 65%;
-    padding: 12px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: bold;
-    text-align: center;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+  flex: 2;
+  padding: 12px; /* REDUZIDO de 15px */
+  background-color: #1a9b9b;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem; /* REDUZIDO de 1.1rem */
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 10px rgba(26, 155, 155, 0.2);
 }
 
 .add-to-cart-button-mobile:hover {
-    background-color: #218838;
+  background-color: #148f8f;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(26, 155, 155, 0.3);
 }
 
 .modal-total-price-mobile {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #333;
-    width: 30%;
-    text-align: right;
+  flex: 1;
+  font-size: 1.2rem; /* REDUZIDO de 1.3rem */
+  font-weight: 700;
+  color: #333;
+  text-align: right;
+  margin-left: 15px;
 }
 
-.disabled-checkbox {
-    background: #e0e0e0;
-    border-color: #b0b0b0;
-    cursor: not-allowed;
-}
-
+/* Mensagens de Aviso */
 .limit-warning {
-    margin-top: 5px;
-    font-size: 0.8rem;
+  margin-top: 5px;
+  font-size: 0.8rem; /* Levemente REDUZIDO de 0.85rem */
+  color: #ff5722;
+  font-weight: 500;
 }
-
-.limit-warning span {
-    background: #28a745;
-    padding: 2px 10px;
-    border-radius: 5px;
-    color: white;
-}
-
-/* Estilos responsivos */
-@media (min-width: 768px) {
-    .modal-content-mobile {
-        width: 50%;
-        /* Metade da largura da tela em desktops */
-        height: auto;
-        /* Ajusta a altura com o conteúdo */
-        border-radius: 10px;
-        /* Bordas arredondadas completas */
-        padding: 30px;
-        /* Espaçamento maior */
-    }
-}
-
 
 /* Animações */
-@keyframes slideIn {
-    from {
-        transform: translateY(100%);
-    }
-
-    to {
-        transform: translateY(0);
-    }
+@keyframes slideInUp { /* Animação para subir do fundo */
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0%);
+  }
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
 
-    to {
-        opacity: 1;
-    }
+/* Responsividade para Desktop */
+@media (min-width: 768px) {
+  .modal-overlay-mobile {
+    align-items: center; /* Centraliza o modal verticalmente em desktop */
+  }
+
+  .modal-content-mobile {
+    width: 90%;
+    max-width: 600px;
+    height: auto; /* Altura se ajusta ao conteúdo em desktop */
+    max-height: 90vh; /* Limite de altura para desktop */
+    border-radius: 15px; /* Bordas arredondadas completas para desktop */
+    border-top-left-radius: 15px; /* Reativa arredondamento superior */
+    border-top-right-radius: 15px; /* Reativa arredondamento superior */
+    transform: none; /* Remove a transformação de slide para desktop */
+    animation: fadeIn 0.3s ease-out; /* Usa apenas fade-in para desktop */
+    margin: auto; /* Centraliza horizontalmente */
+  }
+
+  .back-button-mobile {
+    position: relative; /* Volta a ser relativo em desktop */
+    border-bottom: none;
+    padding-bottom: 0;
+    justify-content: flex-start;
+    padding-top: 15px; /* Padding normal para desktop */
+  }
+
+  .modal-product-name-mobile {
+    font-size: 1.8rem; /* REDUZIDO de 2.2rem */
+    margin-top: 10px; 
+    padding-top: 0; 
+  }
+
+  .modal-product-price-mobile {
+    font-size: 1.5rem; /* REDUZIDO de 1.8rem */
+  }
+
+  .flavors-list-mobile,
+  .additionals-list-mobile,
+  .compositions-list-mobile {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .add-to-cart-button-mobile {
+    font-size: 1.1rem; /* REDUZIDO de 1.2rem */
+    padding: 15px; /* REDUZIDO de 18px */
+  }
+
+  .modal-total-price-mobile {
+    font-size: 1.3rem; /* REDUZIDO de 1.4rem */
+  }
 }

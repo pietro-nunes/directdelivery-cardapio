@@ -59,102 +59,112 @@ const Cart = ({ cartItems, setCartItems, isLoggedIn, tenantData, isRestaurantOpe
   };
 
   return (
-    <div className="cart">
-      <h2>Seu Carrinho</h2>
-      {cartItems.length === 0 ? (
-        <p>Seu carrinho está vazio.</p>
-      ) : (
-        <div className="cart-items">
-          {cartItems.map((item) => (
-            <div key={item.uniqueKey} className="cart-item">
-              <img
-                className="cart-item-image"
-                src={
-                  item.image
-                    ? `${config.baseURL}${item.image}`
-                    : "/images/pizza_placeholder.png"
-                }
-                alt={item.name || "Placeholder"}
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = "/images/pizza_placeholder.png";
-                }}
-              />
-              <div className="item-details">
-                <p className="cart-item-name">{item.name}</p>
-                {item.removedCompositions?.length > 0 && (
-                  <div className="cart-item-flavors">
-                    <strong>Composições removidas:</strong>
-                    <ul>
-                      {item.removedCompositions.map((composition, index) => (
-                        <li key={index}>{composition.relatedProduct.name}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                {item.selectedFlavors?.length > 0 && (
-                  <div className="cart-item-flavors">
-                    <strong>Sabores:</strong>
-                    <ul>
-                      {item.selectedFlavors.map((flavor, index) => (
-                        <li key={index}>{flavor.relatedProduct.name}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                {item.selectedAdditionals?.length > 0 && (
-                  <div className="cart-item-additionals">
-                    <strong>Adicionais:</strong>
-                    <ul>
-                      {item.selectedAdditionals.map((additional, index) => (
-                        <li key={index}>
-                          {additional.relatedProduct.name} (R$ {formatarNumero(additional.price)})
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+    <> {/* Fragmento React para permitir múltiplos elementos no retorno */}
+      <div className="cart">
+        <h2>Seu Carrinho</h2>
+        {cartItems.length === 0 ? (
+          <p>Seu carrinho está vazio.</p>
+        ) : (
+          <> {/* Fragmento para agrupar cart-items e cart-summary */}
+            <div className="cart-items">
+              {cartItems.map((item) => (
+                <div key={item.uniqueKey} className="cart-item">
+                  <img
+                    className="cart-item-image"
+                    src={
+                      item.image
+                        ? `${config.baseURL}${item.image}`
+                        : "/images/pizza_placeholder.png"
+                    }
+                    alt={item.name || "Placeholder"}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = "/images/pizza_placeholder.png";
+                    }}
+                  />
+                  <div className="item-details">
+                    <p className="cart-item-name">{item.name}</p>
+                    {item.removedCompositions?.length > 0 && (
+                      <div className="cart-item-flavors">
+                        <strong>Composições removidas:</strong>
+                        <ul>
+                          {item.removedCompositions.map((composition, index) => (
+                            <li key={index}>{composition.relatedProduct.name}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    {item.selectedFlavors?.length > 0 && (
+                      <div className="cart-item-flavors">
+                        <strong>Sabores:</strong>
+                        <ul>
+                          {item.selectedFlavors.map((flavor, index) => (
+                            <li key={index}>{flavor.relatedProduct.name}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    {item.selectedAdditionals?.length > 0 && (
+                      <div className="cart-item-additionals">
+                        <strong>Adicionais:</strong>
+                        <ul>
+                          {item.selectedAdditionals.map((additional, index) => (
+                            <li key={index}>
+                              {additional.relatedProduct.name} (R$ {formatarNumero(additional.price)})
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
 
-                {item.observation && (
-                  <p className="cart-item-obs">
-                    <strong>Obs:</strong> {item.observation}
-                  </p>
-                )}
-                <div className="quantity-controls">
-                  <p className="cart-item-price">
-                    R$ {formatarNumero(item.totalPrice)}
-                  </p>
-                  <div className="quantity-control">
-                    <button
-                      className="decrement-button"
-                      onClick={() => handleDecrement(item.uniqueKey)}
-                    >
-                      -
-                    </button>
-                    <span className="quantity-display">{item.count}</span>
-                    <button
-                      className="increment-button"
-                      onClick={() => handleIncrement(item.uniqueKey)}
-                    >
-                      +
-                    </button>
+                    {item.observation && (
+                      <p className="cart-item-obs">
+                        <strong>Obs:</strong> {item.observation}
+                      </p>
+                    )}
+                    <div className="quantity-controls">
+                      <p className="cart-item-price">
+                        R$ {formatarNumero(item.totalPrice)}
+                      </p>
+                      <div className="quantity-control">
+                        <button
+                          className="decrement-button"
+                          onClick={() => handleDecrement(item.uniqueKey)}
+                        >
+                          -
+                        </button>
+                        <span className="quantity-display">{item.count}</span>
+                        <button
+                          className="increment-button"
+                          onClick={() => handleIncrement(item.uniqueKey)}
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
+              ))}
             </div>
-          ))}
-          <div className="cart-summary">
-            <h3>Total: R$ {formatarNumero(calculateTotal())}</h3>
-            <button
-              className="checkout-button"
-              onClick={handleProceedToCheckout}
-            >
-              Prosseguir para finalização
-            </button>
-          </div>
+            <div className="cart-summary"> {/* Este div agora só exibe o total */}
+              <h3>Total: R$ {formatarNumero(calculateTotal())}</h3>
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* NOVO: Este é o container fixo para o botão de checkout */}
+      {cartItems.length > 0 && ( // Só mostra o botão se tiver itens no carrinho
+        <div className="cart-fixed-footer">
+          <button
+            className="checkout-button"
+            onClick={handleProceedToCheckout}
+          >
+            Prosseguir para finalização
+          </button>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

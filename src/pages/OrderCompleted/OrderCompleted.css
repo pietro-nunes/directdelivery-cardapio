@@ -1,70 +1,151 @@
+/* Container principal da tela de Pedido Finalizado */
 .order-completed {
   text-align: center;
-  padding: 20px;
+  padding: 25px 20px; /* Mais padding superior/inferior, mantendo lateral */
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: center; /* Centraliza horizontalmente */
+  justify-content: center; /* Centraliza verticalmente (se houver espaço) */
   flex-direction: column;
+  min-height: calc(100vh - 60px); /* Garante que ocupe a altura da viewport (ajuste 60px se tiver header/footer fixo) */
+  box-sizing: border-box; /* Inclui padding na altura/largura */
+  background-color: #f8f8f8; /* Um fundo suave para a página */
 }
 
+/* Título da página */
+.order-completed h2 {
+  font-size: 1.8rem; /* Tamanho maior para o título */
+  color: #333;
+  margin-bottom: 25px; /* Mais espaço abaixo do título */
+  font-weight: 700;
+}
+
+/* Lottie Animation */
+.order-completed .lottie-react-container { /* Adicionar se o Lottie não estiver centralizando bem */
+    margin-bottom: 20px; /* Espaço abaixo da animação */
+}
+
+/* Resumo do Pedido */
 .order-summary {
-  margin: 20px 0;
+  margin: 25px 0; /* Mais margem vertical */
   text-align: left;
-  display: inline-block;
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 20px;
-  width: 80%;
+  display: inline-block; /* Para que a largura funcione como block, mas ocupe só o necessário */
+  background-color: #fff; /* Fundo branco para o card */
+  border: 1px solid #e0e0e0; /* Borda mais suave */
+  border-radius: 10px; /* Mais arredondado */
+  padding: 25px; /* Mais padding interno */
+  width: 90%; /* Ocupa mais largura em mobile */
+  max-width: 450px; /* Limita a largura máxima para desktop */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Sombra mais destacada */
 }
 
 .order-summary p {
-  margin: 10px 0;
+  margin: 8px 0; /* Espaçamento entre os parágrafos */
+  font-size: 1rem; /* Tamanho padrão da fonte */
+  color: #555;
+  line-height: 1.4;
 }
 
+.order-summary p strong {
+  color: #333;
+  font-weight: 600; /* Levemente mais negrito que o texto normal */
+}
+
+/* Container dos Botões de Ação */
 .action-buttons {
-  margin-top: 20px;
+  margin-top: 30px; /* Mais espaço acima dos botões */
+  width: 90%; /* Ocupa a mesma largura que o resumo */
+  max-width: 450px; /* Mesma largura máxima do resumo */
+  display: flex;
+  flex-direction: column; /* Empilha os botões em mobile */
+  gap: 15px; /* Espaço entre os botões */
 }
 
+/* Botão Primário (WhatsApp) */
 .btn-primary {
-  background-color: #45a049;
+  background-color: #25D366; /* Verde WhatsApp */
   color: white;
   border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  font-size: 16px;
+  padding: 12px 25px; /* Padding maior */
+  border-radius: 8px; /* Mais arredondado */
+  font-size: 1.05rem; /* Tamanho da fonte maior */
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
+  width: 100%; /* Ocupa a largura total */
+  box-shadow: 0 4px 10px rgba(37, 211, 102, 0.2); /* Sombra suave */
 }
 
 .btn-primary svg {
-  margin-right: 5px;
+  margin-right: 8px; /* Mais espaço entre ícone e texto */
 }
 
 .btn-primary:hover {
-  background-color: #45a049;
+  background-color: #1DA851; /* Verde mais escuro no hover */
+  transform: translateY(-2px); /* Efeito de "levantar" */
+  box-shadow: 0 6px 15px rgba(37, 211, 102, 0.3);
 }
 
+/* Botão Secundário (Acompanhar Pedido) */
 .btn-secondary {
-  background-color: #008CBA;
-  margin-bottom: 20px;
+  background-color: #007bff; /* Azul primário */
+  margin-bottom: 0; /* Remove a margem inferior para usar o gap do pai */
   color: white;
   border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  font-size: 16px;
+  padding: 12px 25px; /* Padding maior */
+  border-radius: 8px; /* Mais arredondado */
+  font-size: 1.05rem; /* Tamanho da fonte maior */
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
+  width: 100%; /* Ocupa a largura total */
+  box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
 }
 
 .btn-secondary:hover {
-  background-color: #007B9A;
+  background-color: #0056b3; /* Azul mais escuro no hover */
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0, 123, 255, 0.3);
+}
+
+/* Media Queries para Desktop */
+@media (min-width: 768px) {
+  .order-completed {
+    padding: 40px 20px; /* Mais padding em desktop */
+    min-height: calc(100vh - 80px); /* Ajuste para possível header/footer maior em desktop */
+  }
+
+  .order-completed h2 {
+    font-size: 2.2rem; /* Título maior em desktop */
+  }
+
+  .order-summary {
+    width: 60%; /* Mais largura em desktop */
+    max-width: 550px; /* Limite maior */
+    padding: 30px; /* Mais padding interno */
+  }
+
+  .order-summary p {
+    font-size: 1.1rem; /* Texto maior */
+  }
+
+  .action-buttons {
+    margin-top: 40px; /* Mais espaço */
+    flex-direction: row; /* Botões lado a lado */
+    width: 60%; /* Mesma largura que o resumo */
+    max-width: 550px; /* Mesma largura máxima */
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    padding: 15px 30px; /* Padding maior */
+    font-size: 1.1rem; /* Fontes maiores */
+    flex: 1; /* Distribui o espaço igualmente entre os botões */
+    max-width: 50%; /* Garante que não fiquem gigantes */
+  }
 }

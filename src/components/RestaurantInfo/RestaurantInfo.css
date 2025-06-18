@@ -1,81 +1,196 @@
 /* Área do restaurante */
 .restaurant-info {
   display: flex;
-  justify-content: center;
+  flex-direction: column; /* Coloca os itens em coluna para melhor controle no topo */
   align-items: center;
-  margin-bottom: 30px;
-  background: white;
-  position: relative;
-  padding: 20px 0px;
+  justify-content: center;
+  margin-bottom: 40px; /* Mais espaço abaixo do componente */
+  background-color: #ffffff; /* Fundo branco puro para elegância */
+  padding: 30px 20px; /* Mais padding interno */
+  border-radius: 12px; /* Cantos mais arredondados */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Sombra suave para profundidade */
   text-align: center;
+  position: relative; /* Necessário para posicionar elementos internos se houver */
+  /* Ajustes para a largura do card, garantindo espaço para o conteúdo */
+  width: calc(100% - 40px); /* Ocupa 100% da largura do pai menos o padding lateral (20px de cada lado) */
+  max-width: 700px; /* Limita a largura máxima do card em telas grandes */
+  box-sizing: border-box; /* Inclui o padding na largura e altura total do elemento */
+  margin-left: auto; /* Centraliza o card */
+  margin-right: auto; /* Centraliza o card */
 }
 
-.restaurant-info::after {
-  content: "";
-  display: block;
-  position: absolute;
-  width: 100%;
-  height: 40px;
-  right: 0;
-  bottom: -24px;
-  left: 0;
-  background: linear-gradient(-45deg, transparent 70%, white 75%),
-    linear-gradient(45deg, transparent 70%, white 75%);
-  background-repeat: repeat-x;
-  background-size: 15px 10px, 15px 10px;
-  background-position: center;
-}
+/* Removemos o ::after para um visual mais limpo */
+/* .restaurant-info::after {
+    display: none;
+} */
 
 /* Logo do restaurante */
 .restaurant-logo-container {
   flex-shrink: 0;
-  width: 150px;
-  height: 150px;
-  margin-right: 20px;
+  width: 160px; /* Levemente maior para destaque */
+  height: 160px;
+  margin-bottom: 25px; /* Espaço abaixo do logo */
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #e0e0e0; /* Placeholder para o logo */
+  background-color: #f0f0f0; /* Um cinza bem claro para o placeholder */
   border-radius: 50%;
   overflow: hidden;
+  border: 4px solid #1a9b9b; /* Borda colorida para destacar */
+  box-shadow: 0 0 0 5px rgba(26, 155, 155, 0.1); /* Anel de sombra suave */
 }
 
 .restaurant-logo {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Garantir que a imagem ocupe o espaço de forma elegante */
+  object-fit: cover;
+  transition: transform 0.3s ease-in-out; /* Suavidade ao passar o mouse, se desejar */
+}
+
+.restaurant-logo:hover {
+  transform: scale(1.05); /* Pequeno zoom no hover para interatividade */
 }
 
 /* Detalhes do restaurante */
 .restaurant-details {
-  text-align: center;
+  text-align: center; /* Centraliza todo o bloco de detalhes */
+  max-width: 100%; /* Garante que não ultrapasse o contêiner pai */
 }
 
 .restaurant-name {
-  margin: 0;
-  font-size: 26px;
-  color: #1a9b9b; /* Combina com a cor principal */
-  text-align: left;
-}
-
-.info {
-  font-size: 14px;
-  color: #666;
-  margin-top: 8px;
-  text-align: left;
+  margin: 0 0 10px 0; /* Espaçamento abaixo do nome */
+  font-size: 32px; /* Título maior e mais impactante */
+  color: #333; /* Cor mais escura para o nome */
+  font-weight: 700; /* Negrito para destaque */
+  letter-spacing: -0.5px; /* Ajuste para leitura agradável */
 }
 
 .status {
-  font-weight: bold;
-  font-size: 14px;
-  margin: 5px 0;
-  text-align: left;
+  font-weight: 600; /* Seminegrito */
+  font-size: 16px; /* Tamanho um pouco maior */
+  margin: 15px 0; /* Mais espaço para o status */
+  padding: 8px 15px; /* Padding para o "balão" do status */
+  border-radius: 20px; /* Cantos arredondados para o balão */
+  display: inline-block; /* Para que o padding e border-radius funcionem bem */
+  transition: background-color 0.3s ease, color 0.3s ease; /* Transição suave */
 }
 
 .status.open {
-  color: #4caf50; /* Verde para aberto */
+  background-color: #e6ffe6; /* Fundo verde claro */
+  color: #28a745; /* Verde escuro */
 }
 
 .status.closed {
-  color: #ff6347; /* Vermelho para fechado */
+  background-color: #ffe6e6; /* Fundo vermelho claro */
+  color: #dc3545; /* Vermelho escuro */
+}
+
+/* NOVO: Classe específica para o endereço */
+.restaurant-address {
+  font-size: 15px; /* Tamanho ligeiramente maior para informações */
+  color: #555; /* Cor mais suave para o texto */
+  margin-top: 12px; /* Mais espaço entre as linhas de informação */
+  display: flex; /* Permite alinhamento flex */
+  align-items: flex-start; /* **CRUCIAL**: Alinha o ícone ao topo do bloco de texto, não no centro */
+  justify-content: center; /* Centraliza o bloco do ícone + texto */
+  gap: 8px; /* Espaço entre o ícone e o texto */
+  line-height: 1.4; /* Espaçamento entre linhas para melhor leitura */
+  text-align: left; /* **CRUCIAL**: Garante que o texto se alinhe à esquerda DENTRO do seu container flex item */
+  word-wrap: break-word; /* Permite que palavras muito longas quebrem para a próxima linha */
+  overflow-wrap: break-word; /* Compatibilidade com outros navegadores para word-wrap */
+  hyphens: auto; /* Permite hifenização automática para quebras mais suaves */
+  max-width: 100%; /* Garante que não estoure o container pai */
+}
+
+/* Estilo para o ícone dentro do .restaurant-address */
+.restaurant-address svg {
+  flex-shrink: 0; /* Impede que o ícone encolha */
+  margin-top: 2px; /* Pequeno ajuste vertical para alinhar o ícone com o início do texto */
+}
+
+/* Estilo para o span que contém o texto do endereço */
+.restaurant-address span {
+    flex-grow: 1; /* Permite que o span ocupe todo o espaço disponível restante */
+    text-align: inherit; /* Herda o text-align do pai, que é 'left' */
+}
+
+
+/* REMOVEMOS A CLASSE .info GENÉRICA para evitar conflitos com o .restaurant-address */
+/* .info {
+  font-size: 15px;
+  color: #555;
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+} */
+
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .restaurant-info {
+    padding: 25px 15px;
+    margin-bottom: 30px;
+    width: calc(100% - 30px); /* Ajuste para padding de 15px lateral */
+  }
+
+  .restaurant-logo-container {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 20px;
+    border: 3px solid #1a9b9b;
+  }
+
+  .restaurant-name {
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+
+  .status {
+    font-size: 15px;
+    margin: 10px 0;
+    padding: 7px 12px;
+  }
+
+  .restaurant-address { /* Ajuste específico para mobile no endereço */
+    font-size: 14px;
+    margin-top: 10px;
+    /* Em mobile, é comum centralizar o bloco, mas o texto interno continua quebrando à esquerda */
+    text-align: center; /* Centraliza o bloco (ícone + texto) no container */
+  }
+  .restaurant-address span {
+      text-align: left; /* O texto dentro do span ainda quebra à esquerda */
+  }
+}
+
+@media (max-width: 480px) {
+  .restaurant-info {
+    padding: 20px 10px;
+    margin-bottom: 25px;
+    width: calc(100% - 20px); /* Ajuste para padding de 10px lateral */
+  }
+
+  .restaurant-logo-container {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 15px;
+  }
+
+  .restaurant-name {
+    font-size: 24px;
+  }
+
+  .status {
+    font-size: 14px;
+  }
+
+  .restaurant-address {
+    font-size: 13px;
+    margin-top: 8px; /* Pequeno ajuste */
+    /* text-align: left; ou center, dependendo da sua preferência para o bloco em telas muito pequenas */
+  }
+  .restaurant-address span {
+      text-align: left; /* Mantém o texto quebrando à esquerda dentro do span */
+  }
 }

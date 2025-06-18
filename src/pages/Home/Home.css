@@ -1,62 +1,68 @@
+/* Estilos gerais da página Home */
 .home {
-  text-align: center;
+ font-family: 'Arial', sans-serif; /* Escolha uma fonte elegante */
+ background-color: #f8f8f8; /* Tom de fundo mais claro */
+ padding: 20px;
+ text-align: left; /* Alinhamento geral do texto para a esquerda */
 }
 
+/* Título das categorias */
 .category-title {
-  font-size: 24px;
-  font-weight: bold;
-  color: #1a9b9b;
-  margin-bottom: 10px;
-  text-align: center;
-  /* Alinha o título da categoria à esquerda */
+ font-size: 28px; /* Tamanho maior para o título */
+ font-weight: 500; /* Peso da fonte um pouco mais leve */
+ color: #333; /* Cor do título mais escura */
+ margin-bottom: 20px;
+ padding-bottom: 10px;
+ border-bottom: 2px solid #eee; /* Linha sutil abaixo do título */
+ text-align: left; /* Garante que o título fique alinhado à esquerda */
 }
 
-/* Estilo das categorias */
+/* Seção de cada categoria */
 .category {
-  text-align: left;
-  /* Garante que todos os itens dentro da categoria, incluindo o título, fiquem à esquerda */
-  margin-bottom: 40px;
-  padding: 0px 10px;
+ margin-bottom: 60px; /* Mais espaço entre as categorias */
+ padding: 0 20px; /* Adiciona um pouco de padding lateral */
 }
 
 /* Listagem de produtos */
 .product-list {
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 20px;
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Grid responsivo para os produtos */
+ gap: 5px; /* Mais espaço entre os produtos */
+ padding: 20px 0;
 }
 
-/* Responsividade */
+/* Estilos para telas menores (mantendo a coluna única) */
 @media (max-width: 768px) {
-  .product-list {
-    flex-direction: column;
-  }
+ .product-list {
+ grid-template-columns: 1fr; /* Uma coluna em telas menores */
+ }
 
-  .restaurant-info {
-    flex-direction: column;
-    text-align: center;
-    padding: 20px;
-  }
+ .category {
+ padding: 0 10px; /* Reduz o padding lateral em telas menores */
+ margin-bottom: 40px; /* Reduz o espaço entre as categorias em telas menores */
+ }
 
-  .restaurant-logo-container {
-    margin-bottom: 20px;
-    margin-right: 0;
-  }
+ .category-title {
+ font-size: 24px; /* Reduz o tamanho do título em telas menores */
+ margin-bottom: 15px;
+ padding-bottom: 8px;
+ }
+}
 
-  .restaurant-details h2 {
-    font-size: 24px;
-    text-align: center;
-  }
+/* Estilos específicos para RestaurantInfo (se você quiser refinar mais tarde) */
+/* Exemplo de como você poderia começar a estilizá-lo: */
+/* .restaurant-info {
+ background-color: #fff;
+ padding: 30px;
+ margin-bottom: 30px;
+ border-radius: 8px;
+ box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+} */
 
-  .restaurant-details .info {
-    text-align: center;
-  }
-
-  .restaurant-details .status {
-    text-align: center;
-  }
-
-  .category-title {
-    text-align: left;
-  }
+/* Estilos para a mensagem "Explore o nosso cardápio:" */
+.home > p {
+ font-size: 18px;
+ color: #555;
+ margin-bottom: 30px;
+ text-align: center; /* Centraliza a mensagem */
 }

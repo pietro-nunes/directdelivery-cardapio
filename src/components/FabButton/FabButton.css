@@ -1,33 +1,87 @@
 .fab-button {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 60px;
-    height: 60px;
-    background-color: #1a9b9b; /* Cor do botão */
-    color: white; /* Cor do texto */
-    border-radius: 50%; /* Forma circular */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* Sombra do botão */
-    cursor: pointer; /* Cursor de pointer */
-    font-size: 24px; /* Tamanho do ícone */
-    transition: background-color 0.3s; /* Transição suave */
-    z-index: 999;
+  position: fixed;
+  bottom: 20px; /* Posição na parte inferior da tela */
+  right: 20px; /* Posição na direita da tela */
+  width: 65px; /* Ligeiramente maior para um toque mais moderno */
+  height: 65px; /* Ligeiramente maior */
+  background-color: #1a9b9b; /* Cor primária do tema */
+  color: white;
+  border-radius: 50%; /* Forma circular */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25); /* Sombra mais pronunciada e suave */
+  cursor: pointer;
+  font-size: 28px; /* Ícone um pouco maior */
+  transition: all 0.3s ease; /* Transição suave para todas as propriedades no hover */
+  z-index: 999; /* Garante que fique acima de outros elementos, mas abaixo do FAB do WhatsApp se estiver mais alto */
+  animation: fab-pop-in 0.5s ease-out forwards; /* Animação de entrada */
+  opacity: 0; /* Começa invisível para a animação */
+  transform: scale(0.8); /* Começa menor para a animação de pop */
+}
+
+/* Animação de entrada (pop-in) - Reutilizada do FAB do WhatsApp para consistência */
+@keyframes fab-pop-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(20px);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.05) translateY(-5px); /* Pequeno overshoot para efeito pop */
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 .fab-button:hover {
-    background-color: #45a049; /* Cor ao passar o mouse */
+  background-color: #148f8f; /* Tom ligeiramente mais escuro da cor primária no hover */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35); /* Sombra mais intensa no hover */
+  transform: scale(1.05); /* Pequeno zoom no hover */
 }
 
+/* Estilo do Badge de Contagem */
 .item-count {
-    position: absolute;
-    top: -5px;
-    right: -10px;
-    background-color: #e74c3c; /* Cor do badge */
-    color: white; /* Cor do texto */
-    border-radius: 50%;
-    padding: 3px 10px;
-    font-size: 12px; /* Tamanho do texto */
+  position: absolute;
+  top: -8px; /* Ajustado para ficar um pouco mais visível acima do botão */
+  right: -8px; /* Ajustado para ficar um pouco mais visível à direita */
+  background-color: #e74c3c; /* Cor vibrante para o badge (vermelho de notificação) */
+  color: white;
+  border-radius: 50%;
+  padding: 4px 8px; /* Ajustado o padding para um oval mais arredondado */
+  font-size: 0.8rem; /* Tamanho do texto ligeiramente maior */
+  font-weight: 700; /* Negrito para destaque */
+  min-width: 24px; /* Garante que o círculo seja visível mesmo com um dígito */
+  height: 24px; /* Garante que o círculo seja visível mesmo com um dígito */
+  display: flex; /* Para centralizar o número */
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra leve para o badge */
+  border: 2px solid white; /* Borda branca para destacar do botão */
 }
+
+/* Media Queries para Responsividade */
+@media (max-width: 768px) {
+  .fab-button {
+    bottom: 15px; /* Ligeiramente mais baixo em mobile para não conflitar com barra de navegação */
+    right: 15px;
+    width: 60px; /* Ligeiramente menor em mobile */
+    height: 60px;
+    font-size: 26px; /* Ícone menor em mobile */
+  }
+
+  .item-count {
+    top: -6px; /* Ajuste para mobile */
+    right: -6px; /* Ajuste para mobile */
+    padding: 3px 7px;
+    font-size: 0.75rem;
+    min-width: 22px;
+    height: 22px;
+  }
+}
+
+/* Se houver o FAB do WhatsApp, ajustar este para não sobrepor */
+/* Assumindo que o FAB do WhatsApp está em 'bottom: 90px;' e este em 'bottom: 20px;' */
+/* Se a ordem mudar ou se tiver outros elementos fixos, ajuste o 'bottom' conforme necessário */

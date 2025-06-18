@@ -1,32 +1,86 @@
+/* Container das categorias */
 .categories-container {
-  flex-direction: row; /* Mantém as categorias em linha */
-  align-items: center; /* Alinha as categorias verticalmente */
-  position: relative; /* Necessário para a linha embaixo */
-  margin-bottom: 20px; /* Espaçamento inferior */
-  margin-top: 20px;
-  justify-content: center; /* Alinha as categorias à esquerda */
+  display: flex;
+  /* Mudei para flex-start para garantir que a rolagem comece do início */
+  justify-content: flex-start; 
+  align-items: flex-end; /* Alinha os itens pela base, importante para o underline */
+  position: relative;
+  margin: 30px 0;
+  /* Adicionei um padding maior nas laterais para que os itens não fiquem colados nas bordas */
+  padding: 0 20px 10px 20px; 
   overflow-x: auto; /* Permite rolagem horizontal */
-  white-space: nowrap; /* Impede que as categorias quebrem para a linha seguinte */
+  white-space: nowrap; /* Impede que as categorias quebrem linha */
+  -webkit-overflow-scrolling: touch; /* Melhor rolagem em dispositivos iOS */
+  scrollbar-width: none; /* Esconde a barra de rolagem no Firefox */
+  border-bottom: 1px solid #e0e0e0; /* Uma borda inferior sutil para a barra */
 }
 
+/* Esconde a barra de rolagem para navegadores WebKit (Chrome, Safari) */
+.categories-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* Estilo de cada item de categoria */
 .category-item {
-  font-size: 14px; /* Tamanho da fonte menor */
-  margin: 0 10px; /* Espaçamento reduzido entre categorias */
-  padding: 5px 10px; /* Preenchimento interno menor */
-  cursor: pointer; /* Indica que é clicável */
-  color: #28a745; /* Cor padrão do texto mais suave */
-  transition: color 0.3s; /* Transição suave ao mudar a cor */
-  display: inline-block; /* Permite que os itens sejam tratados como inline */
-  border: 1px solid #28a745;
-  border-radius: 5px;
-  font-weight: bold; /* Deixa a categoria ativa em negrito */
+  font-size: 17px;
+  font-weight: 500;
+  padding: 10px 0;
+  /* Aumentei o espaçamento para garantir que os itens tenham espaço e não se sobreponham */
+  margin: 0 22px; 
+  cursor: pointer;
+  color: #777;
+  transition: color 0.3s ease, transform 0.2s ease;
+  flex-shrink: 0; /* IMPEDIR QUE OS ITENS ENCOLHAM */
 }
 
+/* Efeito ao passar o mouse */
 .category-item:hover {
-  color: #28a745; /* Cor ao passar o mouse */
+  color: #1a9b9b;
+  transform: translateY(-2px);
 }
 
+/* Estilo da categoria ativa */
 .category-item.active {
-  color: white; /* Cor da categoria ativa */
-  background-color: #28a745;
+  color: #1a9b9b;
+  font-weight: 700;
+}
+
+/* Linha dinâmica embaixo da categoria ativa (underline) - MAIS MARCANTE */
+.underline {
+  position: absolute;
+  bottom: -1px;
+  height: 4px;
+  background-color: #1a9b9b;
+  transition: left 0.3s ease-out, width 0.3s ease-out;
+  border-radius: 2px;
+}
+
+/* --- Responsividade --- */
+@media (max-width: 768px) {
+  .categories-container {
+    margin: 20px 0;
+    /* Reduzi o padding lateral para telas menores para aproveitar mais o espaço */
+    padding: 0 10px 8px 10px; 
+    /* Mantenho flex-start para rolagem natural */
+    justify-content: flex-start; 
+  }
+  .category-item {
+    font-size: 16px;
+    /* Reduzi a margem para mais itens caberem na tela sem rolar imediatamente */
+    margin: 0 14px; 
+  }
+  .underline {
+    height: 3px;
+  }
+}
+
+@media (max-width: 480px) {
+  .categories-container {
+    margin: 15px 0;
+    padding: 0 5px 8px 5px; /* Padding mínimo para os cantos */
+  }
+  .category-item {
+    font-size: 15px;
+    margin: 0 10px; /* Margem ajustada para telas muito pequenas */
+  }
 }

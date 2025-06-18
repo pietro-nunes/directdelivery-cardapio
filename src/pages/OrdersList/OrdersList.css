@@ -1,152 +1,293 @@
+/* Container principal da lista de pedidos */
 .orders-list {
-  padding: 20px;
-  max-width: 800px;
+  padding: 30px 20px; /* Mais padding superior/inferior */
+  max-width: 900px; /* Aumentado um pouco o max-width para desktop */
   margin: 0 auto;
   text-align: center;
+  background-color: #f8f8f8; /* Fundo suave para a página */
+  min-height: calc(100vh - 60px); /* Garante que ocupe a altura da viewport (ajuste 60px se tiver header/footer fixo) */
+  box-sizing: border-box;
 }
 
+/* Título da seção de Pedidos */
 .orders-title {
-  font-size: 28px;
-  font-weight: bold;
-  color: #1a9b9b;
-  margin-bottom: 20px;
+  font-size: 2.2rem; /* Tamanho maior para o título principal */
+  font-weight: 700;
+  color: #333; /* Cor mais neutra */
+  margin-bottom: 25px; /* Mais espaço abaixo do título */
+  text-transform: uppercase; /* Para um título mais impactante */
+  letter-spacing: 1px;
 }
 
+/* Timer de Atualização */
+.update-timer {
+  font-size: 0.95rem; /* Levemente maior */
+  margin-bottom: 25px; /* Mais espaço abaixo do timer */
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* Espaço entre o ícone e o texto */
+  font-weight: 500;
+}
+
+.update-timer svg {
+  color: #1a9b9b; /* Cor do tema para o ícone */
+  animation: spin 2s linear infinite; /* Animação de giro para o ícone de refresh */
+}
+
+/* Animação de giro para o ícone de refresh */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Card de cada Pedido */
 .order-card {
   background-color: #ffffff;
   border: 1px solid #e0e0e0;
   border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  margin-bottom: 20px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); /* Sombra mais pronunciada */
+  padding: 25px; /* Mais padding interno */
+  margin-bottom: 25px; /* Mais espaço entre os cards */
   text-align: left;
-  animation: fadeInUp 400ms ease-out;
+  animation: fadeInUp 500ms ease-out forwards; /* Animação um pouco mais lenta */
+  opacity: 0; /* Começa invisível para a animação */
 }
 
+/* Título do Pedido no Card */
 .order-card h3 {
-  font-size: 22px;
-  color: #333333;
+  font-size: 1.5rem; /* Tamanho maior para o número do pedido */
+  color: #1a9b9b; /* Cor do tema */
   margin-bottom: 10px;
+  font-weight: 700;
 }
 
+/* Parágrafos de Data e Total */
 .order-card p {
-  font-size: 16px;
-  color: #555555;
+  font-size: 0.95rem; /* Tamanho padrão */
+  color: #555;
   margin-bottom: 8px;
+  line-height: 1.4;
 }
 
+.order-card p strong {
+    color: #333;
+    font-weight: 600;
+}
+
+/* Seção de Itens do Pedido */
 .order-items {
-  margin-top: 15px;
-  padding-top: 15px;
-  border-top: 1px solid #e0e0e0;
+  margin-top: 20px; /* Mais espaço antes da seção de itens */
+  padding-top: 20px; /* Mais padding superior */
+  border-top: 1px solid #f0f0f0; /* Borda mais suave */
 }
 
 .order-items h4 {
-  font-size: 18px;
-  font-weight: bold;
-  color: #1a9b9b;
-  margin-bottom: 10px;
+  font-size: 1.15rem; /* Tamanho do título de itens */
+  font-weight: 600;
+  color: #444; /* Cor mais escura */
+  margin-bottom: 12px;
 }
 
+/* Cada Item do Pedido */
 .order-item {
   display: flex;
   justify-content: space-between;
-  padding: 8px 0;
-  font-size: 16px;
-  color: #333333;
+  align-items: center; /* Centraliza verticalmente */
+  padding: 10px 0; /* Mais padding */
+  font-size: 0.9rem; /* Tamanho ligeiramente menor para os itens */
+  color: #333;
+  border-bottom: 1px dashed #f5f5f5; /* Borda tracejada suave */
+}
+
+.order-item:last-child {
+  border-bottom: none; /* Remove a borda do último item */
 }
 
 .order-item span {
   display: inline-block;
 }
 
+/* RASTREADOR DE STATUS */
 .order-status {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-top: 15px;
-  padding: 10px 0;
-  gap: 10px;
-  flex-wrap: wrap;
+  align-items: flex-start; /* Alinha o texto ao topo, se houver múltiplas linhas */
+  margin-top: 30px; /* Mais espaço antes do rastreador */
+  padding-top: 20px; /* Padding superior */
+  border-top: 1px solid #f0f0f0; /* Linha separadora */
+  position: relative; /* Para a linha de progresso */
 }
 
 .status-step {
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: 12px;
-  color: #bbb;
+  flex: 1; /* Distribui o espaço igualmente */
+  min-width: 70px; /* Garante um tamanho mínimo para cada passo */
+  text-align: center;
+  font-size: 0.85rem; /* Tamanho da fonte dos nomes dos status */
+  color: #999;
   font-weight: 500;
-  width: 60px;
+  position: relative;
+  z-index: 1; /* Garante que o conteúdo fique acima da linha de progresso */
 }
 
+/* Linha de progresso */
+.order-status::before {
+    content: '';
+    position: absolute;
+    top: 30px; /* Ajuste para alinhar com o centro do ícone */
+    left: 5%; /* Começa antes do primeiro item */
+    right: 5%; /* Termina depois do último item */
+    height: 4px;
+    background-color: #e0e0e0; /* Cor da linha de fundo */
+    border-radius: 2px;
+    z-index: 0;
+}
+
+.order-status::after {
+    content: '';
+    position: absolute;
+    top: 30px; /* Ajuste para alinhar com o centro do ícone */
+    left: 5%;
+    height: 4px;
+    background-color: #1a9b9b; /* Cor da linha de progresso ativa */
+    border-radius: 2px;
+    z-index: 0;
+    width: 0%; /* Largura inicial, será ajustada via JS/State se necessário, ou CSS se todos os ativos já tiverem classe */
+    transition: width 0.5s ease-out; /* Transição suave */
+    /* Este `width` precisaria ser dinamicamente calculado se for um progresso visual */
+    /* Para uma solução puramente CSS, o `width` seria 100% no último `.active` */
+}
+
+
 .status-step .status-icon {
-  width: 24px;
-  height: 24px;
+  width: 36px; /* Ícone maior */
+  height: 36px; /* Ícone maior */
   border-radius: 50%;
-  border: 2px solid #ccc;
+  border: 3px solid #ccc; /* Borda mais grossa */
+  background-color: #f0f0f0; /* Fundo do ícone */
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 4px;
-  font-size: 14px;
-  color: #fff;
-  background-color: #ccc;
-  transition: all 0.3s;
+  margin-bottom: 8px; /* Mais espaço abaixo do ícone */
+  font-size: 18px; /* Tamanho do checkmark */
+  color: #fff; /* Cor do checkmark */
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .status-step.active .status-icon {
-  background-color: #1a9b9b;
+  background-color: #1a9b9b; /* Cor do tema quando ativo */
   border-color: #1a9b9b;
-  color: #fff !important;
+  color: #fff;
   font-weight: bold;
-  font-size: 14px;
-  line-height: 24px;
+  box-shadow: 0 4px 8px rgba(26, 155, 155, 0.3); /* Sombra mais forte */
 }
 
 .status-step.active span {
   color: #1a9b9b;
-  font-weight: bold;
+  font-weight: 600;
 }
 
-.update-timer {
-  font-size: 14px;
-  margin-bottom: 10px;
-  color: #666;
+/* Estilo para quando não há pedidos */
+.orders-list > p { /* Seleciona o p direto do orders-list */
+    font-size: 1.1rem;
+    color: #777;
+    margin-top: 50px;
 }
 
-@media (max-width: 768px) {
-  .order-card {
-    padding: 15px;
-  }
-
-  .order-item {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .order-item span {
-    margin-bottom: 5px;
-  }
-
-  .order-status {
-    justify-content: flex-start;
-  }
-
-  .status-step {
-    width: auto;
-    margin-right: 10px;
-  }
-}
-
+/* Animação para o card de pedido */
 @keyframes fadeInUp {
   0% {
     transform: translateY(20px);
     opacity: 0;
   }
-
   100% {
     transform: translateY(0px);
     opacity: 1;
   }
+}
+
+
+/* Media Queries para Responsividade */
+@media (max-width: 768px) {
+  .orders-list {
+    padding: 20px 15px; /* Reduz padding lateral em mobile */
+  }
+
+  .orders-title {
+    font-size: 1.8rem; /* Título menor em mobile */
+  }
+
+  .order-card {
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  .order-card h3 {
+    font-size: 1.3rem;
+  }
+
+  .order-card p {
+    font-size: 0.9rem;
+  }
+
+  .order-items h4 {
+    font-size: 1rem;
+  }
+
+  .order-item {
+    flex-direction: column; /* Empilha os itens em mobile */
+    align-items: flex-start;
+    padding: 6px 0;
+    font-size: 0.85rem;
+  }
+
+  .order-item span:first-child {
+      margin-bottom: 3px; /* Espaço entre nome e preço empilhados */
+  }
+
+  .order-status {
+    flex-wrap: wrap; /* Permite que os passos quebrem a linha */
+    justify-content: center; /* Centraliza quando quebra a linha */
+    gap: 15px 10px; /* Espaço entre os passos, na horizontal e vertical */
+    padding-top: 15px;
+    margin-top: 20px;
+  }
+
+  .order-status::before,
+  .order-status::after {
+      top: 25px; /* Ajuste para o centro do ícone menor */
+      left: 20px; /* Ajuste para mobile */
+      right: 20px; /* Ajuste para mobile */
+  }
+
+  .status-step {
+    width: 80px; /* Largura para cada passo em mobile, ajustável */
+    min-width: unset; /* Remove min-width fixo */
+    font-size: 0.8rem;
+  }
+
+  .status-step .status-icon {
+    width: 30px; /* Ícone menor em mobile */
+    height: 30px;
+    font-size: 16px;
+    border-width: 2px;
+  }
+}
+
+/* Animação para quando não há pedidos */
+.no-orders-message {
+    font-size: 1.2rem;
+    color: #888;
+    margin-top: 50px;
+    animation: fadeIn 1s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
 }
