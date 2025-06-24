@@ -20,13 +20,13 @@
   background: white;
   box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15); /* Sombra para cima, destacando o modal */
   width: 100%;
-  height: 100%; /* Ocupa a altura total em mobile */
+  height: 50%; /* Ocupa a altura total em mobile */
   animation: slide-in 0.3s ease forwards;
   overflow-y: auto; /* Permite scroll se o conteúdo for grande */
   padding: 20px 15px; /* Padding ajustado */
   box-sizing: border-box;
-  border-top-left-radius: 15px; /* Borda arredondada no topo para mobile */
-  border-top-right-radius: 15px;
+  border-top-left-radius: 30px; /* Borda arredondada no topo para mobile */
+  border-top-right-radius: 30px;
   /* position: relative; foi removido pois o back-button não é mais absoluto dentro dele */
 }
 
@@ -88,7 +88,6 @@
   /* left: 20px; REMOVIDO */
   cursor: pointer;
   z-index: 10;
-  padding: 5px; /* Área de clique maior */
   border-radius: 50%; /* Torna o botão redondo visualmente */
   transition: background-color 0.2s ease;
   align-self: flex-start; /* Alinha o item ao início da flex container */
@@ -304,8 +303,7 @@
 @media (max-width: 768px) {
   .end__modal-content {
     padding: 20px 15px; /* Padding padrão para mobile */
-    height: 100%; /* Ajuste a altura para um bom visual em mobile */
-    border-radius: 0; /* Remove borda inferior */
+    height: 92vh; /* Ajuste a altura para um bom visual em mobile */
   }
   .end__modal-content h4 {
     font-size: 1.2rem;

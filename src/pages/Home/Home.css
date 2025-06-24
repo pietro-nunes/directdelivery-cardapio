@@ -1,68 +1,83 @@
 /* Estilos gerais da página Home */
 .home {
- font-family: 'Arial', sans-serif; /* Escolha uma fonte elegante */
- background-color: #f8f8f8; /* Tom de fundo mais claro */
- padding: 20px;
- text-align: left; /* Alinhamento geral do texto para a esquerda */
+  font-family: "Arial", sans-serif; /* Escolha uma fonte elegante */
+  background-color: #f8f8f8; /* Tom de fundo mais claro */
+  padding: 10px;
+  /* Remove text-align if you want content within the home container to dictate its own alignment */
+  text-align: left; /* Alinhamento geral do texto para a esquerda */
 }
 
 /* Título das categorias */
 .category-title {
- font-size: 28px; /* Tamanho maior para o título */
- font-weight: 500; /* Peso da fonte um pouco mais leve */
- color: #333; /* Cor do título mais escura */
- margin-bottom: 20px;
- padding-bottom: 10px;
- border-bottom: 2px solid #eee; /* Linha sutil abaixo do título */
- text-align: left; /* Garante que o título fique alinhado à esquerda */
+  font-size: 28px; /* Tamanho maior para o título */
+  font-weight: 500; /* Peso da fonte um pouco mais leve */
+  color: #333; /* Cor do título mais escura */
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #eee; /* Linha sutil abaixo do título */
+  text-align: left; /* Garante que o título fique alinhado à esquerda */
 }
 
 /* Seção de cada categoria */
 .category {
- margin-bottom: 60px; /* Mais espaço entre as categorias */
- padding: 0 20px; /* Adiciona um pouco de padding lateral */
+  margin-bottom: 60px; /* Mais espaço entre as categorias */
+  padding: 0 10px; /* Adiciona um pouco de padding lateral */
 }
 
 /* Listagem de produtos */
 .product-list {
- display: grid;
- grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Grid responsivo para os produtos */
- gap: 5px; /* Mais espaço entre os produtos */
- padding: 20px 0;
+  display: grid;
+  /* Ensure that minmax allows items to grow to full width */
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(250px, 1fr)
+  ); /* The 1fr here allows stretching */
+  gap: 15px; /* Increased gap for better spacing between products */
+  padding: 20px 0;
+  
+  /* Centering the grid itself within its parent container */
+  max-width: 1200px; /* Optional: Set a max-width for overall page content */
+  margin: 0 auto; /* Centers the grid container on the page */
+
+  /* For centering items within the grid if they don't perfectly fill rows */
+  justify-content: center; /* Centers the grid tracks if there's extra space in the container */
 }
 
-/* Estilos para telas menores (mantendo a coluna única) */
+/* Estilos para telas menores (mobile-first) */
 @media (max-width: 768px) {
- .product-list {
- grid-template-columns: 1fr; /* Uma coluna em telas menores */
- }
+  .product-list {
+    grid-template-columns: 1fr; /* Uma coluna em telas menores para garantir que cada card ocupe 100% da largura disponível */
+    gap: 10px; /* Adjust gap for smaller screens */
+    /* When it's 1fr, the item naturally fills the width. */
+    /* justify-items: center; if you want the single card itself to be centered if it's narrower than the 1fr track */
+    /* If your cards don't have a specific max-width inside, they'll fill the 1fr */
+  }
 
- .category {
- padding: 0 10px; /* Reduz o padding lateral em telas menores */
- margin-bottom: 40px; /* Reduz o espaço entre as categorias em telas menores */
- }
+  .category {
+    margin-bottom: 40px; /* Reduz o espaço entre as categorias em telas menores */
+  }
 
- .category-title {
- font-size: 24px; /* Reduz o tamanho do título em telas menores */
- margin-bottom: 15px;
- padding-bottom: 8px;
- }
+  .category-title {
+    font-size: 24px; /* Reduz o tamanho do título em telas menores */
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+  }
 }
 
 /* Estilos específicos para RestaurantInfo (se você quiser refinar mais tarde) */
 /* Exemplo de como você poderia começar a estilizá-lo: */
 /* .restaurant-info {
- background-color: #fff;
- padding: 30px;
- margin-bottom: 30px;
- border-radius: 8px;
- box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  padding: 30px;
+  margin-bottom: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 } */
 
 /* Estilos para a mensagem "Explore o nosso cardápio:" */
 .home > p {
- font-size: 18px;
- color: #555;
- margin-bottom: 30px;
- text-align: center; /* Centraliza a mensagem */
+  font-size: 18px;
+  color: #555;
+  margin-bottom: 30px;
+  text-align: center; /* Centraliza a mensagem */
 }

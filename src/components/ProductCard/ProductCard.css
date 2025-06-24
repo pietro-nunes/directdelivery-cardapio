@@ -3,48 +3,51 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px; /* Reduz o padding para ser mais compacto */
+  padding: 15px;
   background-color: #ffffff;
-  border-radius: 10px; /* Levemente menos arredondado para um toque mais clean */
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.07); /* Sombra mais sutil */
+  border-radius: 10px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.07);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
-  width: 100%;
-  max-width: 520px; /* Reduz a largura máxima levemente */
-  margin: 8px auto; /* Menos margem entre os cards, para ficarem mais juntos */
+  /* IMPORTANTE: Removemos 'width: 100%;' e 'margin: 8px auto;' daqui.
+     O grid pai vai controlar o preenchimento e centralização. */
+  max-width: 520px; /* Mantemos o max-width para cada card não ficar gigante */
   overflow: hidden;
+  /* Adicione flex-shrink: 0; se você notar que o card está encolhendo indevidamente
+     em telas muito pequenas antes do media query de 1fr. */
+  flex-shrink: 0;
 }
 
 .product-card:hover {
-  transform: translateY(-3px); /* Efeito de elevação sutil reduzido */
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1); /* Sombra no hover ajustada */
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
 }
 
 .product-info {
   flex: 1;
-  padding-right: 15px; /* Reduz o padding à direita do texto */
+  padding-right: 15px;
   text-align: left;
 }
 
 .product-info h3 {
-  font-size: 1.2rem; /* Tamanho do título ajustado */
+  font-size: 1.2rem;
   font-weight: 600;
-  margin: 0 0 6px 0; /* Menos margem abaixo do título */
+  margin: 0 0 6px 0;
   color: #333;
   line-height: 1.3;
 }
 
 .product-description {
   color: #777;
-  font-size: 0.95rem; /* Tamanho da descrição ajustado */
-  margin: 0 0 8px 0; /* Menos margem abaixo da descrição */
-  line-height: 1.4; /* Altura da linha levemente ajustada */
+  font-size: 0.95rem;
+  margin: 0 0 8px 0;
+  line-height: 1.4;
 }
 
 .product-price {
-  font-size: 1.05rem; /* Tamanho do preço ajustado */
+  font-size: 1.05rem;
   color: #333;
-  margin-top: 10px; /* Menos margem acima do preço */
+  margin-top: 10px;
   font-weight: 600;
 }
 
@@ -55,12 +58,12 @@
 
 .product-image {
   flex-shrink: 0;
-  width: 100px; /* Reduz o tamanho da imagem */
+  width: 100px;
   height: 100px;
   border-radius: 50%;
   overflow: hidden;
-  border: 2px solid #f0f0f0; /* Borda mais fina para a imagem */
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.04); /* Sombra da imagem mais sutil */
+  border: 2px solid #f0f0f0;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.04);
 }
 
 .product-image img {
@@ -69,12 +72,56 @@
   object-fit: cover;
 }
 
-/* Responsividade */
+---
+
+/* Estilos do Container Pai - Onde a mágica acontece */
+.home {
+  font-family: "Arial", sans-serif;
+  background-color: #f8f8f8;
+  padding: 10px;
+  text-align: left;
+}
+
+.category-title {
+  font-size: 28px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #eee;
+  text-align: left;
+}
+
+.category {
+  margin-bottom: 60px;
+  padding: 0 10px;
+}
+
+.product-list {
+  display: grid;
+  /* Esta é a linha mais importante para preencher o espaço! */
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(280px, 1fr)
+  ); /* Cada coluna terá no mínimo 280px, e se estenderá (1fr) para preencher */
+  gap: 15px; /* Espaço entre os cards */
+  padding: 20px 0;
+
+  /* Centraliza os itens dentro de suas células de grid e o grid como um todo */
+  justify-content: center; /* Centraliza o grupo de colunas se houver espaço sobrando */
+
+  /* Define uma largura máxima para o CONTEÚDO geral da lista e centraliza */
+  max-width: 1200px; /* Largura máxima para a lista de produtos. Ajuste conforme necessário. */
+  margin: 0 auto; /* Centraliza a lista de produtos na página */
+}
+
+
+/* Responsividade - Mobile First */
 @media (max-width: 768px) {
   .product-card {
     padding: 12px;
-    width: 98%; /* Ocupa ainda mais largura em mobile */
-    margin: 6px auto; /* Margem ainda menor em mobile */
+    /* No mobile, o card vai ocupar 100% da sua coluna (1fr),
+       mas ainda respeitando o max-width de 520px. */
   }
 
   .product-info {
@@ -100,6 +147,13 @@
     width: 80px;
     height: 80px;
   }
+
+  .product-list {
+    grid-template-columns: 1fr; /* Em mobile, apenas uma coluna. Ela ocupará 100% da largura. */
+    gap: 10px;
+    /* Em mobile, a lista pode ter um max-width menor para não esticar demais um único card */
+    max-width: 520px; /* Garante que a lista não fique muito larga em tablets no modo retrato */
+  }
 }
 
 @media (max-width: 480px) {
@@ -119,4 +173,12 @@
     width: 70px;
     height: 70px;
   }
+}
+
+/* Estilos para a mensagem "Explore o nosso cardápio:" */
+.home > p {
+  font-size: 18px;
+  color: #555;
+  margin-bottom: 30px;
+  text-align: center;
 }

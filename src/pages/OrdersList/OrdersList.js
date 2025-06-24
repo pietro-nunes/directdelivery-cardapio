@@ -5,6 +5,7 @@ import config from "../../config";
 import Cookies from "js-cookie";
 import { FiRefreshCw } from "react-icons/fi";
 import { formatarNumero } from "../../utils/functions";
+import { MdOutlineCheck } from "react-icons/md";
 
 const OrdersList = ({ tenantData }) => {
   const [orders, setOrders] = useState([]);
@@ -102,7 +103,7 @@ const OrdersList = ({ tenantData }) => {
                       className={`status-step ${isActive ? "active" : ""}`}
                     >
                       <div className="status-icon">
-                        {isActive ? "✔" : ""}
+                        {isActive ? <MdOutlineCheck size={20}/> : ""}
                       </div>
                       <span>{statusTranslations[status]}</span>
                     </div>
