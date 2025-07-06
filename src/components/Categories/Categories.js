@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import "./Categories.css"; // Estilos atualizados
+import { toTitleCase } from "../../utils/functions";
 
 const Categories = ({ categories, selectedCategory, onSelectCategory }) => {
   const underlineRef = useRef(null); // Referência para o underline
@@ -21,11 +22,11 @@ const Categories = ({ categories, selectedCategory, onSelectCategory }) => {
             <div
               key={category.id}
               className={`category-item ${
-                selectedCategory === category.name ? "active" : ""
+                selectedCategory === toTitleCase(category.name) ? "active" : ""
               }`}
-              onClick={() => onSelectCategory(category.name)}
+              onClick={() => onSelectCategory(toTitleCase(category.name))}
             >
-              {category.name}
+              {toTitleCase(category.name)}
             </div>
           )
       )}

@@ -3,9 +3,16 @@ import "./RestaurantInfo.css";
 import config from "../../config";
 import { FiClock } from "react-icons/fi";
 import { MdLocationPin } from "react-icons/md";
+import { toTitleCase } from "../../utils/functions";
 
 const RestaurantInfo = ({ restaurantInfo, setIsRestaurantOpen }) => {
-  const isRestaurantOpen = (openingTime, closingTime, openingDays) => {
+  const isRestaurantOpen = (
+    openingTime1,
+    closingTime1,
+    openingTime2,
+    closingTime2,
+    openingDays
+  ) => {
     const now = new Date();
     const currentDay = now.getDay() === 0 ? 1 : now.getDay() + 1;
     const currentTime = now.getHours() * 60 + now.getMinutes();
@@ -14,21 +21,27 @@ const RestaurantInfo = ({ restaurantInfo, setIsRestaurantOpen }) => {
       return false;
     }
 
-    const [openingHour, openingMinute] = openingTime.split(":").map(Number);
-    const openingTimeInMinutes = openingHour * 60 + openingMinute;
+    // console.log(openingTime2);c
 
-    const [closingHour, closingMinute] = closingTime.split(":").map(Number);
-    const closingTimeInMinutes = closingHour * 60 + closingMinute;
+    // Helper que já protege contra valores undefined ou vazios
+    const isInInterval = (open, close) => {
+      if (!open || !close) return false; // <-- aqui
+      const [oh, om] = open.split(":").map(Number).slice(0, 2);
+      const [ch, cm] = close.split(":").map(Number).slice(0, 2);
+      const openMin = oh * 60 + om;
+      const closeMin = ch * 60 + cm;
 
-    if (closingTimeInMinutes < openingTimeInMinutes) {
-      return (
-        currentTime >= openingTimeInMinutes || currentTime < closingTimeInMinutes
-      );
-    } else {
-      return (
-        currentTime >= openingTimeInMinutes && currentTime < closingTimeInMinutes
-      );
-    }
+      if (closeMin < openMin) {
+        return currentTime >= openMin || currentTime < closeMin;
+      } else {
+        return currentTime >= openMin && currentTime < closeMin;
+      }
+    };
+
+    const openNow1 = isInInterval(openingTime1, closingTime1);
+    const openNow2 = isInInterval(openingTime2, closingTime2);
+
+    return openNow1 || openNow2;
   };
 
   const formatTime = (timeString) => {
@@ -39,6 +52,8 @@ const RestaurantInfo = ({ restaurantInfo, setIsRestaurantOpen }) => {
     const isOpen = isRestaurantOpen(
       restaurantInfo.openingTime,
       restaurantInfo.closingTime,
+      restaurantInfo.openingTime2,
+      restaurantInfo.closingTime2,
       restaurantInfo.openingDays
     );
     setIsRestaurantOpen(isOpen); // Atualiza o estado global
@@ -47,6 +62,8 @@ const RestaurantInfo = ({ restaurantInfo, setIsRestaurantOpen }) => {
   const isOpen = isRestaurantOpen(
     restaurantInfo.openingTime,
     restaurantInfo.closingTime,
+    restaurantInfo.openingTime2,
+    restaurantInfo.closingTime2,
     restaurantInfo.openingDays
   );
 
@@ -62,19 +79,26 @@ const RestaurantInfo = ({ restaurantInfo, setIsRestaurantOpen }) => {
           className="restaurant-logo"
         />
       </div>
-      <div className="restaurant-details">
-        <h2 className="restaurant-name">{restaurantInfo.name}</h2>
-        <p className={`status ${isOpen ? "open" : "closed"}`}>
-          {isOpen ? "Estamos abertos 😁" : "Estamos fechados 😔"}
-        </p>
+      <h2 className="restaurant-name">{toTitleCase(restaurantInfo.name)}</h2>
+      <p className={`status ${isOpen ? "open" : "closed"}`}>
+        {isOpen ? "Estamos abertos 😁" : "Estamos fechados 😔"}
+      </p>
+
+      {/* Turno do Dia */}
+      <p className="info">
+        <FiClock size={14} /> <strong>Dia:</strong>{" "}
+        {formatTime(restaurantInfo.openingTime)} –{" "}
+        {formatTime(restaurantInfo.closingTime)}
+      </p>
+
+      {/* Turno da Noite (só se houver) */}
+      {restaurantInfo.openingTime2 && restaurantInfo.closingTime2 && (
         <p className="info">
-          <FiClock size={14}/> {"  "} {formatTime(restaurantInfo.openingTime)} -{" "}
-          {formatTime(restaurantInfo.closingTime)}
+          <FiClock size={14} /> <strong>Noite:</strong>{" "}
+          {formatTime(restaurantInfo.openingTime2)} –{" "}
+          {formatTime(restaurantInfo.closingTime2)}
         </p>
-        <p className="info">
-        <MdLocationPin  size={14}/> {"  "} {restaurantInfo.address}
-        </p>
-      </div>
+      )}
     </div>
   );
 };

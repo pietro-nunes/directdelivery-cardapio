@@ -5,6 +5,7 @@ import Categories from "../../components/Categories/Categories";
 import RestaurantInfo from "../../components/RestaurantInfo/RestaurantInfo";
 import { useFetchWithLoading } from "../../contexts/fetchWithLoading";
 import config from "../../config";
+import { toTitleCase } from "../../utils/functions";
 
 const Home = ({ addToCart, tenantData, setIsRestaurantOpen }) => {
   const [selectedCategory, setSelectedCategory] = useState();
@@ -19,7 +20,7 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen }) => {
       );
       const categoriesData = await categoriesResponse.json();
       setCategories(categoriesData);
-      setSelectedCategory(categoriesData[0]?.name);
+      setSelectedCategory(toTitleCase(categoriesData[0]?.name));
     } catch (error) {
       console.error("Erro ao buscar categorias:", error);
     }
@@ -57,6 +58,8 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen }) => {
             name: tenantData.legalName,
             openingTime: tenantData.openingTime,
             closingTime: tenantData.closingTime,
+            openingTime2: tenantData.openingTime2,
+            closingTime2: tenantData.closingTime2,
             openingDays: tenantData.openingDays,
             address: `${tenantData.address}, ${tenantData.number}, ${tenantData.neighborhood} - ${tenantData.city}`,
           }}
@@ -75,8 +78,8 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen }) => {
       {categories.map(
         (category) =>
           category.isActive && (
-            <div key={category.id} className="category" id={category.name}>
-              <h3 className="category-title">{category.name}</h3>
+            <div key={category.id} className="category" id={toTitleCase(category.name)}>
+              <h3 className="category-title">{toTitleCase(category.name)}</h3>
               <div className="product-list">
                 {category.products.map((product) => (
                   <ProductCard

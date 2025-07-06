@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./ProductModalMobile.css"; // Certifique-se de que o CSS está linkado corretamente
 import { Bounce, toast } from "react-toastify"; // Importe toast se estiver usando
-import { formatarNumero } from "../../utils/functions"; // Assumindo que este util existe
+import { formatarNumero, toTitleCase } from "../../utils/functions"; // Assumindo que este util existe
 import { FiTrash2, FiRotateCw } from "react-icons/fi"; // Assumindo que você usa react-icons
 
 const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
@@ -128,14 +128,14 @@ const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
         <div className="modal-body-mobile">
           {/* Título do Produto - MOVIDO PARA DENTRO DO modal-body-mobile */}
           <h3 className="modal-product-name-mobile">
-            {product.name || "Nome indisponível"}
+            {toTitleCase(product.name) || "Nome indisponível"}
           </h3>
           {/* Preço do Produto - MOVIDO PARA DENTRO DO modal-body-mobile */}
           <p className="modal-product-price-mobile">
             R$ {formatarNumero(product.price)}
           </p>
           <p className="modal-product-description-mobile">
-            {product.description || ""}
+            {toTitleCase(product.description) || ""}
           </p>
 
           {/* Sabores */}
@@ -156,7 +156,7 @@ const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
                     />
                     <span className="checkbox-custom-mobile"></span>
                     <span className="flavor-name-mobile">
-                      {relation.relatedProduct.name}{" "}
+                      {toTitleCase(relation.relatedProduct.name)}{" "}
                       {parseFloat(relation.price) > 0 && (
                         <> - R$ {formatarNumero(relation.price)}</>
                       )}
@@ -181,7 +181,7 @@ const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
                     />
                     <span className="checkbox-custom-mobile"></span>
                     <span className="additional-name-mobile">
-                      {relation.relatedProduct.name}{" "}
+                      {toTitleCase(relation.relatedProduct.name)}{" "}
                       {parseFloat(relation.price) > 0 && (
                         <> - R$ {formatarNumero(relation.price)}</>
                       )}
@@ -207,7 +207,7 @@ const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
                       }`}
                       key={relation.id}
                     >
-                      {relation.relatedProduct.name}
+                      {toTitleCase(relation.relatedProduct.name)}
                       <button
                         className="delete-button"
                         onClick={() => removeComposition(relation.id)}

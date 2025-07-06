@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./ProductCard.css"; // Estilo do ProductCard
 import ProductModalMobile from "../ProductModalMobile/ProductModalMobile"; // Importa o componente de modal
 import config from "../../config";
-import { formatarNumero } from "../../utils/functions";
+import { formatarNumero, toTitleCase } from "../../utils/functions";
 
 const ProductCard = ({ product, addToCart }) => {
   const [isModalOpen, setIsModalOpen] = useState(false); // Estado para controlar a exibição do modal
@@ -21,8 +21,8 @@ const ProductCard = ({ product, addToCart }) => {
     <div>
       <div className="product-card" onClick={handleOpenModal}>
         <div className="product-info">
-          <h3>{product.name}</h3>
-          <p className="product-description">{product.description}</p>
+          <h3>{toTitleCase(product.name)}</h3>
+          <p className="product-description">{toTitleCase(product.description)}</p>
           <p className="product-price">
             <span className="discounted-price">por R$ {formatarNumero(product.price)}</span>
           </p>
@@ -34,7 +34,7 @@ const ProductCard = ({ product, addToCart }) => {
                 ? `${config.baseURL}${product.image}`
                 : "/images/pizza_placeholder.png"
             }
-            alt={product.name || "Placeholder"}
+            alt={toTitleCase(product.name) || "Placeholder"}
             onError={(e) => {
               e.target.onerror = null; // Remove o listener de erro para evitar loops infinitos
               e.target.src = "/images/pizza_placeholder.png"; // Define o placeholder no caso de erro ao carregar a imagem

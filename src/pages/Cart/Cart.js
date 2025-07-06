@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./Cart.css";
 import config from "../../config";
 import { toast, Bounce } from "react-toastify";
-import { formatarNumero } from "../../utils/functions";
+import { formatarNumero, toTitleCase } from "../../utils/functions";
 
 const Cart = ({ cartItems, setCartItems, isLoggedIn, tenantData, isRestaurantOpen }) => {
   const navigate = useNavigate();
@@ -83,13 +83,13 @@ const Cart = ({ cartItems, setCartItems, isLoggedIn, tenantData, isRestaurantOpe
                     }}
                   />
                   <div className="item-details">
-                    <p className="cart-item-name">{item.name}</p>
+                    <p className="cart-item-name">{toTitleCase(item.name)}</p>
                     {item.removedCompositions?.length > 0 && (
                       <div className="cart-item-flavors">
                         <strong>Composições removidas:</strong>
                         <ul>
                           {item.removedCompositions.map((composition, index) => (
-                            <li key={index}>{composition.relatedProduct.name}</li>
+                            <li key={index}>{toTitleCase(composition.relatedProduct.name)}</li>
                           ))}
                         </ul>
                       </div>
@@ -99,7 +99,7 @@ const Cart = ({ cartItems, setCartItems, isLoggedIn, tenantData, isRestaurantOpe
                         <strong>Sabores:</strong>
                         <ul>
                           {item.selectedFlavors.map((flavor, index) => (
-                            <li key={index}>{flavor.relatedProduct.name}</li>
+                            <li key={index}>{toTitleCase(flavor.relatedProduct.name)}</li>
                           ))}
                         </ul>
                       </div>
@@ -110,7 +110,7 @@ const Cart = ({ cartItems, setCartItems, isLoggedIn, tenantData, isRestaurantOpe
                         <ul>
                           {item.selectedAdditionals.map((additional, index) => (
                             <li key={index}>
-                              {additional.relatedProduct.name} (R$ {formatarNumero(additional.price)})
+                              {toTitleCase(additional.relatedProduct.name)} (R$ {formatarNumero(additional.price)})
                             </li>
                           ))}
                         </ul>
