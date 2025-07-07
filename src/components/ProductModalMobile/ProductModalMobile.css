@@ -21,11 +21,11 @@
   display: flex;
   flex-direction: column; /* Organiza os filhos em coluna (botão, body, footer) */
   position: relative; /* Para a animação */
-  
+
   /* Animação de entrada do modal */
-  transform: translateY(100%); 
+  transform: translateY(100%);
   animation: slideInUp 0.4s forwards ease-out; /* Nomeei a animação como slideInUp */
-  
+
   border-top-left-radius: 0; /* Remove arredondamento superior para mobile full-screen */
   border-top-right-radius: 0; /* Remove arredondamento superior para mobile full-screen */
   box-shadow: 0 -8px 20px rgba(0, 0, 0, 0.25);
@@ -44,9 +44,9 @@
   z-index: 10;
   border-bottom: 1px solid #eee;
   flex-shrink: 0; /* IMPEDIR que o botão encolha */
-  
+
   /* Ajuste para "notch" em iOS */
-  padding-top: calc(15px + env(safe-area-inset-top)); 
+  padding-top: calc(15px + env(safe-area-inset-top));
 }
 
 .back-icon-mobile {
@@ -228,7 +228,7 @@ input[type="checkbox"]:checked + .checkbox-custom-mobile {
 }
 
 input[type="checkbox"]:checked + .checkbox-custom-mobile::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 7px;
   top: 3px;
@@ -241,23 +241,35 @@ input[type="checkbox"]:checked + .checkbox-custom-mobile::after {
 
 .flavor-name-mobile,
 .additional-name-mobile {
-  margin-left: 12px;
   font-size: 0.95rem; /* Levemente REDUZIDO de 1rem */
   color: #333;
   flex-grow: 1;
-}
-
-.flavor-name-mobile + span,
-.additional-name-mobile + span {
-  font-weight: 600;
-  color: #1a9b9b;
-  margin-left: auto;
 }
 
 .observations-section-mobile h4 {
   border-bottom: none;
   padding-bottom: 0;
   margin-bottom: 10px;
+}
+
+/* Garante que o container empilhe os itens e alinhe tudo à esquerda */
+.flavor-info-mobile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* força filhos a ficarem no início (à esquerda) */
+  margin-left: 12px;
+  flex-grow: 1;
+  text-align: left; /* assegura que o texto fique alinhado à esquerda */
+}
+
+/* Estilo “cinza descrição” */
+.flavor-desc-mobile {
+  display: block;
+  font-size: 0.85rem;
+  color: #888888; /* cinza típico de descrição */
+  margin-top: 4px;
+  line-height: 1.3;
+  text-align: left; /* só pra garantir */
 }
 
 .observations-mobile {
@@ -270,7 +282,7 @@ input[type="checkbox"]:checked + .checkbox-custom-mobile::after {
   padding: 12px;
   font-size: 0.95rem; /* Levemente REDUZIDO de 1rem */
   resize: vertical;
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
   color: #555;
   background-color: #ffffff;
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
@@ -303,7 +315,8 @@ input[type="checkbox"]:checked + .checkbox-custom-mobile::after {
   font-weight: 700;
   text-align: center;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease,
+    box-shadow 0.3s ease;
   box-shadow: 0 4px 10px rgba(26, 155, 155, 0.2);
 }
 
@@ -331,7 +344,8 @@ input[type="checkbox"]:checked + .checkbox-custom-mobile::after {
 }
 
 /* Animações */
-@keyframes slideInUp { /* Animação para subir do fundo */
+@keyframes slideInUp {
+  /* Animação para subir do fundo */
   from {
     transform: translateY(100%);
   }
@@ -377,8 +391,8 @@ input[type="checkbox"]:checked + .checkbox-custom-mobile::after {
 
   .modal-product-name-mobile {
     font-size: 1.8rem; /* REDUZIDO de 2.2rem */
-    margin-top: 10px; 
-    padding-top: 0; 
+    margin-top: 10px;
+    padding-top: 0;
   }
 
   .modal-product-price-mobile {

@@ -155,12 +155,19 @@ const ProductModalMobile = ({ product = {}, closeModal, addToCart }) => {
                       onChange={() => toggleFlavor(relation.id)}
                     />
                     <span className="checkbox-custom-mobile"></span>
-                    <span className="flavor-name-mobile">
-                      {toTitleCase(relation.relatedProduct.name)}{" "}
-                      {parseFloat(relation.price) > 0 && (
-                        <> - R$ {formatarNumero(relation.price)}</>
+                    <div className="flavor-info-mobile">
+                      <span className="flavor-name-mobile">
+                        {toTitleCase(relation.relatedProduct.name)}
+                        {parseFloat(relation.price) > 0 && (
+                          <> – R$ {formatarNumero(relation.price)}</>
+                        )}
+                      </span>
+                      {relation.relatedProduct.description && (
+                        <span className="flavor-desc-mobile">
+                          {toTitleCase(relation.relatedProduct.description)}
+                        </span>
                       )}
-                    </span>
+                    </div>
                   </label>
                 ))}
               </div>
