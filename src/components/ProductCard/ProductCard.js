@@ -4,7 +4,7 @@ import ProductModalMobile from "../ProductModalMobile/ProductModalMobile"; // Im
 import config from "../../config";
 import { formatarNumero, toTitleCase } from "../../utils/functions";
 
-const ProductCard = ({ product, addToCart }) => {
+const ProductCard = ({ product, addToCart, tenantFlavorCalcType }) => {
   const [isModalOpen, setIsModalOpen] = useState(false); // Estado para controlar a exibição do modal
 
   // Função para abrir o modal
@@ -49,6 +49,7 @@ const ProductCard = ({ product, addToCart }) => {
           product={product}
           closeModal={handleCloseModal}
           addToCart={addToCart}
+          tenantFlavorCalcType={tenantFlavorCalcType}
         />
       )}
     </div>

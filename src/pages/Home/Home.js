@@ -86,6 +86,7 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen }) => {
                     key={product.id}
                     product={product}
                     addToCart={addToCart}
+                    tenantFlavorCalcType={tenantData.flavorCalcType}
                   />
                 ))}
               </div>
