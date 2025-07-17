@@ -1,18 +1,20 @@
 import React, { useRef, useEffect } from "react";
-import "./Categories.css"; // Estilos atualizados
+import "./Categories.css";
 import { toTitleCase } from "../../utils/functions";
 
 const Categories = ({ categories, selectedCategory, onSelectCategory }) => {
-  const underlineRef = useRef(null); // Referência para o underline
+  // A referência 'underlineRef' não será mais necessária, mas pode manter se não atrapalhar outros códigos.
+  // const underlineRef = useRef(null); 
 
-  useEffect(() => {
-    const activeCategory = document.querySelector(".category-item.active"); // Seleciona a categoria ativa
-    if (activeCategory && underlineRef.current) {
-      const { offsetLeft, clientWidth } = activeCategory; // Posição e largura do item ativo
-      underlineRef.current.style.left = `${offsetLeft}px`; // Ajusta a posição do underline
-      underlineRef.current.style.width = `${clientWidth}px`; // Ajusta a largura do underline
-    }
-  }, [selectedCategory]); // Atualiza sempre que a categoria selecionada mudar
+  // O useEffect que movia o underline não será mais necessário.
+  // useEffect(() => {
+  //   const activeCategory = document.querySelector(".category-item.active");
+  //   if (activeCategory && underlineRef.current) {
+  //     const { offsetLeft, clientWidth } = activeCategory;
+  //     underlineRef.current.style.left = `${offsetLeft}px`;
+  //     underlineRef.current.style.width = `${clientWidth}px`;
+  //   }
+  // }, [selectedCategory]);
 
   return (
     <div className="categories-container">
@@ -30,8 +32,7 @@ const Categories = ({ categories, selectedCategory, onSelectCategory }) => {
             </div>
           )
       )}
-      <div className="underline" ref={underlineRef}></div>{" "}
-      {/* Linha embaixo da categoria ativa */}
+      {/* REMOVIDO: <div className="underline" ref={underlineRef}></div> */} {/* Esta linha será removida */}
     </div>
   );
 };
