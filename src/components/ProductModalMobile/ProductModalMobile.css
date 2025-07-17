@@ -246,6 +246,16 @@ input[type="checkbox"]:checked + .checkbox-custom-mobile::after {
   flex-grow: 1;
 }
 
+/* Garante que o container empilhe os itens e alinhe tudo à esquerda */
+.additional-info-mobile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* força filhos a ficarem no início (à esquerda) */
+  margin-left: 12px;
+  flex-grow: 1;
+  text-align: left; /* assegura que o texto fique alinhado à esquerda */
+}
+
 .observations-section-mobile h4 {
   border-bottom: none;
   padding-bottom: 0;

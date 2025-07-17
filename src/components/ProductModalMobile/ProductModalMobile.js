@@ -57,29 +57,34 @@ const ProductModalMobile = ({
     });
   };
 
-  // --- CORREÇÃO FINAL: Calcular o preço total USANDO SEMPRE O VALOR DA RELAÇÃO PARA SABORES ---
+  // --- FUNÇÃO DE CÁLCULO DE PREÇO TOTAL (CORRIGIDA NOVAMENTE) ---
   const calculateTotalPrice = () => {
     let basePrice = parseFloat(product.price || 0);
 
+    // 1. Calcular preço dos adicionais selecionados
     const additionalPrice = additionals
       .filter((r) => selectedAdditionals.includes(r.id))
       .reduce((sum, r) => sum + parseFloat(r.price || 0), 0);
 
+    // 2. Calcular preço dos sabores selecionados com base em tenantFlavorCalcType
     let calculatedFlavorPrice = 0;
     if (selectedFlavors.length > 0) {
-      // 1. Somar o preço ORIGINAL de todas as relações de sabores selecionadas
       const sumOfSelectedFlavorRelationsPrice = selectedFlavors
         .map((id) => flavors.find((r) => r.id === id))
         .reduce((sum, r) => sum + parseFloat(r?.price || 0), 0);
 
-      // 2. Aplicar a regra de cálculo (average ou sum)
-      if (tenantFlavorCalcType === "average" && product.flavorAllowed > 0) {
-        // Se for "average", pega a soma dos preços das relações selecionadas e divide
+      // AQUI É A MUDANÇA: DIVIDIR PELA QUANTIDADE DE SABORES SELECIONADOS
+      if (
+        tenantFlavorCalcType === "average" &&
+        selectedFlavors.length > 0 // <-- MUDANÇA AQUI: usar selectedFlavors.length
+      ) {
         calculatedFlavorPrice = parseFloat(
-          (sumOfSelectedFlavorRelationsPrice / product.flavorAllowed).toFixed(2)
+          (
+            sumOfSelectedFlavorRelationsPrice / selectedFlavors.length
+          ).toFixed(2)
         );
       } else {
-        // Se for "sum" (ou qualquer outro que não seja average), simplesmente usa a soma original
+        // Se for "sum" ou outro, usa a soma direta das relações
         calculatedFlavorPrice = sumOfSelectedFlavorRelationsPrice;
       }
     }
@@ -87,7 +92,7 @@ const ProductModalMobile = ({
     return basePrice + additionalPrice + calculatedFlavorPrice;
   };
 
-  // Validação e adição ao carrinho
+  // --- LÓGICA DE ADICIONAR AO CARRINHO (CORRIGIDA NOVAMENTE) ---
   const handleAddToCart = () => {
     if (selectedFlavors.length < product.flavorMandatory) {
       toast.warn(
@@ -100,28 +105,30 @@ const ProductModalMobile = ({
     // Mapear sabores, sobrescrevendo o preço unitário para exibição no carrinho
     const selectedFlavorsDetails = selectedFlavors.map((id) => {
       const rel = product.relations.find((r) => r.id === id);
-      let unitPriceForDisplay = parseFloat(rel.price || 0); // Preço padrão do sabor da relação
+      let unitPriceForDisplay = parseFloat(rel.price || 0);
 
-      if (tenantFlavorCalcType === "average" && product.flavorAllowed > 0) {
-        // Se o cálculo é por média, o preço unitário do sabor para exibição no carrinho
-        // é o preço original da relação dividido pelo número de sabores permitidos.
-        // ISSO NÃO AFETA O CÁLCULO TOTAL, APENAS A EXIBIÇÃO DETALHADA NO CARRINHO
+      // AQUI É A MUDANÇA: DIVIDIR PELA QUANTIDADE DE SABORES SELECIONADOS
+      if (
+        tenantFlavorCalcType === "average" &&
+        selectedFlavors.length > 0 // <-- MUDANÇA AQUI: usar selectedFlavors.length
+      ) {
         unitPriceForDisplay = parseFloat(
-          (unitPriceForDisplay / product.flavorAllowed).toFixed(2)
+          (unitPriceForDisplay / selectedFlavors.length).toFixed(2)
         );
       }
-      // Se tenantFlavorCalcType for "sum", o unitPriceForDisplay já é o rel.price
 
       return {
         ...rel,
-        price: unitPriceForDisplay, // Este é o preço do sabor para ser registrado no carrinho (para exibição detalhada)
+        price: unitPriceForDisplay,
       };
     });
 
-    // Demais detalhes
+    // Mapear adicionais selecionados
     const selectedAdditionalsDetails = selectedAdditionals.map((id) =>
       product.relations.find((r) => r.id === id)
     );
+
+    // Mapear composições removidas
     const removedCompositionsDetails = removedCompositions.map((id) =>
       product.relations.find((r) => r.id === id)
     );
@@ -131,9 +138,9 @@ const ProductModalMobile = ({
       selectedFlavors: selectedFlavorsDetails,
       selectedAdditionals: selectedAdditionalsDetails,
       removedCompositions: removedCompositionsDetails,
-      selectedObservations: [], // ou lógica específica se houver
+      selectedObservations: [],
       observation,
-      totalPrice: calculateTotalPrice(), // Chama a função corrigida
+      totalPrice: calculateTotalPrice(),
     };
 
     addToCart(productWithDetails);
@@ -188,11 +195,15 @@ const ProductModalMobile = ({
               </h4>
               <div className="flavors-list-mobile">
                 {flavors.map((relation) => {
-                  // AQUI VOCÊ EXIBE O PREÇO UNITÁRIO DO SABOR, que PODE ser o da relação ou dividido.
+                  // AQUI É A MUDANÇA: DIVIDIR PELA QUANTIDADE DE SABORES SELECIONADOS
                   const flavorUnitPriceForDisplay =
-                    tenantFlavorCalcType === "average" && product.flavorAllowed > 0
+                    tenantFlavorCalcType === "average" &&
+                    selectedFlavors.length > 0 // <-- MUDANÇA AQUI: usar selectedFlavors.length
                       ? parseFloat(
-                          (parseFloat(relation.price || 0) / product.flavorAllowed).toFixed(2)
+                          (
+                            parseFloat(relation.price || 0) /
+                            selectedFlavors.length
+                          ).toFixed(2)
                         )
                       : parseFloat(relation.price || 0);
 
@@ -225,6 +236,43 @@ const ProductModalMobile = ({
                     </label>
                   );
                 })}
+              </div>
+            </div>
+          )}
+
+          {/* Adicionais */}
+          {additionals.length > 0 && (
+            <div className="additionals-section-mobile">
+              <h4>Adicionais:</h4>
+              <div className="additionals-list-mobile">
+                {additionals.map((relation) => (
+                  <label
+                    className="custom-checkbox-mobile"
+                    key={relation.id}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={selectedAdditionals.includes(relation.id)}
+                      onChange={() => toggleAdditional(relation.id)}
+                    />
+                    <span className="checkbox-custom-mobile"></span>
+                    <div className="additional-info-mobile">
+                      <span className="additional-name-mobile">
+                        {toTitleCase(relation.relatedProduct.name)}
+                        {parseFloat(relation.price || 0) > 0 && (
+                          <> – R$ {formatarNumero(relation.price)}</>
+                        )}
+                      </span>
+                      {relation.relatedProduct.description && (
+                        <span className="additional-desc-mobile">
+                          {toTitleCase(
+                            relation.relatedProduct.description
+                          )}
+                        </span>
+                      )}
+                    </div>
+                  </label>
+                ))}
               </div>
             </div>
           )}
