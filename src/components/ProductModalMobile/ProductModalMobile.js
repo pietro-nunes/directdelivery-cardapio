@@ -17,24 +17,37 @@ const ProductModalMobile = ({
   const [observation, setObservation] = useState("");
   const [scrolled, setScrolled] = useState(false);
   const mainContentRef = useRef(null);
+  const [modalHeight, setModalHeight] = useState('100vh'); // Novo estado para a altura do modal
 
-  // Mova a definição de 'hasImage' para cá, antes do useEffect
-  const hasImage = product.image; // AGORA DEFINIDO AQUI!
+  const hasImage = product.image;
 
-  const flavors =
-    product.relations?.filter((relation) => relation.type === "flavor") || [];
-  const additionals =
-    product.relations?.filter((relation) => relation.type === "additional") ||
-    [];
-  const compositions =
-    product.relations?.filter((relation) => relation.type === "composition") ||
-    [];
+  // Efeito para ajustar a altura do modal em mobile
+  useEffect(() => {
+    const setVisualViewportHeight = () => {
+      // Usa window.innerHeight para a altura "real" da área de layout
+      // Esta é geralmente a altura da tela menos as barras do navegador.
+      // Em alguns casos, visualViewport.height pode ser mais preciso,
+      // mas window.innerHeight é mais amplamente suportado para este cenário.
+      setModalHeight(`${window.innerHeight}px`);
+    };
 
-  // Efeito para monitorar a rolagem
+    // Define a altura inicial
+    setVisualViewportHeight();
+
+    // Adiciona event listeners para reajustar se o tamanho da janela mudar (rotação, teclado, etc.)
+    window.addEventListener('resize', setVisualViewportHeight);
+    window.addEventListener('orientationchange', setVisualViewportHeight);
+
+    return () => {
+      window.removeEventListener('resize', setVisualViewportHeight);
+      window.removeEventListener('orientationchange', setVisualViewportHeight);
+    };
+  }, []); // Executa apenas uma vez na montagem
+
+  // Efeito para monitorar a rolagem (o que já tínhamos)
   useEffect(() => {
     const handleScroll = () => {
       if (mainContentRef.current) {
-        // 'hasImage' agora já está definido aqui
         const threshold = hasImage ? 150 : 20;
         if (mainContentRef.current.scrollTop > threshold) {
           setScrolled(true);
@@ -54,7 +67,16 @@ const ProductModalMobile = ({
         currentRef.removeEventListener("scroll", handleScroll);
       }
     };
-  }, [hasImage]); // 'hasImage' continua como dependência
+  }, [hasImage]);
+
+  const flavors =
+    product.relations?.filter((relation) => relation.type === "flavor") || [];
+  const additionals =
+    product.relations?.filter((relation) => relation.type === "additional") ||
+    [];
+  const compositions =
+    product.relations?.filter((relation) => relation.type === "composition") ||
+    [];
 
   const toggleFlavor = (relationId) => {
     if (selectedFlavors.includes(relationId)) {
@@ -161,12 +183,12 @@ const ProductModalMobile = ({
     closeModal();
   };
 
-
   return (
     <div className="modal-overlay-mobile" onClick={closeModal}>
       <div
         className="modal-content-mobile"
         onClick={(e) => e.stopPropagation()}
+        style={{ height: modalHeight }} 
       >
         {/* Botão de Voltar - sempre no topo */}
         <button

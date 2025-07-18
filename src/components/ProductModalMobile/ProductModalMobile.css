@@ -92,7 +92,7 @@
 /* --- Seção da Imagem (agora parte do conteúdo rolável) --- */
 .product-image-section {
   width: 100%;
-  height: 250px; /* Altura fixa para a imagem */
+  height: 180px; /* Altura fixa para a imagem */
   overflow: hidden;
   background-color: #f0f0f0;
   display: flex;
