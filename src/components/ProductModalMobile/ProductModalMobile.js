@@ -1,8 +1,9 @@
-import React, { useState } from "react";
-import "./ProductModalMobile.css"; // Certifique-se de que o CSS está linkado corretamente
+import React, { useState, useEffect, useRef } from "react";
+import "./ProductModalMobile.css";
 import { Bounce, toast } from "react-toastify";
 import { formatarNumero, toTitleCase } from "../../utils/functions";
-import { FiTrash2, FiRotateCw } from "react-icons/fi";
+import { FiTrash2, FiRotateCw, FiChevronLeft } from "react-icons/fi";
+import config from "../../config";
 
 const ProductModalMobile = ({
   product = {},
@@ -14,8 +15,12 @@ const ProductModalMobile = ({
   const [selectedAdditionals, setSelectedAdditionals] = useState([]);
   const [removedCompositions, setRemovedCompositions] = useState([]);
   const [observation, setObservation] = useState("");
+  const [scrolled, setScrolled] = useState(false);
+  const mainContentRef = useRef(null);
 
-  // Filtrar relações por tipo
+  // Mova a definição de 'hasImage' para cá, antes do useEffect
+  const hasImage = product.image; // AGORA DEFINIDO AQUI!
+
   const flavors =
     product.relations?.filter((relation) => relation.type === "flavor") || [];
   const additionals =
@@ -25,7 +30,32 @@ const ProductModalMobile = ({
     product.relations?.filter((relation) => relation.type === "composition") ||
     [];
 
-  // Função para alternar seleção de sabores
+  // Efeito para monitorar a rolagem
+  useEffect(() => {
+    const handleScroll = () => {
+      if (mainContentRef.current) {
+        // 'hasImage' agora já está definido aqui
+        const threshold = hasImage ? 150 : 20;
+        if (mainContentRef.current.scrollTop > threshold) {
+          setScrolled(true);
+        } else {
+          setScrolled(false);
+        }
+      }
+    };
+
+    const currentRef = mainContentRef.current;
+    if (currentRef) {
+      currentRef.addEventListener("scroll", handleScroll);
+    }
+
+    return () => {
+      if (currentRef) {
+        currentRef.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, [hasImage]); // 'hasImage' continua como dependência
+
   const toggleFlavor = (relationId) => {
     if (selectedFlavors.includes(relationId)) {
       setSelectedFlavors((prev) => prev.filter((id) => id !== relationId));
@@ -39,7 +69,6 @@ const ProductModalMobile = ({
     }
   };
 
-  // Função para alternar seleção de adicionais
   const toggleAdditional = (relationId) => {
     if (selectedAdditionals.includes(relationId)) {
       setSelectedAdditionals((prev) => prev.filter((id) => id !== relationId));
@@ -57,42 +86,31 @@ const ProductModalMobile = ({
     });
   };
 
-  // --- FUNÇÃO DE CÁLCULO DE PREÇO TOTAL (CORRIGIDA NOVAMENTE) ---
   const calculateTotalPrice = () => {
     let basePrice = parseFloat(product.price || 0);
-
-    // 1. Calcular preço dos adicionais selecionados
     const additionalPrice = additionals
       .filter((r) => selectedAdditionals.includes(r.id))
       .reduce((sum, r) => sum + parseFloat(r.price || 0), 0);
 
-    // 2. Calcular preço dos sabores selecionados com base em tenantFlavorCalcType
     let calculatedFlavorPrice = 0;
     if (selectedFlavors.length > 0) {
       const sumOfSelectedFlavorRelationsPrice = selectedFlavors
         .map((id) => flavors.find((r) => r.id === id))
         .reduce((sum, r) => sum + parseFloat(r?.price || 0), 0);
 
-      // AQUI É A MUDANÇA: DIVIDIR PELA QUANTIDADE DE SABORES SELECIONADOS
-      if (
-        tenantFlavorCalcType === "average" &&
-        selectedFlavors.length > 0 // <-- MUDANÇA AQUI: usar selectedFlavors.length
-      ) {
+      if (tenantFlavorCalcType === "average" && selectedFlavors.length > 0) {
         calculatedFlavorPrice = parseFloat(
-          (
-            sumOfSelectedFlavorRelationsPrice / selectedFlavors.length
-          ).toFixed(2)
+          (sumOfSelectedFlavorRelationsPrice / selectedFlavors.length).toFixed(
+            2
+          )
         );
       } else {
-        // Se for "sum" ou outro, usa a soma direta das relações
         calculatedFlavorPrice = sumOfSelectedFlavorRelationsPrice;
       }
     }
-
     return basePrice + additionalPrice + calculatedFlavorPrice;
   };
 
-  // --- LÓGICA DE ADICIONAR AO CARRINHO (CORRIGIDA NOVAMENTE) ---
   const handleAddToCart = () => {
     if (selectedFlavors.length < product.flavorMandatory) {
       toast.warn(
@@ -102,33 +120,25 @@ const ProductModalMobile = ({
       return;
     }
 
-    // Mapear sabores, sobrescrevendo o preço unitário para exibição no carrinho
     const selectedFlavorsDetails = selectedFlavors.map((id) => {
       const rel = product.relations.find((r) => r.id === id);
       let unitPriceForDisplay = parseFloat(rel.price || 0);
 
-      // AQUI É A MUDANÇA: DIVIDIR PELA QUANTIDADE DE SABORES SELECIONADOS
-      if (
-        tenantFlavorCalcType === "average" &&
-        selectedFlavors.length > 0 // <-- MUDANÇA AQUI: usar selectedFlavors.length
-      ) {
+      if (tenantFlavorCalcType === "average" && selectedFlavors.length > 0) {
         unitPriceForDisplay = parseFloat(
           (unitPriceForDisplay / selectedFlavors.length).toFixed(2)
         );
       }
-
       return {
         ...rel,
         price: unitPriceForDisplay,
       };
     });
 
-    // Mapear adicionais selecionados
     const selectedAdditionalsDetails = selectedAdditionals.map((id) =>
       product.relations.find((r) => r.id === id)
     );
 
-    // Mapear composições removidas
     const removedCompositionsDetails = removedCompositions.map((id) =>
       product.relations.find((r) => r.id === id)
     );
@@ -151,187 +161,204 @@ const ProductModalMobile = ({
     closeModal();
   };
 
+
   return (
     <div className="modal-overlay-mobile" onClick={closeModal}>
       <div
         className="modal-content-mobile"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="back-button-mobile" onClick={closeModal}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={2}
-            stroke="black"
-            className="back-icon-mobile"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M15 12H3m0 0l6-6m-6 6l6 6"
-            />
-          </svg>
-        </div>
+        {/* Botão de Voltar - sempre no topo */}
+        <button
+          className={`back-button-overlay ${scrolled ? 'scrolled' : ''}`}
+          onClick={closeModal}
+        >
+          <FiChevronLeft size={30} color={scrolled || !hasImage ? "#333" : "#fff"} />
+        </button>
 
-        <div className="modal-body-mobile">
-          <h3 className="modal-product-name-mobile">
-            {toTitleCase(product.name) || "Nome indisponível"}
-          </h3>
-          <p className="modal-product-price-mobile">
-            R$ {formatarNumero(product.price)}
-          </p>
-          <p className="modal-product-description-mobile">
-            {toTitleCase(product.description) || ""}
-          </p>
+        {/* Conteúdo Principal Rolável */}
+        <div className="modal-main-content" ref={mainContentRef}>
+          {/* Seção da Imagem ou Cabeçalho sem Imagem */}
+          {hasImage ? (
+            <div className="product-image-section">
+              <img
+                src={`${config.baseURL}${product.image}`}
+                alt={toTitleCase(product.name)}
+                className="product-modal-image"
+              />
+            </div>
+          ) : (
+            <div className="product-title-no-image-section">
+              <h3 className="modal-product-name-mobile">
+                {toTitleCase(product.name) || "Nome indisponível"}
+              </h3>
+            </div>
+          )}
 
-          {/* Sabores */}
-          {flavors.length > 0 && (
-            <div className="flavors-section-mobile">
-              <h4>
-                Escolha até {product.flavorAllowed} sabor(es):{" "}
-                {product.flavorMandatory > 0 &&
-                  `(Obrigatório: ${product.flavorMandatory})`}
-              </h4>
-              <div className="flavors-list-mobile">
-                {flavors.map((relation) => {
-                  // AQUI É A MUDANÇA: DIVIDIR PELA QUANTIDADE DE SABORES SELECIONADOS
-                  const flavorUnitPriceForDisplay =
-                    tenantFlavorCalcType === "average" &&
-                    selectedFlavors.length > 0 // <-- MUDANÇA AQUI: usar selectedFlavors.length
-                      ? parseFloat(
-                          (
-                            parseFloat(relation.price || 0) /
-                            selectedFlavors.length
-                          ).toFixed(2)
-                        )
-                      : parseFloat(relation.price || 0);
+          {/* Informações do Produto (Nome, Preço, Descrição) */}
+          <div className="product-details-summary">
+            {hasImage && (
+              <h3 className="modal-product-name-mobile">
+                {toTitleCase(product.name) || "Nome indisponível"}
+              </h3>
+            )}
+            <p className="modal-product-price-mobile">
+              R$ {formatarNumero(product.price)}
+            </p>
+            <p className="modal-product-description-mobile">
+              {toTitleCase(product.description) || ""}
+            </p>
+          </div>
 
-                  return (
+          {/* Seções de Opções (Sabores, Adicionais, Composições) */}
+          <div className="options-sections-wrapper">
+            {flavors.length > 0 && (
+              <div className="option-section-card">
+                <h4>
+                  Escolha até {product.flavorAllowed} sabor(es)
+                  {product.flavorMandatory > 0 &&
+                    ` (Obrigatório: ${product.flavorMandatory})`}
+                </h4>
+                <div className="options-list-grid">
+                  {flavors.map((relation) => {
+                    const flavorUnitPriceForDisplay =
+                      tenantFlavorCalcType === "average" &&
+                      selectedFlavors.length > 0
+                        ? parseFloat(
+                            (
+                              parseFloat(relation.price || 0) /
+                              selectedFlavors.length
+                            ).toFixed(2)
+                          )
+                        : parseFloat(relation.price || 0);
+
+                    return (
+                      <label
+                        className="custom-checkbox-card"
+                        key={relation.id}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={selectedFlavors.includes(relation.id)}
+                          onChange={() => toggleFlavor(relation.id)}
+                        />
+                        <div className="checkbox-content">
+                          <span className="option-name">
+                            {toTitleCase(relation.relatedProduct.name)}
+                          </span>
+                          {relation.relatedProduct.description && (
+                            <span className="option-desc">
+                              {toTitleCase(relation.relatedProduct.description)}
+                            </span>
+                          )}
+                          {flavorUnitPriceForDisplay > 0 && (
+                            <span className="option-price">
+                              + R$ {formatarNumero(flavorUnitPriceForDisplay)}
+                            </span>
+                          )}
+                        </div>
+                        <span className="checkbox-indicator"></span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {additionals.length > 0 && (
+              <div className="option-section-card">
+                <h4>Adicionais:</h4>
+                <div className="options-list-grid">
+                  {additionals.map((relation) => (
                     <label
-                      className="custom-checkbox-mobile"
+                      className="custom-checkbox-card"
                       key={relation.id}
                     >
                       <input
                         type="checkbox"
-                        checked={selectedFlavors.includes(relation.id)}
-                        onChange={() => toggleFlavor(relation.id)}
+                        checked={selectedAdditionals.includes(relation.id)}
+                        onChange={() => toggleAdditional(relation.id)}
                       />
-                      <span className="checkbox-custom-mobile"></span>
-                      <div className="flavor-info-mobile">
-                        <span className="flavor-name-mobile">
+                      <div className="checkbox-content">
+                        <span className="option-name">
                           {toTitleCase(relation.relatedProduct.name)}
-                          {flavorUnitPriceForDisplay > 0 && (
-                            <> – R$ {formatarNumero(flavorUnitPriceForDisplay)}</>
-                          )}
                         </span>
                         {relation.relatedProduct.description && (
-                          <span className="flavor-desc-mobile">
-                            {toTitleCase(
-                              relation.relatedProduct.description
-                            )}
+                          <span className="option-desc">
+                            {toTitleCase(relation.relatedProduct.description)}
+                          </span>
+                        )}
+                        {parseFloat(relation.price || 0) > 0 && (
+                          <span className="option-price">
+                            + R$ {formatarNumero(relation.price)}
                           </span>
                         )}
                       </div>
+                      <span className="checkbox-indicator"></span>
                     </label>
-                  );
-                })}
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* Adicionais */}
-          {additionals.length > 0 && (
-            <div className="additionals-section-mobile">
-              <h4>Adicionais:</h4>
-              <div className="additionals-list-mobile">
-                {additionals.map((relation) => (
-                  <label
-                    className="custom-checkbox-mobile"
-                    key={relation.id}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={selectedAdditionals.includes(relation.id)}
-                      onChange={() => toggleAdditional(relation.id)}
-                    />
-                    <span className="checkbox-custom-mobile"></span>
-                    <div className="additional-info-mobile">
-                      <span className="additional-name-mobile">
-                        {toTitleCase(relation.relatedProduct.name)}
-                        {parseFloat(relation.price || 0) > 0 && (
-                          <> – R$ {formatarNumero(relation.price)}</>
-                        )}
-                      </span>
-                      {relation.relatedProduct.description && (
-                        <span className="additional-desc-mobile">
-                          {toTitleCase(
-                            relation.relatedProduct.description
-                          )}
-                        </span>
-                      )}
-                    </div>
-                  </label>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Composições */}
-          {compositions.length > 0 && (
-            <div className="compositions-section-mobile">
-              <h4>Composições:</h4>
-              <ul className="compositions-list-mobile">
-                {compositions.map((relation) => {
-                  const isRemoved = removedCompositions.includes(relation.id);
-                  return (
-                    <li
-                      className={`composition-card-mobile ${
-                        isRemoved ? "removed-composition" : ""
-                      }`}
-                      key={relation.id}
-                    >
-                      {toTitleCase(relation.relatedProduct.name)}
-                      <button
-                        className="delete-button"
-                        onClick={() => removeComposition(relation.id)}
+            {compositions.length > 0 && (
+              <div className="option-section-card">
+                <h4>Composições:</h4>
+                <div className="compositions-list">
+                  {compositions.map((relation) => {
+                    const isRemoved = removedCompositions.includes(relation.id);
+                    return (
+                      <div
+                        className={`composition-item ${
+                          isRemoved ? "removed-composition" : ""
+                        }`}
+                        key={relation.id}
                       >
-                        {isRemoved ? (
-                          <FiRotateCw size={20} color="green" />
-                        ) : (
-                          <FiTrash2 size={20} />
-                        )}
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          )}
+                        <span className="composition-name">
+                          {toTitleCase(relation.relatedProduct.name)}
+                        </span>
+                        <button
+                          className="toggle-composition-button"
+                          onClick={() => removeComposition(relation.id)}
+                        >
+                          {isRemoved ? (
+                            <FiRotateCw size={18} color="#1a9b9b" />
+                          ) : (
+                            <FiTrash2 size={18} color="#d9534f" />
+                          )}
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
-          {/* Observações */}
-          <div className="observations-section-mobile">
-            <h4>Observações:</h4>
-            <textarea
-              className="observations-mobile"
-              placeholder="Ex.: Sem cebola, sem ovo, etc."
-              maxLength={150}
-              value={observation}
-              onChange={(e) => setObservation(e.target.value)}
-            />
+            {/* Observações */}
+            <div className="option-section-card">
+              <h4>Observações:</h4>
+              <textarea
+                className="observations-textarea"
+                placeholder="Ex.: Sem cebola, sem ovo, etc."
+                maxLength={150}
+                value={observation}
+                onChange={(e) => setObservation(e.target.value)}
+              />
+            </div>
           </div>
         </div>
 
-        <div className="modal-footer-mobile">
+        {/* Footer Fixo (Botão e Total) */}
+        <div className="modal-sticky-footer">
+          <span className="modal-total-price-mobile">
+            Total: R$ {formatarNumero(calculateTotalPrice())}
+          </span>
           <button
             onClick={handleAddToCart}
             className="add-to-cart-button-mobile"
           >
             Adicionar ao Carrinho
           </button>
-          <span className="modal-total-price-mobile">
-            Total: R$ {formatarNumero(calculateTotalPrice())}
-          </span>
         </div>
       </div>
     </div>
