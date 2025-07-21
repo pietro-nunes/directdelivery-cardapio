@@ -24,7 +24,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6); /* Sombra um pouco mais escura */
   display: flex;
   justify-content: center;
   align-items: flex-end;
@@ -35,45 +35,45 @@
 /* --- Conteúdo Principal do Modal (Ocupa a tela toda) --- */
 .modal-content-mobile {
   width: 100%;
-  height: 100vh;
+  height: 100dvh; /* Usando dvh para melhor compatibilidade em mobile */
   background: #ffffff;
   display: flex;
   flex-direction: column;
   position: relative;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-  box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.15);
+  border-top-left-radius: 15px; /* Adicionado um leve border-radius na parte superior */
+  border-top-right-radius: 15px; /* Adicionado um leve border-radius na parte superior */
+  box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.2); /* Sombra mais proeminente no topo */
   overflow: hidden;
   animation: slideUpAndFadeIn 0.4s forwards cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 /* --- Botão de Voltar sobreposto --- */
 .back-button-overlay {
-  position: fixed; /* Mude para fixed para que ele não role com o conteúdo */
+  position: fixed; /* Mantém fixed para que não role com o conteúdo */
   top: 15px;
   left: 15px;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.85); /* Fundo um pouco mais opaco */
   border-radius: 50%;
-  padding: 8px;
+  padding: 6px; /* Reduzido de 8px */
   display: flex;
   align-items: center;
   justify-content: center;
   border: none;
   cursor: pointer;
-  z-index: 101;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; /* Adicione transição para o box-shadow */
+  z-index: 1010; /* Z-index mais alto para garantir que esteja acima de tudo */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15); /* Sombra um pouco mais forte */
+  transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
 }
 
 /* Estilos para o botão quando a página está rolada */
 .back-button-overlay.scrolled {
-  background-color: #fff; /* Fundo sólido quando rolado */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra mais destacada */
+  background-color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25); /* Sombra mais destacada ao rolar */
 }
 
 .back-button-overlay:hover {
   background-color: rgba(255, 255, 255, 1);
-  transform: scale(1.05);
+  transform: scale(1.08); /* Efeito hover mais sutil */
 }
 
 /* --- Conteúdo Principal Rolável (Inclui Imagem e Detalhes) --- */
@@ -82,7 +82,7 @@
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  padding-bottom: 80px;
+  padding-bottom: 70px; /* Reduzido de 80px para dar mais espaço ao conteúdo */
   /* Não precisa de padding-top aqui, pois o botão está fixed */
 }
 .modal-main-content::-webkit-scrollbar {
@@ -92,13 +92,13 @@
 /* --- Seção da Imagem (agora parte do conteúdo rolável) --- */
 .product-image-section {
   width: 100%;
-  height: 180px; /* Altura fixa para a imagem */
+  height: 160px; /* Reduzido de 180px */
   overflow: hidden;
-  background-color: #f0f0f0;
+  background-color: #f5f5f5; /* Fundo mais claro para placeholder */
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative; /* Para o botão de voltar, se ele fosse absoluto */
+  position: relative;
 }
 
 .product-modal-image {
@@ -110,7 +110,7 @@
 
 /* --- Seção de Título sem Imagem (agora parte do conteúdo rolável) --- */
 .product-title-no-image-section {
-  padding: 60px 20px 0; /* Aumenta padding superior para compensar o botão fixed */
+  padding: 50px 20px 0; /* Reduzido de 60px no padding superior */
   text-align: center;
   background-color: #fff;
 }
@@ -118,64 +118,64 @@
 /* --- Informações do Produto (Nome, Preço, Descrição) --- */
 .product-details-summary {
   background-color: #ffffff;
-  padding: 20px;
+  padding: 18px; /* Reduzido de 20px */
   text-align: center;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  margin-bottom: 20px;
-  margin-top: -10px;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04); /* Sombra mais suave */
+  margin-bottom: 15px; /* Reduzido de 20px */
+  margin-top: -8px; /* Ajuste fino */
 }
 
 .modal-product-name-mobile {
-  font-size: 1.8rem;
-  font-weight: 800;
+  font-size: 1.6rem; /* Reduzido de 1.8rem */
+  font-weight: 700; /* Levemente menos negrito */
   color: #222;
   margin-top: 0;
-  margin-bottom: 10px;
+  margin-bottom: 8px; /* Reduzido de 10px */
 }
 
 .modal-product-price-mobile {
-  font-size: 1.3rem;
+  font-size: 1.2rem; /* Reduzido de 1.3rem */
   color: #1a9b9b;
   text-align: center;
   font-weight: 700;
-  margin: 5px 0 15px 0;
+  margin: 4px 0 12px 0; /* Ajustes finos de margem */
 }
 
 .modal-product-description-mobile {
-  font-size: 0.9rem;
+  font-size: 0.85rem; /* Reduzido de 0.9rem */
   color: #666;
-  line-height: 1.5;
+  line-height: 1.4; /* Levemente mais apertado */
   margin-bottom: 0;
 }
 
 /* --- Seções de Opções (Sabores, Adicionais, Composições, Observações) --- */
 .options-sections-wrapper {
-  padding: 0 20px 20px;
+  padding: 0 18px 18px; /* Reduzido de 20px */
 }
 
 .option-section-card {
-  background-color: #fefefe;
-  border-radius: 15px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  border: 1px solid #eee;
+  background-color: #fcfcfc; /* Fundo mais claro */
+  border-radius: 12px; /* Reduzido de 15px */
+  padding: 18px; /* Reduzido de 20px */
+  margin-bottom: 15px; /* Reduzido de 20px */
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06); /* Sombra mais suave */
+  border: 1px solid #f0f0f0; /* Borda mais fina e clara */
 }
 
 .option-section-card h4 {
-  font-size: 1.1rem;
+  font-size: 1rem; /* Reduzido de 1.1rem */
   font-weight: 700;
   color: #333;
   margin-top: 0;
-  margin-bottom: 15px;
-  border-bottom: 1px solid #f0f0f0;
-  padding-bottom: 10px;
+  margin-bottom: 12px; /* Reduzido de 15px */
+  border-bottom: 1px solid #f5f5f5; /* Borda mais suave */
+  padding-bottom: 8px; /* Reduzido de 10px */
 }
 
 .options-list-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 15px;
+  gap: 12px; /* Reduzido de 15px */
 }
 
 .custom-checkbox-card {
@@ -184,18 +184,18 @@
   cursor: pointer;
   user-select: none;
   background-color: #ffffff;
-  padding: 15px;
-  border-radius: 12px;
-  border: 1px solid #e0e0e0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  transition: all 0.2s ease;
+  padding: 12px; /* Reduzido de 15px */
+  border-radius: 10px; /* Reduzido de 12px */
+  border: 1px solid #e5e5e5; /* Borda mais clara */
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.03); /* Sombra mais leve */
+  transition: all 0.15s ease;
   position: relative;
 }
 
 .custom-checkbox-card:hover {
   border-color: #1a9b9b;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transform: translateY(-2px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px); /* Efeito hover mais sutil */
 }
 
 input[type="checkbox"] {
@@ -213,38 +213,38 @@ input[type="checkbox"] {
 }
 
 .option-name {
-  font-size: 1rem;
+  font-size: 0.95rem; /* Reduzido de 1rem */
   font-weight: 600;
   color: #333;
 }
 
 .option-desc {
-  font-size: 0.8rem;
+  font-size: 0.75rem; /* Reduzido de 0.8rem */
   color: #888;
-  margin-top: 4px;
-  line-height: 1.3;
+  margin-top: 3px; /* Reduzido de 4px */
+  line-height: 1.2;
 }
 
 .option-price {
-  font-size: 0.9rem;
+  font-size: 0.85rem; /* Reduzido de 0.9rem */
   font-weight: 700;
   color: #1a9b9b;
-  margin-top: 8px;
+  margin-top: 6px; /* Reduzido de 8px */
   align-self: flex-end;
 }
 
 .checkbox-indicator {
-  width: 24px;
-  height: 24px;
-  border: 2px solid #ccc;
+  width: 20px; /* Reduzido de 24px */
+  height: 20px; /* Reduzido de 24px */
+  border: 1.5px solid #ccc; /* Borda mais fina */
   border-radius: 50%;
   background: white;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  margin-left: 15px;
-  transition: all 0.2s ease;
+  margin-left: 12px; /* Reduzido de 15px */
+  transition: all 0.15s ease;
 }
 
 input[type="checkbox"]:checked + .checkbox-content + .checkbox-indicator {
@@ -254,7 +254,7 @@ input[type="checkbox"]:checked + .checkbox-content + .checkbox-indicator {
 
 input[type="checkbox"]:checked + .checkbox-content + .checkbox-indicator::after {
   content: "✔";
-  font-size: 14px;
+  font-size: 12px; /* Reduzido de 14px */
   color: white;
   font-weight: bold;
 }
@@ -263,21 +263,21 @@ input[type="checkbox"]:checked + .checkbox-content + .checkbox-indicator::after 
 .compositions-list {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 10px;
+  gap: 8px; /* Reduzido de 10px */
 }
 
 .composition-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 15px;
+  padding: 10px 12px; /* Reduzido de 12px 15px */
   background: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 10px;
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.03);
-  font-size: 1rem;
+  border: 1px solid #e5e5e5; /* Mais clara */
+  border-radius: 8px; /* Reduzido de 10px */
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02); /* Mais sutil */
+  font-size: 0.95rem; /* Reduzido de 1rem */
   color: #333;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 }
 
 .composition-name {
@@ -288,86 +288,86 @@ input[type="checkbox"]:checked + .checkbox-content + .checkbox-indicator::after 
   background: none;
   border: none;
   cursor: pointer;
-  padding: 5px;
+  padding: 4px; /* Reduzido de 5px */
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  transition: background-color 0.15s ease, transform 0.15s ease;
 }
 
 .toggle-composition-button:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-  transform: scale(1.1);
+  background-color: rgba(0, 0, 0, 0.03); /* Mais suave */
+  transform: scale(1.05); /* Efeito mais sutil */
 }
 
 .removed-composition {
   text-decoration: line-through;
   color: #999;
   opacity: 0.7;
-  background-color: #f0f0f0;
-  border-color: #ccc;
+  background-color: #f5f5f5; /* Mais clara */
+  border-color: #d0d0d0; /* Mais clara */
 }
 
 /* --- Observações --- */
 .observations-textarea {
   width: 100%;
-  min-height: 100px;
-  border-radius: 10px;
-  border: 1px solid #ccc;
+  min-height: 80px; /* Reduzido de 100px */
+  border-radius: 8px; /* Reduzido de 10px */
+  border: 1px solid #d0d0d0; /* Mais clara */
   box-sizing: border-box;
-  padding: 15px;
-  font-size: 0.95rem;
+  padding: 12px; /* Reduzido de 15px */
+  font-size: 0.9rem; /* Reduzido de 0.95rem */
   resize: vertical;
   font-family: inherit;
   color: #555;
   background-color: #ffffff;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03); /* Mais sutil */
 }
 .observations-textarea::placeholder {
-  color: #aaa;
+  color: #bbb; /* Mais clara */
 }
 
 /* --- Footer Fixo --- */
 .modal-sticky-footer {
-  position: sticky;
+  position: sticky; /* Mantém sticky para se comportar como uma barra inferior */
   bottom: 0;
   width: 100%;
   background-color: #ffffff;
-  padding: 15px 20px;
+  padding: 12px 18px; /* Reduzido de 15px 20px */
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1); /* Sombra mais suave */
   border-top-left-radius: 0;
   border-top-right-radius: 0;
   z-index: 100;
 }
 
 .modal-total-price-mobile {
-  font-size: 1.4rem;
-  font-weight: 800;
+  font-size: 1.3rem; /* Reduzido de 1.4rem */
+  font-weight: 700; /* Levemente menos negrito */
   color: #222;
 }
 
 .add-to-cart-button-mobile {
-  padding: 15px 25px;
+  padding: 13px 22px; /* Reduzido de 15px 25px */
   background-color: #1a9b9b;
   color: white;
   border: none;
-  border-radius: 30px;
-  font-size: 1.1rem;
-  font-weight: 700;
+  border-radius: 25px; /* Reduzido de 30px */
+  font-size: 1rem; /* Reduzido de 1.1rem */
+  font-weight: 600; /* Levemente menos negrito */
   text-align: center;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-  box-shadow: 0 6px 15px rgba(26, 155, 155, 0.35);
+  transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  box-shadow: 0 5px 12px rgba(26, 155, 155, 0.3); /* Sombra mais suave */
 }
 
 .add-to-cart-button-mobile:hover {
   background-color: #148f8f;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(26, 155, 155, 0.45);
+  transform: translateY(-1px); /* Efeito mais sutil */
+  box-shadow: 0 6px 15px rgba(26, 155, 155, 0.4);
 }
 
 /* --- Responsividade para Desktop --- */
@@ -378,81 +378,82 @@ input[type="checkbox"]:checked + .checkbox-content + .checkbox-indicator::after 
 
   .modal-content-mobile {
     width: 90%;
-    max-width: 650px;
+    max-width: 600px; /* Reduzido de 650px */
     height: auto;
-    max-height: 90vh;
-    border-radius: 25px;
+    max-height: 85vh; /* Reduzido de 90vh */
+    border-radius: 20px; /* Reduzido de 25px */
     animation: fadeIn 0.3s ease-out;
     margin: auto;
   }
 
   .product-image-section {
-    height: 280px;
-    border-top-left-radius: 25px;
-    border-top-right-radius: 25px;
+    height: 240px; /* Reduzido de 280px */
+    border-top-left-radius: 20px; /* Ajustado */
+    border-top-right-radius: 20px; /* Ajustado */
   }
 
   .product-title-no-image-section {
-    padding-top: 20px; /* Reduz o padding superior em desktop */
-    border-top-left-radius: 25px;
-    border-top-right-radius: 25px;
+    padding-top: 15px; /* Reduzido de 20px */
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
   }
 
   .back-button-overlay {
-    position: absolute; /* Volta para absolute em desktop */
-    top: 20px;
-    left: 20px;
-    padding: 10px;
-    /* Remove estilos de rolagem para desktop */
-    background-color: rgba(255, 255, 255, 0.8);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    top: 15px; /* Reduzido de 20px */
+    left: 15px; /* Reduzido de 20px */
+    padding: 8px; /* Reduzido de 10px */
+    background-color: rgba(255, 255, 255, 0.85); /* Mantém opacidade */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15); /* Sombra ajustada */
   }
 
   /* Garante que o ícone do botão volte à cor original em desktop se não tiver imagem */
-  .back-button-overlay .fi-chevron-left {
-    color: #333 !important; /* Força a cor padrão */
+  /* Isso é crucial para que o botão não fique branco no fundo da imagem */
+  .back-button-overlay svg { /* Alterado para atingir o SVG diretamente */
+      color: #333 !important; /* Força a cor padrão do ícone */
   }
-
   /* Seção específica para o ícone no botão scrolled */
-  .back-button-overlay.scrolled .fi-chevron-left {
+  .back-button-overlay.scrolled svg {
       color: #333 !important; /* Mantém a cor para o ícone quando o botão está scrolled */
   }
 
+
   .modal-main-content {
-    padding-bottom: 90px;
+    padding-bottom: 80px; /* Reduzido de 90px */
   }
 
   .product-details-summary {
-    padding: 25px;
+    padding: 20px; /* Reduzido de 25px */
   }
 
   .modal-product-name-mobile {
-    font-size: 2rem;
+    font-size: 1.8rem; /* Reduzido de 2rem */
   }
 
   .options-sections-wrapper {
-    padding: 0 25px 25px;
+    padding: 0 20px 20px; /* Reduzido de 25px */
   }
 
   .options-list-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    gap: 15px; /* Reduzido de 20px */
   }
 
   .compositions-list {
     grid-template-columns: repeat(2, 1fr);
+    gap: 10px; /* Reduzido de 15px */
   }
 
   .modal-sticky-footer {
-    padding: 20px 25px;
+    padding: 15px 20px; /* Reduzido de 20px 25px */
   }
 
   .modal-total-price-mobile {
-    font-size: 1.6rem;
+    font-size: 1.4rem; /* Reduzido de 1.6rem */
   }
 
   .add-to-cart-button-mobile {
-    font-size: 1.2rem;
-    padding: 16px 30px;
+    font-size: 1.1rem; /* Reduzido de 1.2rem */
+    padding: 14px 25px; /* Reduzido de 16px 30px */
   }
 }

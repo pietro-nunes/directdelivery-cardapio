@@ -59,13 +59,13 @@ const Cart = ({ cartItems, setCartItems, isLoggedIn, tenantData, isRestaurantOpe
   };
 
   return (
-    <> {/* Fragmento React para permitir múltiplos elementos no retorno */}
+    <>
       <div className="cart">
-        <h2>Seu Carrinho</h2>
+        <h2 className="cart-title">Seu Carrinho</h2> {/* Adicionada classe para o título */}
         {cartItems.length === 0 ? (
-          <p>Seu carrinho está vazio.</p>
+          <p className="cart-empty-message">Seu carrinho está vazio.</p>
         ) : (
-          <> {/* Fragmento para agrupar cart-items e cart-summary */}
+          <>
             <div className="cart-items">
               {cartItems.map((item) => (
                 <div key={item.uniqueKey} className="cart-item">
@@ -84,47 +84,52 @@ const Cart = ({ cartItems, setCartItems, isLoggedIn, tenantData, isRestaurantOpe
                   />
                   <div className="item-details">
                     <p className="cart-item-name">{toTitleCase(item.name)}</p>
-                    {item.removedCompositions?.length > 0 && (
-                      <div className="cart-item-flavors">
-                        <strong>Composições removidas:</strong>
-                        <ul>
-                          {item.removedCompositions.map((composition, index) => (
-                            <li key={index}>{toTitleCase(composition.relatedProduct.name)}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                    {item.selectedFlavors?.length > 0 && (
-                      <div className="cart-item-flavors">
-                        <strong>Sabores:</strong>
-                        <ul>
+
+                    {item.selectedFlavors?.length > 0 && ( // Sabores primeiro, geralmente mais importantes
+                      <div className="cart-item-info-block">
+                        <p className="cart-item-info-title">Sabores:</p>
+                        <ul className="cart-item-list">
                           {item.selectedFlavors.map((flavor, index) => (
                             <li key={index}>{toTitleCase(flavor.relatedProduct.name)}</li>
                           ))}
                         </ul>
                       </div>
                     )}
+
                     {item.selectedAdditionals?.length > 0 && (
-                      <div className="cart-item-additionals">
-                        <strong>Adicionais:</strong>
-                        <ul>
+                      <div className="cart-item-info-block">
+                        <p className="cart-item-info-title">Adicionais:</p>
+                        <ul className="cart-item-list">
                           {item.selectedAdditionals.map((additional, index) => (
                             <li key={index}>
-                              {toTitleCase(additional.relatedProduct.name)} (R$ {formatarNumero(additional.price)})
+                              {toTitleCase(additional.relatedProduct.name)} (+ R$ {formatarNumero(additional.price)})
                             </li>
                           ))}
                         </ul>
                       </div>
                     )}
 
-                    {item.observation && (
-                      <p className="cart-item-obs">
-                        <strong>Obs:</strong> {item.observation}
-                      </p>
+                    {item.removedCompositions?.length > 0 && (
+                      <div className="cart-item-info-block">
+                        <p className="cart-item-info-title">Removidos:</p>
+                        <ul className="cart-item-list removed-compositions-list"> {/* Adiciona classe para estilo */}
+                          {item.removedCompositions.map((composition, index) => (
+                            <li key={index}>{toTitleCase(composition.relatedProduct.name)}</li>
+                          ))}
+                        </ul>
+                      </div>
                     )}
+
+                    {item.observation && (
+                      <div className="cart-item-info-block">
+                        <p className="cart-item-info-title">Observação:</p>
+                        <p className="cart-item-obs">{item.observation}</p>
+                      </div>
+                    )}
+
                     <div className="quantity-controls">
                       <p className="cart-item-price">
-                        R$ {formatarNumero(item.totalPrice)}
+                        R$ {formatarNumero(item.totalPrice * item.count)} {/* Mostra o preço total do item * quantidade */}
                       </p>
                       <div className="quantity-control">
                         <button
@@ -146,16 +151,17 @@ const Cart = ({ cartItems, setCartItems, isLoggedIn, tenantData, isRestaurantOpe
                 </div>
               ))}
             </div>
-            <div className="cart-summary"> {/* Este div agora só exibe o total */}
-              <h3>Total: R$ {formatarNumero(calculateTotal())}</h3>
-            </div>
+            {/* O cart-summary e o botão de checkout foram separados no layout */}
           </>
         )}
       </div>
 
-      {/* NOVO: Este é o container fixo para o botão de checkout */}
-      {cartItems.length > 0 && ( // Só mostra o botão se tiver itens no carrinho
+      {cartItems.length > 0 && (
         <div className="cart-fixed-footer">
+          <div className="cart-summary-fixed"> {/* Novo div para o resumo dentro do footer */}
+            <p className="total-label">Total do carrinho:</p>
+            <p className="total-amount">R$ {formatarNumero(calculateTotal())}</p>
+          </div>
           <button
             className="checkout-button"
             onClick={handleProceedToCheckout}
