@@ -8,6 +8,7 @@ import BestSellerProductCard from "../../components/BestSellerProductCard/BestSe
 import { useFetchWithLoading } from "../../contexts/fetchWithLoading";
 import config from "../../config";
 import { toTitleCase } from "../../utils/functions";
+import ProductModalMobile from "../../components/ProductModalMobile/ProductModalMobile";
 
 const Home = ({ addToCart, tenantData, setIsRestaurantOpen }) => {
   const [selectedCategory, setSelectedCategory] = useState();
@@ -15,6 +16,7 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen }) => {
   const [bestSellers, setBestSellers] = useState([]);
   const [isCategoriesSticky, setIsCategoriesSticky] = useState(false);
   const { fetchWithLoading } = useFetchWithLoading();
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const restaurantInfoRef = useRef(null);
 
@@ -120,13 +122,21 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen }) => {
             <BestSellerProductCard // AGORA USANDO O NOVO COMPONENTE
               key={product.id}
               product={product}
-              addToCart={addToCart}
-              tenantFlavorCalcType={tenantData.flavorCalcType}
+              onClick={() => setSelectedProduct(product)}
               // A prop isBestSeller não é mais necessária aqui, pois é inerente ao componente
             />
           ))}
         </div>
       </div>
+
+      {selectedProduct && (
+        <ProductModalMobile
+          product={selectedProduct}
+          closeModal={() => setSelectedProduct(null)}
+          addToCart={addToCart}
+          tenantFlavorCalcType={tenantData.flavorCalcType}
+        />
+      )}
 
       <p className="explore-menu-text">Explore nosso cardápio completo:</p>
 
