@@ -1,0 +1,165 @@
+/* src/components/BestSellerProductCard/BestSellerProductCard.css */
+
+.best-seller-product-card {
+  /* Estilos base para MOBILE (prioridade total) */
+  background-color: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra mais suave para mobile */
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 20px); /* Ocupa quase 100% da largura, com padding lateral do carousel */
+  min-width: 250px; /* Garante um tamanho mínimo aceitável em mobile */
+  margin: 0;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  cursor: pointer; /* Indica que o card é clicável */
+  border: 1px solid #1a9b9b; /* Borda de destaque com sua cor */
+}
+
+/* Não há transform no hover em mobile para evitar bugs de rolagem */
+/* .best-seller-product-card:hover { ... } */
+
+.best-seller-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 150px; /* Altura da imagem mais adequada para mobile */
+  overflow: hidden;
+  border-bottom: 2px solid #1a9b9b; /* Borda abaixo da imagem com sua cor */
+}
+
+.best-seller-product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.best-seller-badge {
+  position: absolute;
+  top: 8px; /* Ajuste para mobile */
+  right: 8px; /* Ajuste para mobile */
+  background-color: #1a9b9b; /* Cor de fundo do badge com sua cor */
+  color: #fff;
+  padding: 5px 10px; /* Padding menor para mobile */
+  border-radius: 20px;
+  font-size: 0.75em; /* Fonte menor para mobile */
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  z-index: 10;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.best-seller-info {
+  padding: 12px; /* Padding menor para mobile */
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: space-between; /* Para empurrar o preço para baixo */
+}
+
+.best-seller-name {
+  font-size: 1.1em; /* Fonte menor para mobile */
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 6px; /* Margem menor para mobile */
+  line-height: 1.3;
+}
+
+.best-seller-description {
+  font-size: 0.8em; /* Fonte menor para mobile */
+  color: #666;
+  margin-bottom: 12px; /* Margem menor para mobile */
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.best-seller-price-display {
+  /* Novo contêiner para o preço */
+  text-align: right; /* Alinha o preço à direita */
+  margin-top: 8px; /* Espaço acima do preço */
+}
+
+.best-seller-price {
+  font-size: 1.3em; /* Fonte do preço, levemente maior para destaque */
+  font-weight: bolder;
+  color: #1a9b9b; /* Cor do preço com sua cor principal */
+}
+
+/* Removido completamente o .best-seller-price-add (pois foi renomeado e ajustado) */
+/* Removido completamente os estilos do botão, já que ele não existe mais */
+/* .best-seller-add-button { ... } */
+/* .best-seller-add-button:disabled { ... } */
+
+
+/* --- Media Queries para telas MAIORES (Tablet e Desktop) --- */
+
+/* Tablet em diante */
+@media (min-width: 481px) {
+  .best-seller-product-card {
+    width: 280px; /* Largura padrão para tablet/desktop */
+    min-width: 280px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); /* Sombra mais proeminente */
+    border: 2px solid #1a9b9b; /* Borda de destaque com sua cor */
+  }
+
+  .best-seller-product-card:hover {
+    transform: translateY(-5px); /* Efeito de levantar no hover (só em telas maiores) */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  }
+
+  .best-seller-image-wrapper {
+    height: 180px; /* Altura da imagem maior para tablet/desktop */
+    border-bottom: 2px solid #1a9b9b; /* Borda abaixo da imagem com sua cor */
+  }
+
+  .best-seller-badge {
+    top: 10px;
+    right: 10px;
+    padding: 6px 12px;
+    font-size: 0.8em;
+    background-color: #1a9b9b; /* Cor de fundo do badge com sua cor */
+  }
+
+  .best-seller-info {
+    padding: 15px;
+  }
+
+  .best-seller-name {
+    font-size: 1.3em;
+    margin-bottom: 8px;
+  }
+
+  .best-seller-description {
+    font-size: 0.9em;
+    margin-bottom: 15px;
+  }
+
+  .best-seller-price-display {
+    margin-top: 10px; /* Mais espaço acima do preço em telas maiores */
+  }
+
+  .best-seller-price {
+    font-size: 1.5em; /* Preço maior em telas maiores */
+  }
+}
+
+/* Desktop em diante (se precisar de algo ainda maior ou específico) */
+@media (min-width: 1025px) {
+  /* Adicione estilos aqui se quiser que os cards dos mais vendidos se comportem de forma diferente em telas muito grandes */
+}

@@ -14,7 +14,7 @@
   cursor: pointer;
   font-size: 28px; /* Ícone um pouco maior */
   transition: all 0.3s ease; /* Transição para todas as propriedades no hover */
-  z-index: 1000; /* Garante que fique acima de quase tudo */
+  z-index: 2000; /* Garante que fique acima de quase tudo */
   animation: fab-pop-in 0.5s ease-out forwards; /* Animação de entrada */
   opacity: 0; /* Começa invisível para a animação */
   transform: scale(0.8); /* Começa menor para a animação de pop */

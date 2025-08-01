@@ -100,6 +100,7 @@ const Checkout = ({
       formaPagamento: formaPagamentoSelecionada.id,
       troco: formaPagamentoSelecionada.need_change ? parseCurrencyToNumber(troco) : null,
       observacaoPedido: observation,
+      nomeFormaPagamento: formaPagamentoSelecionada.name
     };
 
     try {
@@ -115,7 +116,7 @@ const Checkout = ({
         const order = await postResponse.json();
         localStorage.removeItem("carrinho-" + tenantData.slug);
         setCartItems([]);
-        setLastOrder(order);
+        setLastOrder(pedido);
         navigate(`/${tenantData.slug}/orderCompleted`);
       }
     } catch (error) {

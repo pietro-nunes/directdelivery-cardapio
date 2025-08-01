@@ -38,8 +38,8 @@
 
 /* Animação de giro para o ícone de refresh */
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* Card de cada Pedido */
@@ -120,18 +120,10 @@
   position: relative; /* Para a linha de progresso */
 }
 
-.status-step {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex: 1; /* Distribui o espaço igualmente */
-  min-width: 70px; /* Garante um tamanho mínimo para cada passo */
-  text-align: center;
-  font-size: 0.85rem; /* Tamanho da fonte dos nomes dos status */
-  color: #999;
-  font-weight: 500;
-  position: relative;
-  z-index: 1; /* Garante que o conteúdo fique acima da linha de progresso */
+/* Nova classe para esconder a linha de progresso */
+.order-status.status-hidden-line::before,
+.order-status.status-hidden-line::after {
+  content: none; /* Remove as linhas de progresso para status como "canceled" e "ready" */
 }
 
 /* Linha de progresso */
@@ -158,10 +150,22 @@
     z-index: 0;
     width: 0%; /* Largura inicial, será ajustada via JS/State se necessário, ou CSS se todos os ativos já tiverem classe */
     transition: width 0.5s ease-out; /* Transição suave */
-    /* Este `width` precisaria ser dinamicamente calculado se for um progresso visual */
-    /* Para uma solução puramente CSS, o `width` seria 100% no último `.active` */
 }
 
+
+.status-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1; /* Distribui o espaço igualmente */
+  min-width: 70px; /* Garante um tamanho mínimo para cada passo */
+  text-align: center;
+  font-size: 0.85rem; /* Tamanho da fonte dos nomes dos status */
+  color: #999;
+  font-weight: 500;
+  position: relative;
+  z-index: 1; /* Garante que o conteúdo fique acima da linha de progresso */
+}
 
 .status-step .status-icon {
   width: 36px; /* Ícone maior */
@@ -209,6 +213,43 @@
     transform: translateY(0px);
     opacity: 1;
   }
+}
+
+/* NOVOS ESTILOS PARA PEDIDOS CANCELADOS E PRONTOS */
+.status-canceled {
+  text-align: center;
+  width: 100%;
+  padding: 10px 0;
+}
+
+.canceled-text {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #e74c3c; /* Vermelho para cancelado */
+  margin-bottom: 5px;
+}
+
+.canceled-observation {
+  font-size: 0.9rem;
+  color: #777;
+  font-style: italic;
+}
+
+.status-ready {
+  text-align: center;
+  width: 100%;
+  padding: 10px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #27ae60; /* Verde para pronto */
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.ready-check-icon {
+  color: #27ae60; /* Ícone verde */
 }
 
 
@@ -277,6 +318,12 @@
     font-size: 16px;
     border-width: 2px;
     color: white;
+  }
+
+  /* Media query para esconder linha para status especiais */
+  .order-status.status-hidden-line::before,
+  .order-status.status-hidden-line::after {
+    content: none;
   }
 }
 

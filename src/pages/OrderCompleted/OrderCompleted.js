@@ -7,92 +7,105 @@ import { formatarNumero } from "../../utils/functions";
 import { useNavigate } from "react-router-dom";
 
 const OrderCompleted = ({ tenantData, orderDetails, sendWhatsApp }) => {
+  console.log(orderDetails);
+
   const navigate = useNavigate();
 
   const formatWhatsAppMessage = (orderDetails) => {
-    const { id, createdAt, total, items, address, paymentMethod, change } =
-      orderDetails;
+    const {
+      id,
+      createdAt,
+      total,
+      itens,
+      endereco,
+      retirada,
+      nomeFormaPagamento,
+      troco,
+      observacaoPedido,
+    } = orderDetails ?? {};
 
-    const formasPagamentoFake = [
-      { id: "1", nome: "Cartão de Crédito/Débito" },
-      { id: "3", nome: "Pix" },
-      { id: "4", nome: "Dinheiro na Entrega" },
-    ];
-
-    // Encontra o nome do método de pagamento com base no ID
-    const payment = formasPagamentoFake.find(
-      (forma) => forma.id === paymentMethod
-    );
-    const paymentName = payment
-      ? payment.nome
-      : "Método de Pagamento Não Especificado";
-
-    let message = `*Novo Pedido Realizado!*\n\n`;
-    message += `📌 *Número do Pedido:* ${id}\n`;
-    message += `📅 *Data:* ${new Date(createdAt).toLocaleString()}\n\n`;
-
-    message += `🍽️ *Itens do Pedido:*\n`;
-    items.forEach((item) => {
-      message += `- ${item.quantity}x ${item.productName} - R$ ${formatarNumero(
-        item.totalPrice
-      )}\n`;
-      if (item.observation) {
-        message += `   Observação: ${item.observation}\n`;
-      }
-      if (item.relations?.length > 0) {
-        const flavors = item.relations.filter((rel) => rel.type === "flavor");
-        const additionals = item.relations.filter(
-          (rel) => rel.type === "additional"
-        );
-        const compositions = item.relations.filter(
-          (rel) => rel.type === "composition"
-        );
-
-        if (flavors.length > 0) {
-          message += `   Sabores:\n`;
-          flavors.forEach((flavor) => {
-            message += `      - ${flavor.relatedProduct.name}${
-              flavor.price > 0 ? ` (+R$ ${formatarNumero(flavor.price)})` : ""
-            }\n`;
-          });
-        }
-
-        if (additionals.length > 0) {
-          message += `   Adicionais:\n`;
-          additionals.forEach((add) => {
-            message += `      - ${add.relatedProduct.name}${
-              add.price > 0 ? ` (+R$ ${formatarNumero(add.price)})` : ""
-            }\n`;
-          });
-        }
-
-        if (compositions.length > 0) {
-          message += `   Composições Removidas:\n`;
-          compositions.forEach((composition) => {
-            message += `      - ${composition.relatedProduct.name}${
-              composition.price > 0
-                ? ` (+R$ ${formatarNumero(composition.price)})`
-                : ""
-            }\n`;
-          });
-        }
-      }
+    // 1) Normaliza itens
+    const normalizedItems = (Array.isArray(itens) ? itens : []).map((it) => {
+      return {
+        quantity: it.quantity ?? it.quantidade ?? 1,
+        productName: it.name ?? it.productName ?? "Item",
+        price: Number(it.price ?? 0),
+        isActive: it.isActive ?? true,
+      };
     });
 
-    message += `\n📍 *Endereço de Entrega:*\n`;
-    message += `${address.apelido}: ${address.endereco}, ${address.numero} ${
-      address.complemento ? `- ${address.complemento}` : ""
-    }\n`;
-    message += `${address.bairro} - ${address.cidade}, CEP: ${address.cep}\n`;
-    if (address.pontoReferencia) {
-      message += `Ponto de Referência: ${address.pontoReferencia}\n`;
+    // 2) Normaliza endereço (string "{}" ou objeto)
+    let addr = endereco ?? null;
+    if (typeof addr === "string") {
+      try {
+        addr = JSON.parse(addr);
+      } catch {
+        addr = null;
+      }
+    }
+    const hasAddress =
+      addr &&
+      typeof addr === "object" &&
+      Object.values(addr).some(
+        (v) => v !== undefined && v !== null && String(v).trim() !== ""
+      );
+
+    // 3) Monta mensagem
+    let message = `*Novo Pedido Realizado!*\n\n`;
+    if (id !== undefined) message += `📌 *Número do Pedido:* ${id}\n`;
+    message += `📅 *Data:* ${
+      createdAt
+        ? new Date(createdAt).toLocaleString()
+        : new Date().toLocaleString()
+    }\n\n`;
+
+    message += `🍽️ *Itens do Pedido:*\n`;
+    normalizedItems.forEach((item) => {
+      message += `- ${item.quantity}x ${item.productName} - R$ ${formatarNumero(
+        item.price
+      )}\n`;
+    });
+
+    // 4) Endereço ou retirada
+    if (retirada === true) {
+      message += `\n🛍️ *Retirada no balcão.*\n`;
+    } else if (hasAddress) {
+      const apelido = addr.apelido ?? "";
+      const enderecoStr = addr.endereco ?? "";
+      const numero = addr.numero ?? "";
+      const complemento = addr.complemento ?? "";
+      const bairro = addr.bairro ?? "";
+      const cidade = addr.cidade ?? "";
+      const cep = addr.cep ?? "";
+
+      message += `\n📍 *Endereço de Entrega:*\n`;
+      if (apelido) message += `${apelido}: `;
+      message += `${enderecoStr}${numero ? `, ${numero}` : ""}${
+        complemento ? ` - ${complemento}` : ""
+      }\n`;
+      message += `${bairro}${bairro && (cidade || cep) ? " - " : ""}${cidade}${
+        cep ? `, CEP: ${cep}` : ""
+      }\n`;
+      if (addr.pontoReferencia) {
+        message += `Ponto de Referência: ${addr.pontoReferencia}\n`;
+      }
     }
 
-    message += `\n💳 *Forma de Pagamento:* ${paymentName}`;
-    if (paymentMethod === "4") {
-      message += ` (Troco para R$ ${change})`;
+    // 5) Observação do pedido
+    if (observacaoPedido) {
+      message += `\n📝 *Observações do Pedido:* ${observacaoPedido}\n`;
     }
-    message += `\n🛒 *Total do Pedido:* R$ ${formatarNumero(total)}\n`;
+
+    // 6) Forma de pagamento (vem direto do JSON)
+    message += `\n💳 *Forma de Pagamento:* ${nomeFormaPagamento ?? ""}`;
+    if (troco != null && troco !== "") {
+      message += ` (Troco para R$ ${formatarNumero(troco)})`;
+    }
+
+    // 7) Total
+    if (total != null) {
+      message += `\n🛒 *Total do Pedido:* R$ ${formatarNumero(total)}\n`;
+    }
 
     return message;
   };
@@ -124,11 +137,8 @@ const OrderCompleted = ({ tenantData, orderDetails, sendWhatsApp }) => {
       />
       <div className="order-summary">
         <p>
-          <strong>Pedido:</strong> {orderDetails.id}
-        </p>
-        <p>
           <strong>Data:</strong>{" "}
-          {new Date(orderDetails.createdAt).toLocaleString()}
+          {new Date().toLocaleString()}
         </p>
         <p>
           <strong>Total: </strong> R$ {formatarNumero(orderDetails.total)}

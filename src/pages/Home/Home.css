@@ -1,105 +1,201 @@
 /* Home.css */
 
+/* Definição de variáveis CSS para cores - Opcional, mas boa prática */
+:root {
+  --primary-color: #1a9b9b; /* Sua nova cor principal */
+  --secondary-color: #007bff; /* Exemplo de cor secundária para botões */
+  --secondary-hover-color: #0056b3; /* Cor de hover para botões */
+  --background-color: #f8f8f8; /* Cor de fundo geral da página */
+  --text-color-dark: #333;
+  --text-color-medium: #666;
+  --border-color: #e0e0e0;
+}
+
 /* Estilos gerais da página Home */
 .home {
   display: flex;
   flex-direction: column;
-  /* Removi o padding horizontal daqui se você quiser que as categorias ocupem 100% da largura */
-  padding-top: 20px; /* Mantém um padding superior se houver conteúdo antes da info do restaurante */
+  padding-top: 20px; /* Espaçamento superior */
+  background-color: var(--background-color); /* Aplica a cor de fundo */
 }
 
 /* Seção de informações do restaurante */
 .restaurant-info-section {
-  margin-bottom: 20px; /* Espaço entre a info do restaurante e as categorias */
-  /* Garante que o conteúdo dentro desta seção não ocupe 100% se for centralizado, etc. */
+  margin-bottom: 25px; /* Espaçamento após as informações do restaurante */
+  padding: 0 15px; /* Padding lateral para mobile */
 }
 
-/* Container que envolve as categorias - será a barra "sticky" */
+/* Seção de Mais Vendidos */
+.best-sellers-section {
+  margin-bottom: 30px; /* Espaçamento após a seção de mais vendidos (mobile) */
+}
+
+/* Estilos para títulos de seção (Mais Vendidos, Categorias) */
+.section-title {
+  font-size: 22px; /* Tamanho da fonte para mobile */
+  font-weight: 700;
+  margin-bottom: 8px; /* Margem entre título e subtítulo */
+  color: var(--text-color-dark);
+  text-align: center;
+  padding: 0 15px; /* Padding lateral para mobile */
+}
+
+/* Estilos para subtítulo da seção de Mais Vendidos */
+.section-subtitle {
+  font-size: 16px; /* Tamanho da fonte para mobile */
+  color: var(--text-color-medium);
+  text-align: center;
+  margin-bottom: 20px; /* Espaçamento após o subtítulo (mobile) */
+  padding: 0 15px; /* Padding lateral para mobile */
+}
+
+/* Estilo para o carrossel de Mais Vendidos */
+.best-sellers-carousel {
+  display: flex;
+  overflow-x: auto; /* Permite a rolagem horizontal */
+  -webkit-overflow-scrolling: touch; /* Melhor rolagem em iOS */
+  scroll-snap-type: x mandatory; /* Efeito de "snap" ao rolar */
+  gap: 15px; /* Espaçamento entre os cards (mobile) */
+  padding: 10px 15px; /* Padding interno para o carrossel (mobile) */
+  list-style: none; /* Remove marcadores */
+  margin: 0;
+  scrollbar-width: none;
+}
+
+/* Estilização da barra de rolagem para WebKit (Chrome, Safari, etc.) */
+.best-sellers-carousel::-webkit-scrollbar {
+  height: 8px; /* Altura da barra de rolagem */
+}
+
+.best-sellers-carousel::-webkit-scrollbar-track {
+  background: transparent; /* Fundo transparente */
+}
+
+.best-sellers-carousel::-webkit-scrollbar-thumb {
+  background-color: var(--primary-color); /* Sua cor principal */
+  border-radius: 10px;
+  border: 2px solid transparent; /* Adiciona uma "borda" transparente para espaçamento visual */
+}
+
+/* Texto "Explore o nosso cardápio" */
+.explore-menu-text {
+  font-size: 20px; /* Tamanho da fonte para mobile */
+  font-weight: 600;
+  margin-top: 25px; /* Espaço após o carrossel de mais vendidos (mobile) */
+  margin-bottom: 15px;
+  color: var(--text-color-dark);
+  text-align: center;
+  padding: 0 15px; /* Padding lateral para mobile */
+}
+
+/* Container que envolve as categorias - a barra "sticky" */
 .categories-wrapper {
-  /* Mantém o padding interno para os itens, mas o wrapper ocupa 100% */
-  padding: 10px 0; /* Padding vertical para os itens de categoria dentro da barra */
-  background-color: var(--background-color, #ffffff); /* Cor de fundo padrão */
-  border-bottom: 1px solid #e0e0e0; /* Uma borda sutil se desejar */
-  /* Propriedades para garantir que ele ocupe 100% e fique alinhado */
+  padding: 10px 0;
+  background-color: var(--background-color);
+  border-bottom: 1px solid var(--border-color);
   width: 100%;
-  left: 0; /* Alinha à esquerda da viewport */
+  left: 0;
   box-sizing: border-box; /* Garante que padding e borda não aumentem a largura total */
-  z-index: 2;
-  /* Transição para suavizar a entrada da sombra, etc. */
+  z-index: 2; /* Garante que fique acima de outros elementos ao rolar */
   transition: box-shadow 0.3s ease-in-out, background-color 0.3s ease-in-out;
 }
 
 /* Estilos aplicados quando a barra de categorias se torna "sticky" */
 .categories-wrapper.categories-sticky {
-  position: sticky; /* A propriedade mágica para aderir */
+  position: sticky; /* A propriedade que faz a barra "colar" */
   top: 0; /* Cola no topo da viewport */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Sombra mais proeminente e suave */
-  z-index: 1000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Sombra suave quando sticky */
+  z-index: 1000; /* Garante que fique acima de quase tudo */
   background-color: #ffffff; /* Fundo branco sólido quando sticky */
-  /* Remove o border-bottom quando sticky se a sombra já o substitui visualmente */
-  border-bottom: none;
+  border-bottom: none; /* Remove a borda se a sombra já a substitui visualmente */
 }
 
-/* Estilos para as categorias e produtos (mantidos os seus estilos, apenas ajustes no scroll-margin-top) */
+/* Estilos para cada seção de categoria de produtos */
 .category {
-  margin-top: 30px;
+  margin-top: 25px; /* Espaçamento entre as categorias (mobile) */
   /* Isso é crucial para quando você rola para uma categoria.
-     Ajuste para ser um pouco maior que a altura do seu header fixo + a barra sticky das categorias. */
-  scroll-margin-top: 150px;
+     Ajusta o topo da rolagem para que o título não fique escondido
+     pelo header principal e pela barra sticky de categorias. */
+  scroll-margin-top: 130px; /* Ajuste para mobile, pode precisar de ajuste fino */
 }
 
 .category-title {
-  font-size: 24px;
+  font-size: 20px; /* Tamanho da fonte para mobile */
   font-weight: 700;
-  margin-bottom: 20px;
-  color: #333;
-  /* Adicione padding lateral aqui se quiser que os títulos das categorias se alinhem com o conteúdo do .home */
-  padding: 0 20px;
+  margin-bottom: 15px; /* Espaçamento abaixo do título da categoria (mobile) */
+  color: var(--text-color-dark);
+  padding: 0 15px; /* Padding lateral para mobile */
 }
 
+/* Lista de produtos dentro de cada categoria (grid) */
 .product-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
-  /* Adicione padding lateral aqui para alinhar com o .home */
-  padding: 0 20px;
+  grid-template-columns: 1fr; /* Por padrão, uma coluna para mobile */
+  gap: 15px; /* Espaçamento entre os cards de produto (mobile) */
+  padding: 0 15px; /* Padding lateral para mobile */
 }
 
-/* --- Responsividade --- */
-@media (max-width: 768px) {
-  .home {
-    padding-top: 15px;
+/* --- Media Queries para telas MAIORES (Tablet e Desktop) --- */
+
+/* Tablet em diante */
+@media (min-width: 481px) {
+  .restaurant-info-section {
+    padding: 0 20px; /* Padding lateral para tablet/desktop */
   }
-  .category-title,
-  .product-list {
-    padding: 0 15px; /* Ajusta o padding lateral para telas menores */
+
+  .best-sellers-section {
+    margin-bottom: 40px; /* Mais espaço para tablet/desktop */
   }
+
+  .section-title {
+    font-size: 28px; /* Tamanho da fonte para tablet/desktop */
+    margin-bottom: 10px;
+    padding: 0 20px;
+  }
+
+  .section-subtitle {
+    font-size: 18px; /* Tamanho da fonte para tablet/desktop */
+    margin-bottom: 30px;
+    padding: 0 20px;
+  }
+
+  .best-sellers-carousel {
+    gap: 20px; /* Espaçamento maior entre os cards */
+    padding: 10px 20px; /* Padding interno maior */
+  }
+
+  .explore-menu-text {
+    font-size: 24px;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    padding: 0 20px;
+  }
+
+  .category {
+    margin-top: 30px; /* Mais espaço entre as categorias */
+    scroll-margin-top: 150px; /* Volta ao valor original para telas maiores */
+  }
+
   .category-title {
-    font-size: 20px;
+    font-size: 24px;
+    margin-bottom: 20px;
+    padding: 0 20px;
   }
+
   .product-list {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Grid com múltiplas colunas */
+    gap: 20px;
+    padding: 0 20px;
   }
 }
 
-@media (max-width: 480px) {
-  .home {
-    padding-top: 10px;
-  }
-  .category-title,
-  .product-list {
-    padding: 0 10px; /* Ajusta o padding lateral para telas menores */
-  }
-  .category-title {
-    font-size: 18px;
-  }
-  .product-list {
-    grid-template-columns: 1fr; /* Uma coluna em telas muito pequenas */
-  }
+/* Desktop em diante (telas maiores que 768px, por exemplo) */
+@media (min-width: 769px) {
+  /* Pode adicionar ajustes específicos para desktop aqui se necessário */
+  /* Ex: centralizar o conteúdo da home em uma largura máxima */
+  /* .home {
+    max-width: 1200px;
+    margin: 0 auto;
+    box-shadow: 0 0 15px rgba(0,0,0,0.05);
+  } */
 }
-
-/* IMPORTANTE: Se o seu componente Categories já tem um .categories-container,
-   você pode precisar renomear a classe aqui para evitar conflitos, ou
-   aplicar os estilos de ocupação de 100% diretamente no .categories-container
-   do seu componente Categories, mas com um wrapper é mais flexível.
-   No meu exemplo, estou usando .categories-wrapper para o container externo. */

@@ -1,5 +1,5 @@
 import "./OrdersList.css";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useFetchWithLoading } from "../../contexts/fetchWithLoading";
 import config from "../../config";
 import Cookies from "js-cookie";
@@ -12,13 +12,15 @@ const OrdersList = ({ tenantData }) => {
   const [timeLeft, setTimeLeft] = useState(60);
   const { fetchWithLoading } = useFetchWithLoading();
 
-  const statusSteps = ["created", "accepted", "preparing", "enroute", "delivered"];
+  const statusSteps = ["accepted", "preparing", "enroute", "delivered"];
   const statusTranslations = {
     created: "Criado",
     accepted: "Aceito",
     preparing: "Em preparo",
     enroute: "Em rota",
-    delivered: "Entregue"
+    delivered: "Entregue",
+    ready: "Pronto para Retirada",
+    canceled: "Cancelado",
   };
 
   const getCustomerId = () => {
@@ -30,43 +32,57 @@ const OrdersList = ({ tenantData }) => {
     return null;
   };
 
-  const fetchOrders = async () => {
+  const currentTenantId = tenantData?.id;
+
+  const fetchOrders = useCallback(async () => {
     const customerId = getCustomerId();
-    if (!customerId) {
-      console.error("Erro: customerId não encontrado.");
+    if (!customerId || !currentTenantId) {
+      console.error("Erro: customerId ou tenantId não encontrado.");
       return;
     }
 
     try {
       const ordersResponse = await fetchWithLoading(
-        `${config.baseURL}/orders/${customerId}/${tenantData.id}`
+        `${config.baseURL}/orders/${customerId}/${currentTenantId}`
       );
       const ordersData = await ordersResponse.json();
       setOrders(ordersData);
     } catch (error) {
       console.error("Erro ao buscar pedidos:", error);
     }
-  };
+  }, [fetchWithLoading, currentTenantId]);
+
+  const initialFetchDone = useRef(false);
 
   useEffect(() => {
-    if (tenantData) {
+    // Realiza o fetch inicial SOMENTE se currentTenantId estiver disponível
+    // e o fetch inicial ainda não tiver sido feito.
+    if (currentTenantId && !initialFetchDone.current) {
       fetchOrders();
+      initialFetchDone.current = true; // Marca que o fetch inicial foi realizado
     }
 
-    const intervalId = setInterval(fetchOrders, 60000);
+    // Configura o contador regressivo para atualização e aciona o fetch quando o timer zerar.
     const countdownInterval = setInterval(() => {
-      setTimeLeft((prevTime) => (prevTime > 0 ? prevTime - 1 : 60));
+      setTimeLeft((prevTime) => {
+        if (prevTime <= 1) { // Quando o tempo chega a 0 ou menos (garante que não passe de 0)
+          if (currentTenantId) { // Garante que currentTenantId existe antes de buscar
+            fetchOrders(); // Busca os pedidos
+          }
+          return 60; // Reseta o contador para 60
+        }
+        return prevTime - 1; // Decrementa o contador
+      });
     }, 1000);
 
+    // Função de limpeza para desativar o intervalo quando o componente é desmontado
     return () => {
-      clearInterval(intervalId);
       clearInterval(countdownInterval);
     };
-  }, [tenantData]);
+  }, [fetchOrders, currentTenantId]); // As dependências garantem que o efeito re-execute se essas funções/valores mudarem.
 
   const getStatusIndex = (status) => {
-    const filteredStatusSteps = statusSteps.filter((s) => s !== "created");
-    return filteredStatusSteps.indexOf(status);
+    return statusSteps.indexOf(status);
   };
 
   return (
@@ -92,23 +108,40 @@ const OrdersList = ({ tenantData }) => {
                 </div>
               ))}
             </div>
-            <div className="order-status">
-              {statusSteps
-                .filter((status) => status !== "created")
-                .map((status, index) => {
-                  const isActive = index <= getStatusIndex(order.status);
+            <div className={`order-status ${order.status === "canceled" || order.status === "ready" ? "status-hidden-line" : ""}`}>
+              {order.status === "canceled" ? (
+                <div className="status-canceled">
+                  <p className="canceled-text">Pedido Cancelado</p>
+                  {order.observation && (
+                    <p className="canceled-observation">
+                      **Motivo:** {order.observation}
+                    </p>
+                  )}
+                </div>
+              ) : order.status === "ready" ? (
+                <div className="status-ready">
+                  <p className="ready-text">
+                    <MdOutlineCheck size={24} className="ready-check-icon" />
+                    Seu pedido está pronto para retirada na loja!
+                  </p>
+                </div>
+              ) : (
+                statusSteps.map((status, index) => {
+                  const currentStatusIndex = getStatusIndex(order.status);
+                  const isActive = index <= currentStatusIndex;
                   return (
                     <div
                       key={status}
                       className={`status-step ${isActive ? "active" : ""}`}
                     >
                       <div className="status-icon">
-                        {isActive ? <MdOutlineCheck size={20}/> : ""}
+                        {isActive ? <MdOutlineCheck size={20} /> : ""}
                       </div>
                       <span>{statusTranslations[status]}</span>
                     </div>
                   );
-                })}
+                })
+              )}
             </div>
           </div>
         ))

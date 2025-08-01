@@ -1,8 +1,10 @@
+// Home.jsx
 import "./Home.css";
 import React, { useEffect, useState, useRef } from "react";
 import ProductCard from "../../components/ProductCard/ProductCard";
 import Categories from "../../components/Categories/Categories";
 import RestaurantInfo from "../../components/RestaurantInfo/RestaurantInfo";
+import BestSellerProductCard from "../../components/BestSellerProductCard/BestSellerProductCard"; // IMPORTANTE: Nova importação
 import { useFetchWithLoading } from "../../contexts/fetchWithLoading";
 import config from "../../config";
 import { toTitleCase } from "../../utils/functions";
@@ -10,10 +12,11 @@ import { toTitleCase } from "../../utils/functions";
 const Home = ({ addToCart, tenantData, setIsRestaurantOpen }) => {
   const [selectedCategory, setSelectedCategory] = useState();
   const [categories, setCategories] = useState([]);
-  const [isCategoriesSticky, setIsCategoriesSticky] = useState(false); // Novo estado para controlar a aderência
+  const [bestSellers, setBestSellers] = useState([]);
+  const [isCategoriesSticky, setIsCategoriesSticky] = useState(false);
   const { fetchWithLoading } = useFetchWithLoading();
 
-  const restaurantInfoRef = useRef(null); // Ref para a seção de informações do restaurante
+  const restaurantInfoRef = useRef(null);
 
   // Função para buscar as categorias com produtos
   const fetchCategories = async () => {
@@ -25,6 +28,12 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen }) => {
       setCategories(categoriesData);
       // Garante que a primeira categoria válida seja selecionada
       setSelectedCategory(toTitleCase(categoriesData[0]?.name));
+
+      const bestSellersResponse = await fetchWithLoading(
+        `${config.baseURL}/products/${tenantData.id}/favorites`
+      );
+      const bestSellersData = await bestSellersResponse.json();
+      setBestSellers(bestSellersData);
     } catch (error) {
       console.error("Erro ao buscar categorias:", error);
     }
@@ -41,14 +50,12 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen }) => {
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        // Se a seção de informações do restaurante não estiver mais visível,
-        // torna as categorias aderentes (sticky). Caso contrário, desativa.
         setIsCategoriesSticky(!entry.isIntersecting);
       },
       {
-        root: null, // Observa em relação à viewport
-        rootMargin: '0px',
-        threshold: 0.1, // Dispara quando 10% do elemento observado está visível/invisível
+        root: null,
+        rootMargin: "0px",
+        threshold: 0.1,
       }
     );
 
@@ -56,28 +63,26 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen }) => {
       observer.observe(restaurantInfoRef.current);
     }
 
-    // Função de limpeza para desconectar o observer ao desmontar o componente
     return () => {
       if (restaurantInfoRef.current) {
         observer.unobserve(restaurantInfoRef.current);
       }
     };
-  }, [restaurantInfoRef]); // Depende da ref para re-executar se ela mudar
+  }, [restaurantInfoRef]);
 
   // Função para rolar até a categoria selecionada
   const scrollToCategory = (category) => {
     setSelectedCategory(category);
     const categoryElement = document.getElementById(category);
     if (categoryElement) {
-      // Ajuste o offset considerando a altura do cabeçalho principal e da barra de categorias quando sticky
-      const headerOffset = 80; // Altura do seu header principal (ajuste conforme necessário)
-      const categoriesStickyHeight = 55; // Altura aproximada da barra de categorias quando sticky (ajuste conforme necessário)
+      const headerOffset = 80;
+      const categoriesStickyHeight = 55;
 
       const offsetPosition =
         categoryElement.getBoundingClientRect().top +
         window.pageYOffset -
         headerOffset -
-        (isCategoriesSticky ? categoriesStickyHeight : 0); // Aplica o offset adicional se estiver sticky
+        (isCategoriesSticky ? categoriesStickyHeight : 0);
 
       window.scrollTo({
         top: offsetPosition,
@@ -89,7 +94,6 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen }) => {
   return (
     <div className="home">
       {tenantData && (
-        // Wrapper para o RestaurantInfo para podermos observá-lo com a ref
         <div ref={restaurantInfoRef} className="restaurant-info-section">
           <RestaurantInfo
             restaurantInfo={{
@@ -107,10 +111,30 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen }) => {
         </div>
       )}
 
-      <p>Explore o nosso cardápio:</p>
+      {/* Seção de Mais Vendidos */}
+      <div className="best-sellers-section">
+        <h3 className="section-title">✨ Nossos Queridinhos ✨</h3>
+        <p className="section-subtitle">Os que mais fazem sucesso por aqui!</p>
+        <div className="best-sellers-carousel">
+          {bestSellers.map((product) => (
+            <BestSellerProductCard // AGORA USANDO O NOVO COMPONENTE
+              key={product.id}
+              product={product}
+              addToCart={addToCart}
+              tenantFlavorCalcType={tenantData.flavorCalcType}
+              // A prop isBestSeller não é mais necessária aqui, pois é inerente ao componente
+            />
+          ))}
+        </div>
+      </div>
 
-      {/* Container das categorias com classe condicional para "sticky" */}
-      <div className={`categories-wrapper ${isCategoriesSticky ? 'categories-sticky' : ''}`}>
+      <p className="explore-menu-text">Explore nosso cardápio completo:</p>
+
+      <div
+        className={`categories-wrapper ${
+          isCategoriesSticky ? "categories-sticky" : ""
+        }`}
+      >
         <Categories
           categories={categories}
           selectedCategory={selectedCategory}
@@ -121,11 +145,15 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen }) => {
       {categories.map(
         (category) =>
           category.isActive && (
-            <div key={category.id} className="category" id={toTitleCase(category.name)}>
+            <div
+              key={category.id}
+              className="category"
+              id={toTitleCase(category.name)}
+            >
               <h3 className="category-title">{toTitleCase(category.name)}</h3>
               <div className="product-list">
                 {category.products.map((product) => (
-                  <ProductCard
+                  <ProductCard // Mantém o ProductCard para as demais categorias
                     key={product.id}
                     product={product}
                     addToCart={addToCart}
