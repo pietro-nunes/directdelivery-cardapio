@@ -27,31 +27,36 @@ const BestSellerProductCard = ({
   };
 
   return (
-    <div className="best-seller-product-card" onClick={handleOpenModal}>
-      {" "}
-      {/* Card inteiro clicável */}
-      <div className="best-seller-image-wrapper">
-        <img
-          src={
-            product.image
-              ? `${config.baseURL}${product.image}`
-              : "/images/pizza_placeholder.png"
-          }
-          alt={product.name}
-          className="best-seller-product-image"
-        />
-        <span className="best-seller-badge">🔥 MAIS VENDIDO 🔥</span>
-      </div>
-      <div className="best-seller-info">
-        <h4 className="best-seller-name">{toTitleCase(product.name)}</h4>
-        <p className="best-seller-description">{toTitleCase(product.description)}</p>
-        {/* O valor do produto está de volta aqui! */}
-        <div className="best-seller-price-display">
-          <span className="best-seller-price">
-            R$ {formatarNumero(product.price)}
-          </span>
+    <>
+      <div className="best-seller-product-card" onClick={handleOpenModal}>
+        {" "}
+        {/* Card inteiro clicável */}
+        <div className="best-seller-image-wrapper">
+          <img
+            src={
+              product.image
+                ? `${config.baseURL}${product.image}`
+                : "/images/pizza_placeholder.png"
+            }
+            alt={product.name}
+            className="best-seller-product-image"
+          />
+          <span className="best-seller-badge">🔥 MAIS VENDIDO 🔥</span>
+        </div>
+        <div className="best-seller-info">
+          <h4 className="best-seller-name">{toTitleCase(product.name)}</h4>
+          <p className="best-seller-description">
+            {toTitleCase(product.description)}
+          </p>
+          {/* O valor do produto está de volta aqui! */}
+          <div className="best-seller-price-display">
+            <span className="best-seller-price">
+              R$ {formatarNumero(product.price)}
+            </span>
+          </div>
         </div>
       </div>
+
       {/* Renderiza o modal se o estado isModalOpen for true */}
       {isModalOpen && (
         <ProductModalMobile
@@ -61,7 +66,7 @@ const BestSellerProductCard = ({
           tenantFlavorCalcType={tenantFlavorCalcType}
         />
       )}
-    </div>
+    </>
   );
 };
 
