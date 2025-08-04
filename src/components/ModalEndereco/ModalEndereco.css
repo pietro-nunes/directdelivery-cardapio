@@ -25,8 +25,6 @@
   overflow-y: auto; /* Permite scroll se o conteúdo for grande */
   padding: 20px 15px; /* Padding ajustado */
   box-sizing: border-box;
-  border-top-left-radius: 30px; /* Borda arredondada no topo para mobile */
-  border-top-right-radius: 30px;
   /* position: relative; foi removido pois o back-button não é mais absoluto dentro dele */
 }
 
@@ -51,7 +49,8 @@
 /* Inputs e Selects do Modal */
 .end__modal-content select,
 .end__modal-content input,
-.masked-input { /* Adicionado .masked-input aqui */
+.masked-input {
+  /* Adicionado .masked-input aqui */
   width: 100%;
   padding: 12px; /* Padding maior para facilitar o toque */
   box-sizing: border-box;
@@ -65,7 +64,8 @@
 
 .end__modal-content select:focus,
 .end__modal-content input:focus,
-.masked-input:focus { /* Adicionado .masked-input aqui */
+.masked-input:focus {
+  /* Adicionado .masked-input aqui */
   border-color: #007bff; /* Borda azul no foco */
   outline: none;
   box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25); /* Sombra de foco suave */
@@ -96,7 +96,7 @@
 }
 
 .back-button-mobile:hover {
-    background-color: #f0f0f0;
+  background-color: #f0f0f0;
 }
 
 .back-icon-mobile {
@@ -199,7 +199,8 @@
   border-radius: 8px; /* Mais arredondado */
   padding: 12px 18px; /* Padding generoso */
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.2s ease;
+  transition: background-color 0.3s ease, transform 0.1s ease,
+    box-shadow 0.2s ease;
   white-space: nowrap; /* Impede que o texto quebre */
 }
 
@@ -216,15 +217,13 @@
 }
 
 .confirm-button {
-  background-color: #007bff;
+  background-color: #1a9b9b;
   color: white;
-  box-shadow: 0 3px 8px rgba(0, 123, 255, 0.2);
 }
 
 .confirm-button:hover {
-  background-color: #0056b3;
+  background-color: #1a9b9b;
   transform: translateY(-1px);
-  box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
 }
 
 .modal-buttons-row {
@@ -269,7 +268,7 @@
   cursor: pointer;
   transition: all 0.3s ease;
   /* Adiciona uma seta SVG personalizada */
-  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%22292.4%22%3E%3Cpath%20fill%3D%22%23555%22%20d%3D%22M287%2069.9a17.6%2017.6%200%200%200-24.8%200L146.2%20185.3%2030.2%2069.9a17.6%2017.6%200%200%200-24.8%2024.8l129%20129a17.6%2017.6%200%200%200%2024.8%200l129-129a17.6%2017.6%200%200%200%200-24.8z%22%2F%3E%3C%2Fsvg%3E');
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%22292.4%22%3E%3Cpath%20fill%3D%22%23555%22%20d%3D%22M287%2069.9a17.6%2017.6%200%200%200-24.8%200L146.2%20185.3%2030.2%2069.9a17.6%2017.6%200%200%200-24.8%2024.8l129%20129a17.6%2017.6%200%200%200%2024.8%200l129-129a17.6%2017.6%200%200%200%200-24.8z%22%2F%3E%3C%2Fsvg%3E");
   background-repeat: no-repeat;
   background-position: right 12px center;
   background-size: 12px auto;
@@ -303,7 +302,7 @@
 @media (max-width: 768px) {
   .end__modal-content {
     padding: 20px 15px; /* Padding padrão para mobile */
-    height: 92vh; /* Ajuste a altura para um bom visual em mobile */
+    height: 100dvh; /* Ajuste a altura para um bom visual em mobile */
   }
   .end__modal-content h4 {
     font-size: 1.2rem;
@@ -352,7 +351,8 @@
   }
   .end__modal-content select,
   .end__modal-content input,
-  .masked-input { /* Adicionado .masked-input aqui */
+  .masked-input {
+    /* Adicionado .masked-input aqui */
     font-size: 0.95rem;
     padding: 10px;
   }
@@ -394,14 +394,14 @@
     display: none; /* Esconde o botão de voltar em desktop */
   }
   .modal-buttons-row {
-      flex-direction: row; /* Botões lado a lado em desktop */
-      justify-content: flex-end; /* Alinha os botões à direita */
-      gap: 20px; /* Mais espaço entre os botões */
+    flex-direction: row; /* Botões lado a lado em desktop */
+    justify-content: flex-end; /* Alinha os botões à direita */
+    gap: 20px; /* Mais espaço entre os botões */
   }
   .add-new-button.green,
   .confirm-button {
-      max-width: 200px; /* Limita a largura dos botões em desktop */
-      padding: 14px 25px; /* Padding maior */
-      font-size: 1.05rem;
+    max-width: 200px; /* Limita a largura dos botões em desktop */
+    padding: 14px 25px; /* Padding maior */
+    font-size: 1.05rem;
   }
 }

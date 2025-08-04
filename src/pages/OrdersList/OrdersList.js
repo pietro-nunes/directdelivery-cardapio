@@ -97,6 +97,7 @@ const OrdersList = ({ tenantData }) => {
             <h3>Pedido #{order.id}</h3>
             <p>Data: {new Date(order.createdAt).toLocaleString()}</p>
             <p>Total: R$ {formatarNumero(order.total)}</p>
+            <p>Observação: {order.observation}</p>
             <div className="order-items">
               <h4>Itens:</h4>
               {order.items.map((item) => (

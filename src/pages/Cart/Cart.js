@@ -4,8 +4,16 @@ import "./Cart.css";
 import config from "../../config";
 import { toast, Bounce } from "react-toastify";
 import { formatarNumero, toTitleCase } from "../../utils/functions";
+import Lottie from "lottie-react";
+import EmptyAnimation from "../../lottie/empty.json";
 
-const Cart = ({ cartItems, setCartItems, isLoggedIn, tenantData, isRestaurantOpen }) => {
+const Cart = ({
+  cartItems,
+  setCartItems,
+  isLoggedIn,
+  tenantData,
+  isRestaurantOpen,
+}) => {
   const navigate = useNavigate();
 
   const handleIncrement = (uniqueKey) => {
@@ -36,7 +44,7 @@ const Cart = ({ cartItems, setCartItems, isLoggedIn, tenantData, isRestaurantOpe
   const calculateTotal = () => {
     return cartItems
       .reduce((total, item) => {
-        const itemTotal = item.totalPrice * item.count;
+        const itemTotal = item.unitPrice * item.count;
         return total + itemTotal;
       }, 0)
       .toFixed(2);
@@ -44,10 +52,13 @@ const Cart = ({ cartItems, setCartItems, isLoggedIn, tenantData, isRestaurantOpe
 
   const handleProceedToCheckout = () => {
     if (!isRestaurantOpen) {
-      toast.warn("A loja está fechada no momento. Tente novamente mais tarde.", {
-        theme: "colored",
-        transition: Bounce,
-      });
+      toast.warn(
+        "A loja está fechada no momento. Tente novamente mais tarde.",
+        {
+          theme: "colored",
+          transition: Bounce,
+        }
+      );
       return;
     }
 
@@ -61,9 +72,29 @@ const Cart = ({ cartItems, setCartItems, isLoggedIn, tenantData, isRestaurantOpe
   return (
     <>
       <div className="cart">
-        <h2 className="cart-title">Seu Carrinho</h2> {/* Adicionada classe para o título */}
+        <h2 className="cart-title">Seu Carrinho</h2>
         {cartItems.length === 0 ? (
-          <p className="cart-empty-message">Seu carrinho está vazio.</p>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              flexDirection: "column",
+            }}
+          >
+            <p className="cart-empty-message">Seu carrinho está vazio.</p>
+            <Lottie
+              animationData={EmptyAnimation}
+              loop={true}
+              style={{ width: 300, height: 300, marginBottom: "10px", margin: "0 auto" }}
+            />
+            <button
+              type="button"
+              className="confirm-button"
+              onClick={() => navigate(`/${tenantData.slug}`)}
+            >
+              Começar compra
+            </button>
+          </div>
         ) : (
           <>
             <div className="cart-items">
@@ -85,12 +116,14 @@ const Cart = ({ cartItems, setCartItems, isLoggedIn, tenantData, isRestaurantOpe
                   <div className="item-details">
                     <p className="cart-item-name">{toTitleCase(item.name)}</p>
 
-                    {item.selectedFlavors?.length > 0 && ( // Sabores primeiro, geralmente mais importantes
+                    {item.selectedFlavors?.length > 0 && (
                       <div className="cart-item-info-block">
                         <p className="cart-item-info-title">Sabores:</p>
                         <ul className="cart-item-list">
                           {item.selectedFlavors.map((flavor, index) => (
-                            <li key={index}>{toTitleCase(flavor.relatedProduct.name)}</li>
+                            <li key={index}>
+                              {toTitleCase(flavor.relatedProduct.name)}
+                            </li>
                           ))}
                         </ul>
                       </div>
@@ -102,7 +135,8 @@ const Cart = ({ cartItems, setCartItems, isLoggedIn, tenantData, isRestaurantOpe
                         <ul className="cart-item-list">
                           {item.selectedAdditionals.map((additional, index) => (
                             <li key={index}>
-                              {toTitleCase(additional.relatedProduct.name)} (+ R$ {formatarNumero(additional.price)})
+                              {toTitleCase(additional.relatedProduct.name)} (+
+                              R$ {formatarNumero(additional.price)})
                             </li>
                           ))}
                         </ul>
@@ -112,10 +146,14 @@ const Cart = ({ cartItems, setCartItems, isLoggedIn, tenantData, isRestaurantOpe
                     {item.removedCompositions?.length > 0 && (
                       <div className="cart-item-info-block">
                         <p className="cart-item-info-title">Removidos:</p>
-                        <ul className="cart-item-list removed-compositions-list"> {/* Adiciona classe para estilo */}
-                          {item.removedCompositions.map((composition, index) => (
-                            <li key={index}>{toTitleCase(composition.relatedProduct.name)}</li>
-                          ))}
+                        <ul className="cart-item-list removed-compositions-list">
+                          {item.removedCompositions.map(
+                            (composition, index) => (
+                              <li key={index}>
+                                {toTitleCase(composition.relatedProduct.name)}
+                              </li>
+                            )
+                          )}
                         </ul>
                       </div>
                     )}
@@ -128,9 +166,17 @@ const Cart = ({ cartItems, setCartItems, isLoggedIn, tenantData, isRestaurantOpe
                     )}
 
                     <div className="quantity-controls">
-                      <p className="cart-item-price">
-                        R$ {formatarNumero(item.totalPrice * item.count)} {/* Mostra o preço total do item * quantidade */}
-                      </p>
+                      <div className="cart-item-price-block">
+                        <p className="cart-item-price-total">
+                          R$ {formatarNumero(item.unitPrice * item.count)}
+                        </p>
+                        {item.count > 1 && (
+                          <span className="cart-item-price-unit">
+                            (R$ {formatarNumero(item.unitPrice)} / cada)
+                          </span>
+                        )}
+                      </div>
+                      
                       <div className="quantity-control">
                         <button
                           className="decrement-button"
@@ -151,21 +197,19 @@ const Cart = ({ cartItems, setCartItems, isLoggedIn, tenantData, isRestaurantOpe
                 </div>
               ))}
             </div>
-            {/* O cart-summary e o botão de checkout foram separados no layout */}
           </>
         )}
       </div>
 
       {cartItems.length > 0 && (
         <div className="cart-fixed-footer">
-          <div className="cart-summary-fixed"> {/* Novo div para o resumo dentro do footer */}
+          <div className="cart-summary-fixed">
             <p className="total-label">Total do carrinho:</p>
-            <p className="total-amount">R$ {formatarNumero(calculateTotal())}</p>
+            <p className="total-amount">
+              R$ {formatarNumero(calculateTotal())}
+            </p>
           </div>
-          <button
-            className="checkout-button"
-            onClick={handleProceedToCheckout}
-          >
+          <button className="checkout-button" onClick={handleProceedToCheckout}>
             Prosseguir para finalização
           </button>
         </div>

@@ -28,30 +28,53 @@ const App = () => {
   };
 
   const addToCart = (product) => {
-
+    // 1. Recebemos a quantidade aqui, com padrão 1
     setCartItems((prevItems) => {
+      // 2. Criamos uma função auxiliar para ordenar e stringificar de forma segura
+      const stringifyOptions = (optionsArray) => {
+        if (!optionsArray || optionsArray.length === 0) {
+          return "";
+        }
+        // Ordena o array pelo ID do produto relacionado para garantir consistência
+        return JSON.stringify(
+          [...optionsArray].sort(
+            (a, b) => a.relatedProduct.id - b.relatedProduct.id
+          )
+        );
+      };
+
       const productKey = `
-                ${product.id}-${product.observation}-${JSON.stringify(product.selectedFlavors)}
-                                            -${JSON.stringify(product.selectedAdditionals)}-${JSON.stringify(product.removedCompositions)}`;
-      const existingItem = prevItems.find((item) => item.uniqueKey === productKey);
+      ${product.id}-
+      ${product.observation || ""}-
+      ${stringifyOptions(product.selectedFlavors)}-
+      ${stringifyOptions(product.selectedAdditionals)}-
+      ${stringifyOptions(product.removedCompositions)}
+    `.replace(/\s/g, ""); // Remove espaços e quebras de linha
+
+      const existingItem = prevItems.find(
+        (item) => item.uniqueKey === productKey
+      );
 
       if (existingItem) {
+        // Se o item já existe, somamos a nova quantidade
         return prevItems.map((item) =>
           item.uniqueKey === productKey
-            ? { ...item, count: item.count + 1 }
+            ? { ...item, count: item.count + product.quantity } // Usamos a 'quantity'
             : item
         );
       }
 
+      // Se é um novo item, adicionamos ao carrinho
       return [
         ...prevItems,
         {
           ...product,
-          count: 1,
+          count: product.quantity, // Usamos a 'quantity' inicial
           uniqueKey: productKey,
         },
       ];
     });
+    console.log(cartItems);
   };
 
   // Recuperando o carrinho do localStorage quando o tenantData é alterado

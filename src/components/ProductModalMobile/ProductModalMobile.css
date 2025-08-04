@@ -24,7 +24,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.6); /* Sombra um pouco mais escura */
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: flex-end;
@@ -32,48 +32,45 @@
   animation: fadeIn 0.3s ease-out;
 }
 
-/* --- Conteúdo Principal do Modal (Ocupa a tela toda) --- */
+/* --- Conteúdo Principal do Modal --- */
 .modal-content-mobile {
   width: 100%;
-  height: 100dvh; /* Usando dvh para melhor compatibilidade em mobile */
+  height: 100dvh;
   background: #ffffff;
   display: flex;
   flex-direction: column;
   position: relative;
-  border-top-left-radius: 15px; /* Adicionado um leve border-radius na parte superior */
-  border-top-right-radius: 15px; /* Adicionado um leve border-radius na parte superior */
-  box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.2); /* Sombra mais proeminente no topo */
+  box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.2);
   overflow: hidden;
   animation: slideUpAndFadeIn 0.4s forwards cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 /* --- Botão de Voltar sobreposto --- */
 .back-button-overlay {
-  position: fixed; /* Mantém fixed para que não role com o conteúdo */
+  position: fixed;
   top: 15px;
   left: 15px;
-  background-color: rgba(255, 255, 255, 0.85); /* Fundo um pouco mais opaco */
+  background-color: rgba(255, 255, 255, 0.85);
   border-radius: 50%;
-  padding: 6px; /* Reduzido de 8px */
+  padding: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
   border: none;
   cursor: pointer;
-  z-index: 1010; /* Z-index mais alto para garantir que esteja acima de tudo */
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15); /* Sombra um pouco mais forte */
+  z-index: 1010;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
   transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
 }
 
-/* Estilos para o botão quando a página está rolada */
 .back-button-overlay.scrolled {
   background-color: #fff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25); /* Sombra mais destacada ao rolar */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
 .back-button-overlay:hover {
   background-color: rgba(255, 255, 255, 1);
-  transform: scale(1.08); /* Efeito hover mais sutil */
+  transform: scale(1.08);
 }
 
 /* --- Conteúdo Principal Rolável (Inclui Imagem e Detalhes) --- */
@@ -82,19 +79,18 @@
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  padding-bottom: 70px; /* Reduzido de 80px para dar mais espaço ao conteúdo */
-  /* Não precisa de padding-top aqui, pois o botão está fixed */
+  padding-bottom: 70px;
 }
 .modal-main-content::-webkit-scrollbar {
   display: none;
 }
 
-/* --- Seção da Imagem (agora parte do conteúdo rolável) --- */
+/* --- Seção da Imagem --- */
 .product-image-section {
   width: 100%;
-  height: 160px; /* Reduzido de 180px */
+  height: 160px;
   overflow: hidden;
-  background-color: #f5f5f5; /* Fundo mais claro para placeholder */
+  background-color: #f5f5f5;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -108,9 +104,9 @@
   object-position: center;
 }
 
-/* --- Seção de Título sem Imagem (agora parte do conteúdo rolável) --- */
+/* --- Seção de Título sem Imagem --- */
 .product-title-no-image-section {
-  padding: 50px 20px 0; /* Reduzido de 60px no padding superior */
+  padding: 50px 20px 0;
   text-align: center;
   background-color: #fff;
 }
@@ -118,76 +114,109 @@
 /* --- Informações do Produto (Nome, Preço, Descrição) --- */
 .product-details-summary {
   background-color: #ffffff;
-  padding: 18px; /* Reduzido de 20px */
+  padding: 18px;
   text-align: center;
-  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04); /* Sombra mais suave */
-  margin-bottom: 15px; /* Reduzido de 20px */
-  margin-top: -8px; /* Ajuste fino */
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04);
+  margin-bottom: 15px;
+  margin-top: -8px;
 }
 
 .modal-product-name-mobile {
-  font-size: 1.6rem; /* Reduzido de 1.8rem */
-  font-weight: 700; /* Levemente menos negrito */
+  font-size: 1.6rem;
+  font-weight: 700;
   color: #222;
   margin-top: 0;
-  margin-bottom: 8px; /* Reduzido de 10px */
+  margin-bottom: 8px;
 }
 
 .modal-product-price-mobile {
-  font-size: 1.2rem; /* Reduzido de 1.3rem */
+  font-size: 1.2rem;
   color: #1a9b9b;
   text-align: center;
   font-weight: 700;
-  margin: 4px 0 12px 0; /* Ajustes finos de margem */
+  margin: 4px 0 12px 0;
 }
 
 .modal-product-description-mobile {
-  font-size: 0.85rem; /* Reduzido de 0.9rem */
+  font-size: 0.85rem;
   color: #666;
-  line-height: 1.4; /* Levemente mais apertado */
+  line-height: 1.4;
   margin-bottom: 0;
 }
 
 /* --- Seções de Opções (Sabores, Adicionais, Composições, Observações) --- */
 .options-sections-wrapper {
-  padding: 0 18px 18px; /* Reduzido de 20px */
+  padding: 0 18px 18px;
 }
 
 .option-section-card {
-  background-color: #fcfcfc; /* Fundo mais claro */
-  border-radius: 12px; /* Reduzido de 15px */
-  padding: 18px; /* Reduzido de 20px */
-  margin-bottom: 15px; /* Reduzido de 20px */
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06); /* Sombra mais suave */
-  border: 1px solid #f0f0f0; /* Borda mais fina e clara */
+  background-color: #fcfcfc;
+  border-radius: 12px;
+  padding: 18px;
+  margin-bottom: 15px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+  border: 1px solid #f0f0f0;
 }
 
-.option-section-card h4 {
-  font-size: 1rem; /* Reduzido de 1.1rem */
+/* Estilo do cabeçalho da seção com badges (NOVO) */
+.options-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1rem;
   font-weight: 700;
   color: #333;
   margin-top: 0;
-  margin-bottom: 12px; /* Reduzido de 15px */
-  border-bottom: 1px solid #f5f5f5; /* Borda mais suave */
-  padding-bottom: 8px; /* Reduzido de 10px */
+  margin-bottom: 12px;
+  border-bottom: 1px solid #f5f5f5;
+  padding-bottom: 8px;
+}
+
+.options-badges {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* Estilo base do badge (NOVO) */
+.badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 15px;
+  text-transform: uppercase;
+}
+
+/* Variação de cor para o badge de informação (NOVO) */
+.badge-info {
+  background-color: #e0f2f1; /* Verde claro */
+  color: #00796b; /* Verde escuro */
+}
+
+/* Variação de cor para o badge de obrigatório (NOVO) */
+.badge-mandatory {
+  background-color: #fbecec; /* Vermelho claro */
+  color: #d32f2f; /* Vermelho escuro */
 }
 
 .options-list-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px; /* Reduzido de 15px */
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .custom-checkbox-card {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   cursor: pointer;
   user-select: none;
   background-color: #ffffff;
-  padding: 12px; /* Reduzido de 15px */
-  border-radius: 10px; /* Reduzido de 12px */
-  border: 1px solid #e5e5e5; /* Borda mais clara */
-  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.03); /* Sombra mais leve */
+  padding: 12px 15px;
+  border-radius: 10px;
+  border: 1px solid #e5e5e5;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.03);
   transition: all 0.15s ease;
   position: relative;
 }
@@ -195,7 +224,7 @@
 .custom-checkbox-card:hover {
   border-color: #1a9b9b;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-  transform: translateY(-1px); /* Efeito hover mais sutil */
+  transform: translateY(-1px);
 }
 
 input[type="checkbox"] {
@@ -213,37 +242,37 @@ input[type="checkbox"] {
 }
 
 .option-name {
-  font-size: 0.95rem; /* Reduzido de 1rem */
+  font-size: 0.9rem;
   font-weight: 600;
   color: #333;
 }
 
 .option-desc {
-  font-size: 0.75rem; /* Reduzido de 0.8rem */
+  font-size: 0.75rem;
   color: #888;
-  margin-top: 3px; /* Reduzido de 4px */
+  margin-top: 3px;
   line-height: 1.2;
 }
 
 .option-price {
-  font-size: 0.85rem; /* Reduzido de 0.9rem */
+  font-size: 0.85rem;
   font-weight: 700;
   color: #1a9b9b;
-  margin-top: 6px; /* Reduzido de 8px */
-  align-self: flex-end;
+  margin-left: 12px;
+  white-space: nowrap;
 }
 
 .checkbox-indicator {
-  width: 20px; /* Reduzido de 24px */
-  height: 20px; /* Reduzido de 24px */
-  border: 1.5px solid #ccc; /* Borda mais fina */
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid #ccc;
   border-radius: 50%;
   background: white;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  margin-left: 12px; /* Reduzido de 15px */
+  margin-left: 12px;
   transition: all 0.15s ease;
 }
 
@@ -254,28 +283,28 @@ input[type="checkbox"]:checked + .checkbox-content + .checkbox-indicator {
 
 input[type="checkbox"]:checked + .checkbox-content + .checkbox-indicator::after {
   content: "✔";
-  font-size: 12px; /* Reduzido de 14px */
+  font-size: 12px;
   color: white;
   font-weight: bold;
 }
 
 /* --- Composições --- */
 .compositions-list {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 8px; /* Reduzido de 10px */
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .composition-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 12px; /* Reduzido de 12px 15px */
+  padding: 10px 15px;
   background: #ffffff;
-  border: 1px solid #e5e5e5; /* Mais clara */
-  border-radius: 8px; /* Reduzido de 10px */
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02); /* Mais sutil */
-  font-size: 0.95rem; /* Reduzido de 1rem */
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+  font-size: 0.9rem;
   color: #333;
   transition: all 0.15s ease;
 }
@@ -288,7 +317,7 @@ input[type="checkbox"]:checked + .checkbox-content + .checkbox-indicator::after 
   background: none;
   border: none;
   cursor: pointer;
-  padding: 4px; /* Reduzido de 5px */
+  padding: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -297,77 +326,115 @@ input[type="checkbox"]:checked + .checkbox-content + .checkbox-indicator::after 
 }
 
 .toggle-composition-button:hover {
-  background-color: rgba(0, 0, 0, 0.03); /* Mais suave */
-  transform: scale(1.05); /* Efeito mais sutil */
+  background-color: rgba(0, 0, 0, 0.03);
+  transform: scale(1.05);
 }
 
 .removed-composition {
   text-decoration: line-through;
   color: #999;
   opacity: 0.7;
-  background-color: #f5f5f5; /* Mais clara */
-  border-color: #d0d0d0; /* Mais clara */
+  background-color: #f5f5f5;
+  border-color: #d0d0d0;
 }
 
 /* --- Observações --- */
 .observations-textarea {
   width: 100%;
-  min-height: 80px; /* Reduzido de 100px */
-  border-radius: 8px; /* Reduzido de 10px */
-  border: 1px solid #d0d0d0; /* Mais clara */
+  min-height: 80px;
+  border-radius: 8px;
+  border: 1px solid #d0d0d0;
   box-sizing: border-box;
-  padding: 12px; /* Reduzido de 15px */
-  font-size: 0.9rem; /* Reduzido de 0.95rem */
+  padding: 12px;
+  font-size: 0.9rem;
   resize: vertical;
   font-family: inherit;
   color: #555;
   background-color: #ffffff;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03); /* Mais sutil */
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
 }
 .observations-textarea::placeholder {
-  color: #bbb; /* Mais clara */
+  color: #bbb;
 }
 
 /* --- Footer Fixo --- */
 .modal-sticky-footer {
-  position: sticky; /* Mantém sticky para se comportar como uma barra inferior */
+  position: sticky;
   bottom: 0;
   width: 100%;
   background-color: #ffffff;
-  padding: 12px 18px; /* Reduzido de 15px 20px */
+  padding: 12px 18px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1); /* Sombra mais suave */
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
   border-top-left-radius: 0;
   border-top-right-radius: 0;
   z-index: 100;
+  gap: 15px;
 }
 
-.modal-total-price-mobile {
-  font-size: 1.3rem; /* Reduzido de 1.4rem */
-  font-weight: 700; /* Levemente menos negrito */
-  color: #222;
+/* Controle de Quantidade */
+.quantity-control-container {
+  display: flex;
+  align-items: center;
+  background-color: #f0f0f0;
+  border-radius: 25px;
+  padding: 4px;
+  flex-shrink: 0;
 }
 
+.quantity-button {
+  background: none;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.quantity-button:hover {
+  background-color: #e0e0e0;
+}
+
+.quantity-display {
+  padding: 0 12px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #333;
+}
+
+/* Botão de Adicionar ao Carrinho */
 .add-to-cart-button-mobile {
-  padding: 13px 22px; /* Reduzido de 15px 25px */
-  background-color: #1a9b9b;
+  flex-grow: 1;
+  padding: 13px 22px;
+  background: linear-gradient(to right, #1a9b9b, #22c5c5);
   color: white;
   border: none;
-  border-radius: 25px; /* Reduzido de 30px */
-  font-size: 1rem; /* Reduzido de 1.1rem */
-  font-weight: 600; /* Levemente menos negrito */
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: 600;
   text-align: center;
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
-  box-shadow: 0 5px 12px rgba(26, 155, 155, 0.3); /* Sombra mais suave */
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 15px rgba(26, 155, 155, 0.4), 0 2px 4px rgba(26, 155, 155, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
 }
 
 .add-to-cart-button-mobile:hover {
-  background-color: #148f8f;
-  transform: translateY(-1px); /* Efeito mais sutil */
-  box-shadow: 0 6px 15px rgba(26, 155, 155, 0.4);
+  background: linear-gradient(to right, #148f8f, #1aa4a4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(26, 155, 155, 0.5), 0 4px 8px rgba(26, 155, 155, 0.3);
+}
+
+.add-to-cart-price {
+  font-weight: 700;
 }
 
 /* --- Responsividade para Desktop --- */
@@ -378,82 +445,74 @@ input[type="checkbox"]:checked + .checkbox-content + .checkbox-indicator::after 
 
   .modal-content-mobile {
     width: 90%;
-    max-width: 600px; /* Reduzido de 650px */
+    max-width: 600px;
     height: auto;
-    max-height: 85vh; /* Reduzido de 90vh */
-    border-radius: 20px; /* Reduzido de 25px */
+    max-height: 85vh;
+    border-radius: 20px;
     animation: fadeIn 0.3s ease-out;
     margin: auto;
   }
 
   .product-image-section {
-    height: 240px; /* Reduzido de 280px */
-    border-top-left-radius: 20px; /* Ajustado */
-    border-top-right-radius: 20px; /* Ajustado */
+    height: 240px;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
   }
 
   .product-title-no-image-section {
-    padding-top: 15px; /* Reduzido de 20px */
+    padding-top: 15px;
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
   }
 
   .back-button-overlay {
     position: absolute;
-    top: 15px; /* Reduzido de 20px */
-    left: 15px; /* Reduzido de 20px */
-    padding: 8px; /* Reduzido de 10px */
-    background-color: rgba(255, 255, 255, 0.85); /* Mantém opacidade */
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15); /* Sombra ajustada */
+    top: 15px;
+    left: 15px;
+    padding: 8px;
+    background-color: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
   }
 
-  /* Garante que o ícone do botão volte à cor original em desktop se não tiver imagem */
-  /* Isso é crucial para que o botão não fique branco no fundo da imagem */
-  .back-button-overlay svg { /* Alterado para atingir o SVG diretamente */
-      color: #333 !important; /* Força a cor padrão do ícone */
+  .back-button-overlay svg {
+    color: #333 !important;
   }
-  /* Seção específica para o ícone no botão scrolled */
   .back-button-overlay.scrolled svg {
-      color: #333 !important; /* Mantém a cor para o ícone quando o botão está scrolled */
+    color: #333 !important;
   }
-
 
   .modal-main-content {
-    padding-bottom: 80px; /* Reduzido de 90px */
+    padding-bottom: 80px;
   }
 
   .product-details-summary {
-    padding: 20px; /* Reduzido de 25px */
+    padding: 20px;
   }
 
   .modal-product-name-mobile {
-    font-size: 1.8rem; /* Reduzido de 2rem */
+    font-size: 1.8rem;
   }
 
   .options-sections-wrapper {
-    padding: 0 20px 20px; /* Reduzido de 25px */
+    padding: 0 20px 20px;
   }
 
   .options-list-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 15px; /* Reduzido de 20px */
+    gap: 15px;
   }
 
   .compositions-list {
     grid-template-columns: repeat(2, 1fr);
-    gap: 10px; /* Reduzido de 15px */
+    gap: 10px;
   }
 
   .modal-sticky-footer {
-    padding: 15px 20px; /* Reduzido de 20px 25px */
-  }
-
-  .modal-total-price-mobile {
-    font-size: 1.4rem; /* Reduzido de 1.6rem */
+    padding: 15px 20px;
   }
 
   .add-to-cart-button-mobile {
-    font-size: 1.1rem; /* Reduzido de 1.2rem */
-    padding: 14px 25px; /* Reduzido de 16px 30px */
+    font-size: 1.1rem;
+    padding: 14px 25px;
   }
 }

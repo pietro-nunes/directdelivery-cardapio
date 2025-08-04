@@ -1,81 +1,93 @@
-/* Geral do Carrinho */
+/*
+ * ESTILO ALTERNATIVO: MINIMALISTA E ESTRUTURADO
+ * - Paleta de cores neutra com ponto de cor para ações.
+ * - Layout definido por bordas finas em vez de sombras.
+ * - Tipografia geral reduzida para um visual mais compacto.
+ */
+
+/* -- Reset Básico e Variáveis de Cor (Opcional, mas recomendado) -- */
+:root {
+  --cor-primaria: #1a9b9b;
+  --cor-primaria-hover: #148f8f;
+  --cor-fundo-carrinho: #f8f9fa;
+  --cor-fundo-item: #ffffff;
+  --cor-texto-principal: #212529;
+  --cor-texto-secundario: #6c757d;
+  --cor-borda: #dee2e6;
+  --sombra-suave: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* --- GERAL DO CARRINHO --- */
 .cart {
-  padding: 15px; /* Reduzido de 25px */
-  background-color: #fcfcfc; /* Fundo mais claro */
-  border-radius: 10px; /* Levemente menos arredondado */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06); /* Sombra mais suave e sutil */
-  margin: 15px auto; /* Reduzido de 20px */
-  max-width: 500px; /* Reduzido de 550px */
-  width: calc(100% - 30px); /* Ajustado para margem de 15px de cada lado */
+  background-color: var(--cor-fundo-carrinho);
+  border: 1px solid var(--cor-borda);
+  border-radius: 8px; /* Mais sutil */
+  box-shadow: none; /* Layout limpo, sem sombra principal */
+  margin: 20px auto;
+  max-width: 500px;
+  width: calc(100% - 30px);
   box-sizing: border-box;
-  padding-bottom: 90px; /* Espaço para o footer fixo (ajuste se o footer for menor) */
+  padding: 20px;
+  padding-bottom: 100px; /* Espaço para o footer fixo */
   position: relative;
   z-index: 1;
 }
 
 .cart-title {
   text-align: center;
-  margin-bottom: 20px; /* Reduzido de 25px */
-  font-size: 1.6rem; /* Reduzido de 1.8rem */
-  color: #333;
-  font-weight: 700;
+  margin-bottom: 20px;
+  font-size: 1.5rem; /* Reduzido */
+  color: var(--cor-texto-principal);
+  font-weight: 600; /* Um pouco mais leve */
 }
 
 .cart-empty-message {
   text-align: center;
-  color: #888; /* Mais suave */
-  font-size: 1rem; /* Reduzido */
-  padding: 20px 0; /* Reduzido */
+  color: var(--cor-texto-secundario);
+  font-size: 0.95rem; /* Reduzido */
+  padding: 20px 0;
 }
 
-/* Lista de Itens do Carrinho */
+/* --- LISTA DE ITENS --- */
 .cart-items {
   overflow-y: auto;
-  /* Altura máxima para a área de rolagem.
-     Ajuste '200px' considerando a altura do cabeçalho do carrinho e do footer fixo.
-     Menos espaço para rolagem = carrinho mais compacto. */
-  max-height: calc(100vh - 200px);
-  padding-right: 8px; /* Reduzido de 10px */
-  margin-bottom: 15px; /* Reduzido de 20px */
+  max-height: calc(100vh - 220px); /* Ajustado para novo padding */
+  margin: 0 -8px; /* Compensa o padding dos itens */
+  padding: 0 8px;
 }
 
-/* Esconder scrollbar permanece */
-.cart-items::-webkit-scrollbar {
-  display: none;
-}
-.cart-items {
-  scrollbar-width: none;
-}
+.cart-items::-webkit-scrollbar { display: none; }
+.cart-items { scrollbar-width: none; }
 
-/* Item Individual do Carrinho */
+/* --- ITEM INDIVIDUAL --- */
 .cart-item {
   display: flex;
   align-items: flex-start;
-  margin-bottom: 10px; /* Reduzido de 15px */
-  border: 1px solid #f0f0f0; /* Borda mais fina e clara */
-  padding: 12px; /* Reduzido de 15px */
-  border-radius: 8px; /* Reduzido de 10px */
-  background-color: #ffffff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); /* Sombra mais leve */
-  transition: transform 0.15s ease; /* Transição mais rápida */
+  margin-bottom: 12px;
+  border: 1px solid var(--cor-borda);
+  padding: 12px;
+  border-radius: 6px;
+  background-color: var(--cor-fundo-item);
+  box-shadow: none;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.cart-item:last-child {
-  margin-bottom: 0;
-}
+.cart-item:last-child { margin-bottom: 0; }
 
 .cart-item:hover {
-  transform: translateY(-2px); /* Efeito mais sutil */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  transform: translateY(-2px);
+  border-color: #ced4da;
+  box-shadow: var(--sombra-suave);
 }
 
 .cart-item-image {
-  width: 60px; /* Reduzido de 70px */
-  height: 60px; /* Reduzido de 70px */
-  margin-right: 15px; /* Reduzido de 18px */
-  border-radius: 6px; /* Reduzido de 8px */
+  width: 55px; /* Reduzido */
+  height: 55px; /* Reduzido */
+  margin-right: 12px;
+  border-radius: 4px;
   object-fit: cover;
   flex-shrink: 0;
+  border: 1px solid #f1f1f1;
 }
 
 .item-details {
@@ -85,18 +97,18 @@
 }
 
 .cart-item-name {
-  font-weight: 600; /* Levemente menos negrito */
-  font-size: 1rem; /* Reduzido de 1.1rem */
-  margin-bottom: 5px; /* Reduzido de 8px */
-  color: #333;
-  line-height: 1.2;
+  font-weight: 600;
+  font-size: 0.95rem; /* Reduzido */
+  margin-bottom: 6px;
+  color: var(--cor-texto-principal);
+  line-height: 1.3;
 }
 
-/* Bloco de informações (sabores, adicionais, observações) */
+/* --- BLOCO DE INFORMAÇÕES (Sabores, Adicionais, etc.) --- */
 .cart-item-info-block {
-  margin-top: 8px; /* Reduzido de 10px */
-  border-top: 1px dashed #f5f5f5; /* Borda mais clara */
-  padding-top: 8px; /* Reduzido de 10px */
+  margin-top: 8px;
+  border-top: 1px solid #f1f3f5;
+  padding-top: 8px;
 }
 
 .cart-item-info-block:first-of-type {
@@ -107,213 +119,197 @@
 
 .cart-item-info-title {
   font-weight: 600;
-  font-size: 0.85rem; /* Reduzido de 0.9rem */
-  color: #666; /* Mais suave */
-  margin-bottom: 4px; /* Reduzido de 5px */
+  font-size: 0.8rem; /* Reduzido */
+  color: var(--cor-texto-secundario);
+  margin-bottom: 4px;
 }
 
 .cart-item-list {
   margin: 0;
-  padding-left: 15px; /* Reduzido de 20px */
+  padding-left: 16px;
   list-style-type: disc;
-  color: #777; /* Mais suave */
+  color: #495057;
 }
 
-.cart-item-list li {
-  font-size: 0.8rem; /* Reduzido de 0.85rem */
-  margin-bottom: 2px; /* Reduzido de 3px */
-  line-height: 1.3;
+.cart-item-list li, .cart-item-obs {
+  font-size: 0.8rem; /* Reduzido */
+  margin-bottom: 3px;
+  line-height: 1.4;
 }
 
 .removed-compositions-list li {
   text-decoration: line-through;
-  color: #a7a7a7; /* Cor mais clara */
+  color: #adb5bd;
 }
 
-.cart-item-obs {
-  color: #888; /* Mais suave */
-  font-size: 0.8rem; /* Reduzido de 0.85rem */
-  line-height: 1.3;
-  margin-top: 4px; /* Reduzido de 5px */
-}
-
-/* Controles de Quantidade */
+/* --- CONTROLES DE QUANTIDADE (NOVO DESIGN) --- */
 .quantity-controls {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 12px; /* Reduzido de 15px */
-  padding-top: 8px; /* Reduzido de 10px */
-  border-top: 1px solid #f0f0f0; /* Borda mais suave */
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #f1f3f5;
 }
 
-.cart-item-price {
-  color: #1a9b9b;
-  font-size: 1.1rem; /* Reduzido de 1.2rem */
-  font-weight: 700; /* Levemente menos negrito */
+.cart-item-price-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.3;
+}
+
+.cart-item-price-total {
+  color: var(--cor-primaria);
+  font-size: 1.05rem; /* Reduzido */
+  font-weight: 700;
   margin: 0;
+}
+
+.cart-item-price-unit {
+  font-size: 0.75rem; /* Reduzido */
+  color: var(--cor-texto-secundario);
+  margin-top: 1px;
 }
 
 .quantity-control {
   display: flex;
   align-items: center;
-  border: 1px solid #ddd; /* Borda mais suave */
-  border-radius: 20px; /* Ligeiramente menos arredondado */
-  overflow: hidden;
-  background-color: #fcfcfc; /* Mais claro */
+  background-color: transparent;
 }
 
 .increment-button,
 .decrement-button {
-  background-color: #eefafa; /* Cor mais suave */
-  border: none;
-  color: #1a9b9b;
-  font-size: 1.3rem; /* Reduzido de 1.4rem */
+  background-color: var(--cor-fundo-item);
+  border: 1px solid var(--cor-borda);
+  color: var(--cor-texto-secundario);
+  font-size: 1.1rem; /* Reduzido */
+  font-weight: 600;
   cursor: pointer;
-  padding: 6px 10px; /* Reduzido de 8px 12px */
+  height: 30px;
+  width: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: all 0.15s ease;
 }
 
+.increment-button { border-radius: 0 6px 6px 0; }
+.decrement-button { border-radius: 6px 0 0 6px; }
+
 .increment-button:hover,
 .decrement-button:hover {
-  background-color: #1a9b9b;
+  background-color: var(--cor-primaria);
   color: white;
+  border-color: var(--cor-primaria);
+  z-index: 2;
 }
 
 .quantity-display {
-  margin: 0 10px; /* Reduzido de 12px */
-  font-size: 1rem; /* Reduzido de 1.1rem */
-  color: #333;
+  padding: 0 12px;
+  font-size: 1rem; /* Reduzido */
+  color: var(--cor-texto-principal);
   font-weight: 600;
-  flex-shrink: 0;
+  border-top: 1px solid var(--cor-borda);
+  border-bottom: 1px solid var(--cor-borda);
+  height: 30px;
+  display: flex;
+  align-items: center;
 }
 
-/* Footer Fixo do Carrinho */
+/* --- FOOTER FIXO --- */
 .cart-fixed-footer {
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
-  background-color: #ffffff;
-  padding: 12px 20px; /* Reduzido de 15px 25px */
-  box-shadow: 0 -6px 15px rgba(0, 0, 0, 0.08); /* Sombra mais suave */
+  background-color: var(--cor-fundo-item);
+  padding: 12px 20px;
+  box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.06);
   z-index: 999;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px; /* Reduzido de 15px */
-  border-top-left-radius: 12px; /* Reduzido de 15px */
-  border-top-right-radius: 12px;
+  gap: 12px;
+  border-top: 1px solid var(--cor-borda);
 }
 
 .cart-summary-fixed {
   display: flex;
   justify-content: space-between;
   width: 100%;
-  max-width: 350px; /* Reduzido de 400px */
+  max-width: 450px;
   align-items: center;
 }
 
 .total-label {
-  font-size: 1.1rem; /* Reduzido de 1.2rem */
-  color: #555; /* Mais suave */
-  font-weight: 600;
-  margin: 0;
+  font-size: 1rem; /* Reduzido */
+  color: var(--cor-texto-secundario);
+  font-weight: 500;
 }
 
 .total-amount {
-  font-size: 1.6rem; /* Reduzido de 1.8rem */
-  color: #1a9b9b;
-  font-weight: 800;
-  margin: 0;
+  font-size: 1.5rem; /* Reduzido */
+  color: var(--cor-texto-principal);
+  font-weight: 700;
 }
 
-.checkout-button {
-  background-color: #1a9b9b;
+.checkout-button, .confirm-button {
+  background-color: var(--cor-primaria);
   color: white;
   border: none;
-  padding: 15px 25px; /* Reduzido de 18px 30px */
-  border-radius: 25px; /* Reduzido de 30px */
+  padding: 14px 25px; /* Ajustado */
+  border-radius: 50px; /* Estilo "pill" para um CTA forte */
   cursor: pointer;
-  font-size: 1.1rem; /* Reduzido de 1.2rem */
-  font-weight: 700;
-  transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
-  box-shadow: 0 6px 15px rgba(26, 155, 155, 0.3); /* Sombra mais suave */
+  font-size: 1rem; /* Reduzido */
+  font-weight: 600;
+  transition: all 0.2s ease;
   width: 100%;
-  max-width: 350px; /* Reduzido de 400px */
+  max-width: 450px;
+  box-shadow: 0 4px 12px rgba(26, 155, 155, 0.2);
 }
 
-.checkout-button:hover {
-  background-color: #148f8f;
-  transform: translateY(-2px); /* Efeito mais sutil */
-  box-shadow: 0 8px 20px rgba(26, 155, 155, 0.4);
+.checkout-button:hover, .confirm-button:hover {
+  background-color: var(--cor-primaria-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(26, 155, 155, 0.25);
 }
 
-
-/* Media Queries para Desktop (ajustes maiores de tela) */
+/* --- MEDIA QUERIES (DESKTOP) --- */
 @media (min-width: 768px) {
   .cart {
-    padding: 30px; /* Reduzido de 40px */
-    width: 90%;
-    max-width: 500px; /* Reduzido de 600px */
-    margin: 30px auto; /* Reduzido de 40px */
-    padding-bottom: 100px; /* Reduzido de 120px */
+    padding: 25px;
+    max-width: 550px;
+    margin: 30px auto;
+    padding-bottom: 120px; /* Mais espaço para o footer */
+    border-radius: 12px;
   }
 
   .cart-title {
-    font-size: 1.9rem; /* Reduzido de 2.2rem */
+    font-size: 1.75rem; /* Reduzido */
   }
 
-  .cart-item-image {
-    width: 70px; /* Reduzido de 80px */
-    height: 70px;
-  }
-
-  .cart-item-name {
-    font-size: 1.15rem; /* Reduzido de 1.25rem */
-  }
-
-  .cart-item-info-title {
-    font-size: 0.95rem; /* Reduzido de 1rem */
-  }
-
-  .cart-item-list li {
-    font-size: 0.85rem; /* Permanece */
-  }
-
-  .cart-item-obs {
-    font-size: 0.85rem; /* Permanece */
-  }
-
-  .cart-item-price {
-    font-size: 1.25rem; /* Reduzido de 1.4rem */
-  }
-
-  .quantity-display {
-    font-size: 1.1rem; /* Permanece */
-  }
-
-  /* Ajustes do container fixo para desktop */
   .cart-fixed-footer {
-    width: 500px; /* Mesma largura do .cart */
+    width: 550px;
     left: 50%;
     transform: translateX(-50%);
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
-    padding: 20px 30px; /* Reduzido de 25px 40px */
+    border-radius: 0 0 12px 12px; /* Acompanha o raio do carrinho */
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    padding: 20px 30px;
   }
 
   .total-label {
-    font-size: 1.2rem; /* Reduzido de 1.3rem */
+    font-size: 1.1rem; /* Reduzido */
   }
 
   .total-amount {
-    font-size: 1.8rem; /* Reduzido de 2rem */
+    font-size: 1.7rem; /* Reduzido */
   }
 
-  .checkout-button {
-    padding: 16px 28px; /* Reduzido de 20px 35px */
-    font-size: 1.2rem; /* Reduzido de 1.3rem */
+  .checkout-button, .confirm-button {
+    font-size: 1.1rem; /* Reduzido */
+    padding: 16px 30px;
   }
 }

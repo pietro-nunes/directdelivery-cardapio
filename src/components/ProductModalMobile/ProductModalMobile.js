@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import "./ProductModalMobile.css";
 import { Bounce, toast } from "react-toastify";
 import { formatarNumero, toTitleCase } from "../../utils/functions";
-import { FiTrash2, FiRotateCw, FiChevronLeft } from "react-icons/fi";
+import { FiTrash2, FiRotateCw, FiChevronLeft, FiMinus, FiPlus } from "react-icons/fi";
 import config from "../../config";
 
 const ProductModalMobile = ({
@@ -15,11 +15,11 @@ const ProductModalMobile = ({
   const [selectedAdditionals, setSelectedAdditionals] = useState([]);
   const [removedCompositions, setRemovedCompositions] = useState([]);
   const [observation, setObservation] = useState("");
+  const [quantity, setQuantity] = useState(1);
   const [scrolled, setScrolled] = useState(false);
   const mainContentRef = useRef(null);
 
-  // Mova a definição de 'hasImage' para cá, antes do useEffect
-  const hasImage = product.image; // AGORA DEFINIDO AQUI!
+  const hasImage = product.image;
 
   const flavors =
     product.relations?.filter((relation) => relation.type === "flavor") || [];
@@ -30,11 +30,9 @@ const ProductModalMobile = ({
     product.relations?.filter((relation) => relation.type === "composition") ||
     [];
 
-  // Efeito para monitorar a rolagem
   useEffect(() => {
     const handleScroll = () => {
       if (mainContentRef.current) {
-        // 'hasImage' agora já está definido aqui
         const threshold = hasImage ? 150 : 20;
         if (mainContentRef.current.scrollTop > threshold) {
           setScrolled(true);
@@ -54,7 +52,7 @@ const ProductModalMobile = ({
         currentRef.removeEventListener("scroll", handleScroll);
       }
     };
-  }, [hasImage]); // 'hasImage' continua como dependência
+  }, [hasImage]);
 
   const toggleFlavor = (relationId) => {
     if (selectedFlavors.includes(relationId)) {
@@ -86,7 +84,15 @@ const ProductModalMobile = ({
     });
   };
 
-  const calculateTotalPrice = () => {
+  const increaseQuantity = () => {
+    setQuantity((prev) => prev + 1);
+  };
+
+  const decreaseQuantity = () => {
+    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+  };
+
+  const calculateItemPrice = () => {
     let basePrice = parseFloat(product.price || 0);
     const additionalPrice = additionals
       .filter((r) => selectedAdditionals.includes(r.id))
@@ -109,6 +115,10 @@ const ProductModalMobile = ({
       }
     }
     return basePrice + additionalPrice + calculatedFlavorPrice;
+  };
+
+  const calculateTotalPrice = () => {
+    return calculateItemPrice() * quantity;
   };
 
   const handleAddToCart = () => {
@@ -150,7 +160,9 @@ const ProductModalMobile = ({
       removedCompositions: removedCompositionsDetails,
       selectedObservations: [],
       observation,
+      unitPrice: calculateItemPrice(),
       totalPrice: calculateTotalPrice(),
+      quantity,
     };
 
     addToCart(productWithDetails);
@@ -161,14 +173,12 @@ const ProductModalMobile = ({
     closeModal();
   };
 
-
   return (
     <div className="modal-overlay-mobile" onClick={closeModal}>
       <div
         className="modal-content-mobile"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Botão de Voltar - sempre no topo */}
         <button
           className={`back-button-overlay ${scrolled ? 'scrolled' : ''}`}
           onClick={closeModal}
@@ -176,9 +186,7 @@ const ProductModalMobile = ({
           <FiChevronLeft size={30} color={scrolled || !hasImage ? "#333" : "#fff"} />
         </button>
 
-        {/* Conteúdo Principal Rolável */}
         <div className="modal-main-content" ref={mainContentRef}>
-          {/* Seção da Imagem ou Cabeçalho sem Imagem */}
           {hasImage ? (
             <div className="product-image-section">
               <img
@@ -195,7 +203,6 @@ const ProductModalMobile = ({
             </div>
           )}
 
-          {/* Informações do Produto (Nome, Preço, Descrição) */}
           <div className="product-details-summary">
             {hasImage && (
               <h3 className="modal-product-name-mobile">
@@ -210,14 +217,21 @@ const ProductModalMobile = ({
             </p>
           </div>
 
-          {/* Seções de Opções (Sabores, Adicionais, Composições) */}
           <div className="options-sections-wrapper">
             {flavors.length > 0 && (
               <div className="option-section-card">
-                <h4>
-                  Escolha até {product.flavorAllowed} sabor(es)
-                  {product.flavorMandatory > 0 &&
-                    ` (Obrigatório: ${product.flavorMandatory})`}
+                <h4 className="options-header">
+                  Escolha seu sabor
+                  <div className="options-badges">
+                    <span className="badge badge-info">
+                      Até {product.flavorAllowed}
+                    </span>
+                    {product.flavorMandatory > 0 && (
+                      <span className="badge badge-mandatory">
+                        Obrigatório
+                      </span>
+                    )}
+                  </div>
                 </h4>
                 <div className="options-list-grid">
                   {flavors.map((relation) => {
@@ -231,7 +245,6 @@ const ProductModalMobile = ({
                             ).toFixed(2)
                           )
                         : parseFloat(relation.price || 0);
-
                     return (
                       <label
                         className="custom-checkbox-card"
@@ -267,7 +280,14 @@ const ProductModalMobile = ({
 
             {additionals.length > 0 && (
               <div className="option-section-card">
-                <h4>Adicionais:</h4>
+                <h4 className="options-header">
+                  Adicionais
+                  <div className="options-badges">
+                    <span className="badge badge-info">
+                      Opcional
+                    </span>
+                  </div>
+                </h4>
                 <div className="options-list-grid">
                   {additionals.map((relation) => (
                     <label
@@ -303,7 +323,14 @@ const ProductModalMobile = ({
 
             {compositions.length > 0 && (
               <div className="option-section-card">
-                <h4>Composições:</h4>
+                <h4 className="options-header">
+                  Composições
+                  <div className="options-badges">
+                    <span className="badge badge-info">
+                      Clique para remover
+                    </span>
+                  </div>
+                </h4>
                 <div className="compositions-list">
                   {compositions.map((relation) => {
                     const isRemoved = removedCompositions.includes(relation.id);
@@ -334,9 +361,15 @@ const ProductModalMobile = ({
               </div>
             )}
 
-            {/* Observações */}
             <div className="option-section-card">
-              <h4>Observações:</h4>
+              <h4 className="options-header">
+                Observações
+                <div className="options-badges">
+                  <span className="badge badge-info">
+                    Opcional
+                  </span>
+                </div>
+              </h4>
               <textarea
                 className="observations-textarea"
                 placeholder="Ex.: Sem cebola, sem ovo, etc."
@@ -348,16 +381,22 @@ const ProductModalMobile = ({
           </div>
         </div>
 
-        {/* Footer Fixo (Botão e Total) */}
         <div className="modal-sticky-footer">
-          <span className="modal-total-price-mobile">
-            Total: R$ {formatarNumero(calculateTotalPrice())}
-          </span>
+          <div className="quantity-control-container">
+            <button className="quantity-button" onClick={decreaseQuantity}>
+              <FiMinus size={20} color="#333" />
+            </button>
+            <span className="quantity-display">{quantity}</span>
+            <button className="quantity-button" onClick={increaseQuantity}>
+              <FiPlus size={20} color="#333" />
+            </button>
+          </div>
+
           <button
             onClick={handleAddToCart}
             className="add-to-cart-button-mobile"
           >
-            Adicionar ao Carrinho
+            Adicionar <span className="add-to-cart-price">R$ {formatarNumero(calculateTotalPrice())}</span>
           </button>
         </div>
       </div>
