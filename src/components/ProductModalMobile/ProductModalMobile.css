@@ -447,7 +447,7 @@ input[type="checkbox"]:checked + .checkbox-content + .checkbox-indicator::after 
     width: 90%;
     max-width: 600px;
     height: auto;
-    max-height: 85vh;
+    max-height: 85dvh;
     border-radius: 20px;
     animation: fadeIn 0.3s ease-out;
     margin: auto;

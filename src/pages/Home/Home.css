@@ -110,15 +110,6 @@
   border-bottom: none; /* Remove a borda se a sombra já a substitui visualmente */
 }
 
-/* Estilos para cada seção de categoria de produtos */
-.category {
-  margin-top: 25px; /* Espaçamento entre as categorias (mobile) */
-  /* Isso é crucial para quando você rola para uma categoria.
-     Ajusta o topo da rolagem para que o título não fique escondido
-     pelo header principal e pela barra sticky de categorias. */
-  scroll-margin-top: 130px; /* Ajuste para mobile, pode precisar de ajuste fino */
-}
-
 .category-title {
   font-size: 20px; /* Tamanho da fonte para mobile */
   font-weight: 700;
@@ -169,11 +160,6 @@
     margin-top: 30px;
     margin-bottom: 20px;
     padding: 0 20px;
-  }
-
-  .category {
-    margin-top: 30px; /* Mais espaço entre as categorias */
-    scroll-margin-top: 150px; /* Volta ao valor original para telas maiores */
   }
 
   .category-title {

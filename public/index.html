@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#1a9b9b" />
   <meta name="description" content="Web site created using create-react-app" />
   <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
@@ -37,6 +37,7 @@
 
     body {
       background-color: #1a9b9b0a;
+      margin-top: env(safe-area-inset-top)
     }
 
     input[type='text'],

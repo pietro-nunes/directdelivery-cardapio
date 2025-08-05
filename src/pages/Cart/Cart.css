@@ -51,7 +51,7 @@
 /* --- LISTA DE ITENS --- */
 .cart-items {
   overflow-y: auto;
-  max-height: calc(100vh - 220px); /* Ajustado para novo padding */
+  max-height: calc(100dvh - 220px); /* Ajustado para novo padding */
   margin: 0 -8px; /* Compensa o padding dos itens */
   padding: 0 8px;
 }

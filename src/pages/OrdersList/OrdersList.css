@@ -5,7 +5,7 @@
   margin: 0 auto;
   text-align: center;
   background-color: #f8f8f8; /* Fundo suave para a página */
-  min-height: calc(100vh - 60px); /* Garante que ocupe a altura da viewport (ajuste 60px se tiver header/footer fixo) */
+  min-height: calc(100dvh - 60px); /* Garante que ocupe a altura da viewport (ajuste 60px se tiver header/footer fixo) */
   box-sizing: border-box;
 }
 

@@ -6,7 +6,7 @@
   align-items: center; /* Centraliza horizontalmente */
   justify-content: center; /* Centraliza verticalmente (se houver espaço) */
   flex-direction: column;
-  min-height: calc(100vh - 60px); /* Garante que ocupe a altura da viewport (ajuste 60px se tiver header/footer fixo) */
+  min-height: calc(100dvh - 60px); /* Garante que ocupe a altura da viewport (ajuste 60px se tiver header/footer fixo) */
   box-sizing: border-box; /* Inclui padding na altura/largura */
   background-color: #f8f8f8; /* Um fundo suave para a página */
 }
@@ -117,7 +117,7 @@
 @media (min-width: 768px) {
   .order-completed {
     padding: 40px 20px; /* Mais padding em desktop */
-    min-height: calc(100vh - 80px); /* Ajuste para possível header/footer maior em desktop */
+    min-height: calc(100dvh - 80px); /* Ajuste para possível header/footer maior em desktop */
   }
 
   .order-completed h2 {
