@@ -1,98 +1,60 @@
-/* Overlay do Modal - Fundo escuro */
+/* --- Estilos Gerais do Modal --- */
 .end__modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.6); /* Cor mais escura para o overlay */
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
-  align-items: flex-end; /* Alinha o modal na parte inferior para mobile */
+  align-items: flex-end;
   z-index: 1000;
-  overflow: hidden; /* Garante que nada vaze do overlay */
+  overflow: hidden; /* Remove o scroll da página principal */
 }
 
-/* Conteúdo do Modal */
 .end__modal-content {
   display: flex;
-  flex-direction: column; /* Organiza os itens em coluna */
+  flex-direction: column;
   background: white;
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15); /* Sombra para cima, destacando o modal */
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
   width: 100%;
-  height: 50%; /* Ocupa a altura total em mobile */
+  max-height: 100vh; /* Permite que o modal ocupe a altura total em mobile */
+  padding: 30px 20px 20px;
+  box-sizing: border-box;
   animation: slide-in 0.3s ease forwards;
-  overflow-y: auto; /* Permite scroll se o conteúdo for grande */
-  padding: 20px 15px; /* Padding ajustado */
-  box-sizing: border-box;
-  /* position: relative; foi removido pois o back-button não é mais absoluto dentro dele */
+  overflow-y: auto; /* Permite o scroll apenas dentro do modal */
+  gap: 25px;
 }
 
-/* Título do Modal */
-.end__modal-content h4 {
-  font-size: 1.35rem; /* Tamanho maior para o título do modal */
-  text-align: center;
-  margin-bottom: 20px; /* Mais espaço abaixo do título */
-  color: #333;
+.modal-title {
+  font-size: 1.6rem;
   font-weight: 700;
-  width: 100%; /* Ocupa a largura total */
+  color: #1e1e1e;
+  margin: 0 0 10px 0;
+  text-align: center;
 }
 
-/* Formulário dentro do Modal */
-.end__modal-content form {
-  width: 100%; /* Garante que o formulário ocupe a largura total do modal */
-  max-width: 450px; /* Limita a largura máxima do formulário para melhor leitura */
-  padding: 0; /* Remove padding extra do form, o padding já está no modal-content */
-  margin-top: 0; /* REMOVIDO: margem superior que dava espaço para o botão absoluto */
+.address-instruction {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 0;
+  text-align: center;
+  line-height: 1.5;
 }
 
-/* Inputs e Selects do Modal */
-.end__modal-content select,
-.end__modal-content input,
-.masked-input {
-  /* Adicionado .masked-input aqui */
-  width: 100%;
-  padding: 12px; /* Padding maior para facilitar o toque */
-  box-sizing: border-box;
-  margin-bottom: 15px; /* Mais espaço entre os campos */
-  border: 1px solid #ddd; /* Borda suave */
-  border-radius: 8px; /* Mais arredondado */
-  font-size: 1rem; /* Tamanho da fonte padrão */
-  background-color: #fcfcfc; /* Fundo leve */
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.end__modal-content select:focus,
-.end__modal-content input:focus,
-.masked-input:focus {
-  /* Adicionado .masked-input aqui */
-  border-color: #007bff; /* Borda azul no foco */
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25); /* Sombra de foco suave */
-}
-
-/* Display da Taxa de Entrega */
-.delivery-fee-display {
-  margin: 10px 0 20px 0; /* Ajusta margens para melhor espaçamento */
-  font-size: 1.05rem; /* Tamanho ligeiramente maior */
-  font-weight: 700; /* Mais negrito */
-  color: #007bff;
-  text-align: right; /* Alinhado à direita */
-  padding-right: 5px; /* Pequeno padding para afastar da borda */
-}
-
-/* Botão de Voltar (seta) - AJUSTADO */
+/* --- Botão de Voltar para Mobile (Corrigido) --- */
 .back-button-mobile {
-  /* position: absolute; REMOVIDO */
-  /* top: 20px; REMOVIDO */
-  /* left: 20px; REMOVIDO */
   cursor: pointer;
   z-index: 10;
-  border-radius: 50%; /* Torna o botão redondo visualmente */
+  border-radius: 50%;
   transition: background-color 0.2s ease;
-  align-self: flex-start; /* Alinha o item ao início da flex container */
-  margin-bottom: 15px; /* Espaço abaixo do botão */
-  margin-top: 5px; /* Pequena margem superior para o padding do modal */
+  align-self: flex-start;
+  margin-bottom: 20px;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .back-button-mobile:hover {
@@ -100,279 +62,194 @@
 }
 
 .back-icon-mobile {
-  width: 28px; /* Ícone um pouco maior */
-  height: 28px;
-  color: #555; /* Cor do ícone */
+  width: 20px;
+  height: 20px;
+  color: #444;
+  stroke-width: 2.5;
 }
 
-/* Lista de Endereços Salvos */
+/* --- Lista de Endereços Salvos --- */
 .address-list {
   display: flex;
   flex-direction: column;
-  gap: 12px; /* Mais espaço entre os cartões de endereço */
-  margin-bottom: 20px; /* Espaço abaixo da lista */
+  gap: 15px;
 }
 
-/* Cartão de Endereço Individual */
 .address-card {
-  border: 1px solid #e0e0e0; /* Borda mais suave */
-  border-radius: 8px; /* Mais arredondado */
-  padding: 15px; /* Mais padding */
-  background-color: #fefefe; /* Fundo quase branco */
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 20px;
+  background-color: #fff;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease-in-out;
   position: relative;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Sombra sutil */
-  margin-bottom: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
 .address-card:hover {
-  background-color: #f5f5f5;
-  border-color: #cceeff; /* Borda mais clara no hover */
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
 }
 
 .address-card.selected {
-  border: 2px solid #28a745; /* Borda verde mais visível */
-  background-color: #e6ffe6; /* Fundo verde pastel */
-  box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.2); /* Sombra verde destacada */
-  transform: translateY(-2px); /* Efeito de "levantar" */
+  border-color: #4a90e2;
+  background-color: #f5f8ff;
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.2);
 }
 
 .address-card.selected::before {
   content: "✔";
   position: absolute;
-  top: 10px; /* Ajuste para centralizar visualmente */
-  right: 15px;
-  font-size: 1.4rem; /* Checkmark maior */
-  color: #28a745;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  font-size: 1.5rem;
+  color: #4a90e2;
   font-weight: bold;
-  opacity: 0;
-  transform: scale(0.8);
-  animation: checkAppear 0.3s forwards ease-out; /* Animação mais suave */
-}
-
-@keyframes checkAppear {
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
 }
 
 .address-card strong {
   display: block;
-  font-weight: 700; /* Mais negrito */
-  color: #333;
-  margin-bottom: 6px; /* Mais espaço abaixo do apelido */
-  font-size: 1.05rem; /* Apelido um pouco maior */
-}
-
-.address-card p {
-  margin: 0;
-  color: #555;
-  font-size: 0.95rem; /* Tamanho da fonte do endereço */
-  line-height: 1.4; /* Espaçamento de linha */
-}
-
-.address-card small {
-  color: #888;
-  font-size: 0.8rem; /* Tamanho da fonte menor para detalhes */
-  display: block; /* Garante que fique em sua própria linha */
-  margin-top: 5px;
-}
-
-/* Instrução de Endereço */
-.address-instruction {
-  font-size: 0.95rem;
-  color: #666;
-  margin-bottom: 20px; /* Mais espaço */
-  text-align: center;
-  line-height: 1.5;
-}
-
-/* Botões de Ação do Modal */
-.add-new-button.green,
-.confirm-button {
-  flex: 1; /* Faz os botões ocuparem espaço igual */
-  font-size: 1rem;
   font-weight: 600;
-  border: none;
-  border-radius: 8px; /* Mais arredondado */
-  padding: 12px 18px; /* Padding generoso */
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.1s ease,
-    box-shadow 0.2s ease;
-  white-space: nowrap; /* Impede que o texto quebre */
+  color: #2e2e2e;
+  margin-bottom: 5px;
+  font-size: 1.15rem;
 }
 
-.add-new-button.green {
-  background-color: #28a745;
-  color: white;
-  box-shadow: 0 3px 8px rgba(40, 167, 69, 0.2);
+.address-card p,
+.address-card small {
+  margin: 0;
+  color: #777;
+  font-size: 0.95rem;
 }
 
-.add-new-button.green:hover {
-  background-color: #218838;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3);
-}
-
-.confirm-button {
-  background-color: #1a9b9b;
-  color: white;
-}
-
-.confirm-button:hover {
-  background-color: #1a9b9b;
-  transform: translateY(-1px);
-}
-
-.modal-buttons-row {
+/* --- Formulário de Endereço --- */
+.form-fields {
   display: flex;
-  justify-content: space-between;
-  gap: 15px; /* Mais espaço entre os botões */
-  margin-top: 25px; /* Mais espaço acima dos botões */
-  width: 100%;
+  flex-direction: column;
+  gap: 15px;
 }
 
-/* Controle de Visibilidade dos Campos do Formulário */
-.form-fields.hidden {
-  display: none;
-}
-
-.form-fields.visible {
-  display: block;
-  width: 100%; /* Garante que ocupe a largura total */
-}
-
-/* Rótulos dos Inputs */
 .input-label {
-  font-size: 0.88rem; /* Rótulo ligeiramente maior */
-  color: #666; /* Cor mais escura para o rótulo */
-  margin-bottom: 6px; /* Mais espaço abaixo do rótulo */
-  display: block;
+  font-size: 0.85rem;
+  color: #666;
+  margin: 0;
   font-weight: 500;
 }
 
-/* Customização do Select */
-/* Remove o estilo padrão do select */
+.form-fields input,
+.form-fields select,
+.masked-input {
+  width: 100%;
+  padding: 14px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 1rem;
+  background-color: #f9f9f9;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-fields input:focus,
+.form-fields select:focus,
+.masked-input:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+  outline: none;
+}
+
 .custom-combo {
   appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  background-color: #fcfcfc; /* Fundo suave */
-  border: 1px solid #ddd;
-  border-radius: 8px; /* Consistente com outros inputs */
-  padding: 12px;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23777%22%20d%3D%22M287%2069.9a17.6%2017.6%200%200%200-24.8%200L146.2%20185.3%2030.2%2069.9a17.6%2017.6%200%200%200-24.8%2024.8l129%20129a17.6%2017.6%200%200%200%2024.8%200l129-129a17.6%2017.6%200%200%200%200-24.8z%22%2F%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+  background-position: right 15px center;
+  background-size: 14px auto;
+  padding-right: 40px;
+}
+
+.delivery-fee-display {
+  margin-top: 5px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2e2e2e;
+  text-align: right;
+  padding: 0 5px;
+}
+
+/* --- Botões de Ação --- */
+.modal-buttons-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.add-new-address-button,
+.back-to-list-button,
+.confirm-button {
+  padding: 14px 24px;
+  border-radius: 10px;
   font-size: 1rem;
-  width: 100%;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  /* Adiciona uma seta SVG personalizada */
-  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%22292.4%22%3E%3Cpath%20fill%3D%22%23555%22%20d%3D%22M287%2069.9a17.6%2017.6%200%200%200-24.8%200L146.2%20185.3%2030.2%2069.9a17.6%2017.6%200%200%200-24.8%2024.8l129%20129a17.6%2017.6%200%200%200%2024.8%200l129-129a17.6%2017.6%200%200%200%200-24.8z%22%2F%3E%3C%2Fsvg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  background-size: 12px auto;
-  padding-right: 30px; /* Espaço para a seta */
+  flex-grow: 1;
 }
 
-.custom-combo:focus {
-  border-color: #007bff;
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+.add-new-address-button {
+  background-color: transparent;
+  color: #4a90e2;
+  border: 1px solid #4a90e2;
 }
 
-.custom-combo-wrapper {
-  position: relative;
-  width: 100%;
+.add-new-address-button:hover {
+  background-color: #4a90e2;
+  color: white;
 }
 
-/* Efeito de slide-in para o modal */
+.back-to-list-button {
+  background-color: #f0f0f0;
+  color: #444;
+  border: none;
+}
+
+.back-to-list-button:hover {
+  background-color: #e0e0e0;
+}
+
+.confirm-button {
+  background-color: #5cb85c;
+  color: white;
+  border: none;
+  box-shadow: 0 4px 15px rgba(92, 184, 92, 0.3);
+}
+
+.confirm-button:hover {
+  background-color: #4cae4c;
+  box-shadow: 0 6px 20px rgba(92, 184, 92, 0.4);
+}
+
+/* --- Animações e Responsividade --- */
 @keyframes slide-in {
   from {
     transform: translateY(100%);
-    opacity: 0.5;
   }
   to {
     transform: translateY(0);
-    opacity: 1;
   }
 }
 
-/* Responsividade para Mobile (max-width: 768px) */
-@media (max-width: 768px) {
-  .end__modal-content {
-    padding: 20px 15px; /* Padding padrão para mobile */
-    height: 100dvh; /* Ajuste a altura para um bom visual em mobile */
-  }
-  .end__modal-content h4 {
-    font-size: 1.2rem;
-    margin-bottom: 15px;
-  }
-  .end__modal-content form {
-    margin-top: 10px;
-  }
-  .delivery-fee-display {
-    font-size: 1rem;
-  }
-  /* Ajuste para o botão de voltar no fluxo normal */
-  .back-button-mobile {
-    margin-bottom: 15px; /* Espaço entre o botão e o título */
-  }
-  .back-icon-mobile {
-    width: 24px;
-    height: 24px;
-  }
-  .address-card {
-    padding: 12px;
-  }
-  .address-card strong {
-    font-size: 1rem;
-  }
-  .address-card p {
-    font-size: 0.9rem;
-  }
-  .address-card small {
-    font-size: 0.75rem;
-  }
-  .address-instruction {
-    font-size: 0.9rem;
-  }
-  .add-new-button.green,
-  .confirm-button {
-    font-size: 0.95rem;
-    padding: 10px 15px;
-  }
-  .modal-buttons-row {
-    flex-direction: column; /* Botões empilhados em mobile */
-    gap: 10px;
-  }
-  .input-label {
-    font-size: 0.8rem;
-  }
-  .end__modal-content select,
-  .end__modal-content input,
-  .masked-input {
-    /* Adicionado .masked-input aqui */
-    font-size: 0.95rem;
-    padding: 10px;
-  }
-  .custom-combo {
-    font-size: 0.95rem;
-    padding: 10px;
-  }
-}
-
-/* Responsividade para Desktop (min-width: 769px) */
 @media (min-width: 769px) {
   .end__modal-overlay {
-    align-items: center; /* Centraliza o modal verticalmente em desktop */
+    align-items: center;
   }
   .end__modal-content {
-    width: 500px; /* Largura fixa para desktop */
-    height: auto; /* Altura automática */
-    border-radius: 10px; /* Bordas arredondadas em todos os lados */
-    padding: 30px; /* Padding maior para desktop */
-    animation: fade-in 0.3s ease forwards; /* Animação de fade-in para desktop */
+    width: 550px;
+    height: auto;
+    border-radius: 16px;
+    padding: 40px;
+    animation: fade-in 0.3s ease forwards;
+    gap: 30px;
   }
   @keyframes fade-in {
     from {
@@ -384,24 +261,19 @@
       transform: translateY(0);
     }
   }
-  .end__modal-content h4 {
-    font-size: 1.5rem;
-  }
-  .delivery-fee-display {
-    text-align: right; /* Alinhamento à direita para desktop */
-  }
   .back-button-mobile {
-    display: none; /* Esconde o botão de voltar em desktop */
+    display: none;
   }
   .modal-buttons-row {
-    flex-direction: row; /* Botões lado a lado em desktop */
-    justify-content: flex-end; /* Alinha os botões à direita */
-    gap: 20px; /* Mais espaço entre os botões */
+    justify-content: flex-end;
+    gap: 20px;
   }
-  .add-new-button.green,
+  .back-to-list-button,
   .confirm-button {
-    max-width: 200px; /* Limita a largura dos botões em desktop */
-    padding: 14px 25px; /* Padding maior */
-    font-size: 1.05rem;
+    max-width: 200px;
+    flex-grow: 0;
+  }
+  .add-new-address-button {
+    flex-grow: 0;
   }
 }

@@ -1,413 +1,260 @@
-/* Container Principal do Checkout */
+/* --- Estilos Gerais e Padding para Header Fixo --- */
+body {
+  background-color: #f5f5f5;
+  font-family: 'Poppins', sans-serif;
+  color: #333;
+}
+
 .checkout-container {
   max-width: 600px;
   margin: 20px auto;
-  padding: 20px;
-  border-radius: 10px;
+  padding: 50px 20px 20px; /* Adiciona padding de 50px no topo */
   background-color: #fff;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); /* Sombra mais suave */
-  font-family: 'Arial', sans-serif; /* Consistência de fonte */
-}
-
-/* Títulos das Seções (h2) */
-.checkout-container h2 {
-  font-size: 1.25rem; /* Aumentado para melhor visibilidade como título de seção */
-  font-weight: 700; /* Negrito para destaque */
-  color: #333; /* Cor mais suave que preto puro */
-  margin-top: 25px; /* Espaçamento superior */
-  margin-bottom: 15px; /* Espaçamento inferior */
-  border-bottom: 1px solid #eee; /* Linha divisória */
-  padding-bottom: 8px; /* Espaçamento da linha */
-}
-
-/* Informações do Cliente e Entrega */
-.customer-info,
-.delivery-info {
-  padding: 15px;
-  margin: 15px 0; /* Aumentado um pouco a margem vertical */
-  border: 1px solid #e0e0e0; /* Borda mais suave */
-  border-radius: 8px; /* Arredondamento um pouco maior */
-  background-color: #fcfcfc; /* Fundo suave */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03); /* Sombra sutil */
-  position: relative; /* Para posicionar o botão 'Trocar' */
-}
-
-/* Estilo para textos dentro de customer-info/delivery-info */
-.customer-info p,
-.delivery-info p {
-  font-size: 1rem; /* Tamanho padrão para parágrafos */
-  color: #444;
-  margin-bottom: 5px;
-}
-
-.customer-info strong,
-.delivery-info strong {
-  font-weight: 600;
-  color: #333;
-}
-
-.customer-info .customer-name { /* Exemplo específico para o nome */
-    font-size: 1.05rem; /* Levemente maior para o nome */
-    font-weight: 700;
-}
-
-.customer-info .customer-phone { /* Exemplo específico para o telefone */
-    font-size: 0.95rem; /* Tamanho para o telefone */
-    color: #666;
-}
-
-/* Botão "Trocar" */
-.change-button {
-  background-color: #007bff; /* Cor primária */
-  color: white;
-  border: none;
-  padding: 8px 18px; /* Padding ajustado */
-  border-radius: 6px; /* Arredondamento sutil */
-  cursor: pointer;
-  font-size: 0.85rem; /* Tamanho da fonte do botão */
-  font-weight: 600;
-  transition: background-color 0.2s ease, transform 0.1s ease;
-  position: absolute; /* Posiciona o botão */
-  top: 15px;
-  right: 15px;
-  box-shadow: 0 2px 5px rgba(0, 123, 255, 0.2); /* Sombra para o botão */
-}
-
-.change-button:hover {
-  background-color: #0056b3;
-  transform: translateY(-1px);
-}
-
-/* Informações de Pagamento (seletor) */
-.payment-info {
-  margin: 15px 0;
-}
-
-.payment-select {
-  width: 100%;
-  padding: 12px;
-  border-radius: 8px; /* Mais arredondado */
-  font-size: 1rem; /* Tamanho da fonte consistente */
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
-  transition: border-color 0.3s, background-color 0.3s, box-shadow 0.3s;
-  appearance: none; /* Remove seta padrão em alguns navegadores */
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%22292.4%22%3E%3Cpath%20fill%3D%22%23007bff%22%20d%3D%22M287%2069.9a17.6%2017.6%200%200%200-24.8%200L146.2%20185.3%2030.2%2069.9a17.6%2017.6%200%200%200-24.8%2024.8l129%20129a17.6%2017.6%200%200%200%2024.8%200l129-129a17.6%2017.6%200%200%200%200-24.8z%22%2F%3E%3C%2Fsvg%3E'); /* Seta customizada */
-  background-repeat: no-repeat;
-  background-position: right 12px top 50%;
-  background-size: 12px auto;
-}
-
-.payment-select:focus {
-  border-color: #007bff;
-  outline: none;
-  background-color: #fff;
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25); /* Sombra no foco */
-}
-
-.payment-select option {
-  padding: 10px; /* Padding aplicado via CSS, mas comportamento pode variar */
-  font-size: 1rem; /* Tamanho da fonte das opções */
-}
-
-/* Textarea de Observações */
-textarea {
-  width: 100%;
-  min-height: 80px; /* Altura mínima ajustada */
-  padding: 12px; /* Padding interno */
-  border-radius: 8px; /* Mais arredondado */
-  border: 1px solid #ccc; /* Borda mais suave */
-  margin-top: 10px;
-  font-size: 0.95rem; /* Tamanho da fonte da observação */
-  resize: vertical; /* Permite redimensionar verticalmente */
-  font-family: 'Arial', sans-serif;
-  color: #555;
-  background-color: #fdfdfd;
-  box-sizing: border-box; /* Garante que padding não aumente a largura total */
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05); /* Sombra interna sutil */
-}
-
-textarea::placeholder {
-  color: #aaa;
-}
-
-/* Botão Finalizar Pedido */
-.finalizar-button {
-  width: 100%;
-  padding: 14px; /* Padding ajustado */
-  background: #28a745; /* Cor de sucesso */
-  color: white;
-  border: none;
-  border-radius: 8px; /* Mais arredondado */
-  font-size: 1.05rem; /* Tamanho da fonte do botão */
-  font-weight: 700;
-  cursor: pointer;
-  transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-  box-shadow: 0 4px 10px rgba(40, 167, 69, 0.2); /* Sombra para o botão */
-}
-
-.finalizar-button:hover {
-  background: #218838;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(40, 167, 69, 0.3);
-}
-
-/* Container para botões (não vi no HTML, mas mantive a estrutura) */
-.button-container {
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
   display: flex;
-  justify-content: center; /* Centraliza os botões */
-  width: 100%;
-  margin-top: 20px; /* Espaçamento superior */
+  flex-direction: column;
+  gap: 30px;
 }
 
-.button-container button {
-  margin: 5px;
-  padding: 10px 20px; /* Padding ajustado */
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 0.95rem; /* Tamanho da fonte dos botões do container */
-  font-weight: 600;
-  background-color: #f0f0f0; /* Cor padrão para outros botões */
-  color: #555;
-  transition: background-color 0.2s ease, transform 0.1s ease;
-}
-
-.button-container button:hover {
-    background-color: #e0e0e0;
-    transform: translateY(-1px);
-}
-
-
-/* Opções de Entrega (Radio Buttons) */
-.delivery-option {
-  display: flex;
-  align-items: center;
-  margin: 10px 0; /* Espaçamento entre as opções */
-  font-size: 1rem; /* Tamanho da fonte da opção */
-  color: #333;
-}
-
-.delivery-option input[type="radio"] {
-  margin-right: 10px; /* Espaço entre o radio button e o texto */
-  transform: scale(1.2); /* Aumenta o tamanho do radio button */
-}
-
-.delivery-type p { /* Texto principal de detalhes da entrega */
-  font-size: 1rem;
-  color: #444;
-  margin-top: 10px;
-  margin-bottom: 5px;
-}
-
-.delivery-type span { /* Endereço ou detalhes de retirada */
-  font-size: 0.9rem;
-  color: #666;
-  display: flex; /* Para alinhar o ícone MdLocationPin */
-  align-items: center;
-  gap: 5px;
-  line-height: 1.4;
-}
-
-/* Seção de Finalização do Pedido (Totais) */
-.finish-order-info {
+.checkout-section {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  margin-top: 30px; /* Mais espaço antes da seção de totais */
-  background-color: #e6f7f7; /* Fundo suave, cor do tema */
-  padding: 20px; /* Aumentado o padding */
-  border-radius: 10px; /* Mais arredondado */
-  border: 1px solid #d9edf7; /* Borda suave */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
-.finish-order-info h3 { /* Subtítulo dentro da seção de totais */
-  font-size: 1.1rem;
-  color: #555;
-  margin-bottom: 5px;
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.finish-order-info h2 { /* Título principal da seção de totais (pode ser o "Total") */
-  font-size: 1.35rem; /* Tamanho do Total principal */
-  font-weight: 800;
-  color: #000;
-  margin-top: 0;
-  margin-bottom: 0; /* Removendo margem extra de h2 geral */
-  border-bottom: none; /* Remove borda inferior se não for necessária aqui */
-  padding-bottom: 0;
+/* --- Títulos e Cards --- */
+.checkout-container h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0;
 }
 
-/* Caixa de Total */
-.total-box {
-  background-color: #f8f9fa;
-  padding: 18px; /* Padding aumentado */
-  border-radius: 8px;
+.card {
+  display: flex;
+  align-items: center;
+  padding: 20px;
   border: 1px solid #e0e0e0;
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.03);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  background-color: #fdfdfd;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.card.selected {
+  border-color: #3498db; /* Azul suave para seleção */
+  background-color: #f0f8ff; /* Fundo azul claro */
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2);
+}
+
+.card-icon {
+  color: #7f8c8d;
+  margin-right: 15px;
+  transition: color 0.2s ease;
+}
+
+.card.selected .card-icon {
+  color: #3498db;
+}
+
+.card-content {
+  flex-grow: 1;
+}
+
+.card-content strong {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.card-content p {
+  font-size: 0.9rem;
+  color: #7f8c8d;
+  margin: 5px 0 0;
+}
+
+.delivery-card-list, .payment-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* --- Botão "Trocar" e Informações Adicionais --- */
+.customer-card {
+  position: relative;
+}
+
+.change-button {
+  background-color: transparent;
+  color: #3498db;
+  border: 1px solid #3498db;
+  padding: 8px 18px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.change-button:hover {
+  background-color: #3498db;
+  color: #fff;
+}
+
+.delivery-details {
+  margin-top: 10px;
+  padding: 15px;
+  background-color: #ecf0f1;
+  border-radius: 8px;
+  border: 1px solid #bdc3c7;
+}
+
+.delivery-details span {
+  font-size: 0.9rem;
+  color: #555;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  line-height: 1.5;
+}
+
+/* --- Textarea de Observações --- */
+.observations-textarea {
+  width: 100%;
+  min-height: 90px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
+  resize: vertical;
+  box-sizing: border-box;
+  background-color: #f9f9f9;
+  transition: all 0.2s ease;
+}
+
+.observations-textarea:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+  outline: none;
+}
+
+/* --- Resumo do Pedido e Botão Finalizar --- */
+.finish-order-info {
+  background-color: #f7f9fc;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 -2px 15px rgba(0, 0, 0, 0.05);
+}
+
+.total-box {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #e0e0e0;
+  margin-bottom: 20px;
 }
 
 .total-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.95rem; /* Tamanho dos itens Subtotal/Taxa */
-  color: #555;
-  margin-bottom: 10px; /* Mais espaçamento entre as linhas */
+  font-size: 1rem;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
 }
 
-.total-row:last-child {
-  margin-bottom: 0;
+.total-row:last-of-type {
+  border-bottom: none;
 }
 
 .total-row strong {
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.total-row-highlight {
+  font-size: 1.3rem;
   font-weight: 700;
-  color: #333;
+  color: #2c3e50;
+  padding-top: 15px;
+  margin-top: 10px;
+  border-top: 2px dashed #e0e0e0;
 }
 
-.total-row-highlight { /* Total Geral */
-  font-size: 1.25rem; /* Tamanho do Total Geral */
-  font-weight: 800;
-  color: #000;
-  border-top: 1px dashed #e0e0e0; /* Linha tracejada para separar do total */
-  padding-top: 12px;
-  margin-top: 15px;
+.total-row-troco {
+  font-size: 0.95rem;
+  color: #2ecc71; /* Verde para destaque do troco */
+  font-weight: 600;
+  border-top: 1px solid #2ecc71;
+  padding-top: 10px;
+  margin-top: 10px;
 }
 
-.total-row-troco { /* Linha do troco */
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: #007bff; /* Cor destacada para o troco */
-    margin-top: 10px;
-    padding-top: 8px;
-    border-top: 1px dotted #a0d3ff;
+.finalizar-button {
+  width: 100%;
+  padding: 16px;
+  background: #2ecc71;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
 }
 
-/* Responsividade para Mobile (max-width: 768px) */
+.finalizar-button:hover {
+  background: #27ae60;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4);
+}
+
+/* --- Responsividade --- */
 @media (max-width: 768px) {
   .checkout-container {
     margin: 0;
-    border-radius: 0; /* Sem borda arredondada em mobile full-screen */
-    padding: 15px; /* Reduz padding para mobile */
-    box-shadow: none; /* Sem sombra em mobile full-screen */
+    border-radius: 0;
+    padding: 70px 15px 20px; /* Ajuste para acomodar o header em mobile */
+    box-shadow: none;
+    gap: 20px;
   }
-
-  /* Ajustes de fonte específicos para mobile */
+  
   .checkout-container h2 {
-    font-size: 1.15rem;
-    margin-top: 20px;
-    margin-bottom: 10px;
-  }
-
-  .customer-info, .delivery-info {
-    padding: 12px;
-    margin: 10px 0;
-  }
-
-  .customer-info .customer-name {
-    font-size: 1rem;
-  }
-
-  .customer-info .customer-phone {
-    font-size: 0.9rem;
-  }
-
-  .change-button {
-    padding: 6px 14px;
-    font-size: 0.8rem;
-    top: 12px;
-    right: 12px;
-  }
-
-  .payment-select {
-    font-size: 0.95rem;
-    padding: 10px;
-  }
-
-  textarea {
-    font-size: 0.9rem;
-    min-height: 70px;
-    padding: 10px;
-  }
-
-  .delivery-option {
-    font-size: 0.95rem;
-  }
-
-  .delivery-type p {
-    font-size: 0.95rem;
-  }
-
-  .delivery-type span {
-    font-size: 0.85rem;
-  }
-
-  .finish-order-info {
-    padding: 15px;
-    margin-top: 20px;
-    gap: 10px;
-  }
-
-  .finish-order-info h2 {
-    font-size: 1.25rem;
-  }
-
-  .total-row {
-    font-size: 0.9rem;
-    margin-bottom: 8px;
-  }
-
-  .total-row-highlight {
     font-size: 1.2rem;
+  }
+
+  .card {
+    padding: 15px;
+  }
+
+  .card-icon {
+    margin-right: 12px;
+  }
+  
+  .card-content strong {
+    font-size: 1rem;
   }
 
   .finalizar-button {
     font-size: 1rem;
-    padding: 12px;
+    padding: 14px;
   }
-
-  .total-box {
-    padding: 15px;
+  
+  .total-row-highlight {
+    font-size: 1.2rem;
   }
-}
-
-/* Responsividade para Desktop (min-width: 769px) - Mantém tamanhos maiores */
-@media (min-width: 769px) {
-    /* Pode adicionar ajustes específicos para desktop aqui se desejar,
-       mas os tamanhos padrão do CSS base já servem como desktop-first */
-    .checkout-container h2 {
-        font-size: 1.4rem; /* Um pouco maior no desktop */
-    }
-    .customer-info .customer-name {
-        font-size: 1.1rem;
-    }
-    .customer-info .customer-phone {
-        font-size: 1rem;
-    }
-    .payment-select {
-        font-size: 1.05rem;
-    }
-    .delivery-option {
-        font-size: 1.05rem;
-    }
-    .delivery-type p {
-        font-size: 1.05rem;
-    }
-    .delivery-type span {
-        font-size: 0.95rem;
-    }
-    .order-observations-textarea {
-        font-size: 1rem;
-    }
-    .total-row {
-        font-size: 1rem;
-    }
-    .total-row-highlight {
-        font-size: 1.35rem;
-    }
-    .finalizar-button {
-        font-size: 1.1rem;
-    }
 }

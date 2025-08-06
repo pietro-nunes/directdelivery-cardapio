@@ -7,7 +7,6 @@ import { formatarNumero } from "../../utils/functions";
 import { useNavigate } from "react-router-dom";
 
 const OrderCompleted = ({ tenantData, orderDetails, sendWhatsApp }) => {
-  console.log(orderDetails);
 
   const navigate = useNavigate();
 

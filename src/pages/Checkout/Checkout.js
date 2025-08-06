@@ -6,7 +6,8 @@ import ModalTroco from "../../components/ModalTroco/ModalTroco";
 import { Bounce, toast } from "react-toastify";
 import { useFetchWithLoading } from "../../contexts/fetchWithLoading";
 import config from "../../config";
-import { MdLocationPin } from "react-icons/md";
+import { MdLocationPin, MdLocalShipping, MdStore } from "react-icons/md";
+import { RiMoneyDollarCircleLine } from "react-icons/ri";
 import Cookies from "js-cookie";
 import { formatarNumero } from "../../utils/functions";
 
@@ -21,7 +22,9 @@ const Checkout = ({
   const [enderecos, setEnderecos] = useState([]);
   const [taxaEntrega, setTaxaEntrega] = useState(0);
   const enderecosRef = useRef(enderecos);
-  const [formaPagamentoSelecionada, setFormaPagamentoSelecionada] = useState({});
+  const [formaPagamentoSelecionada, setFormaPagamentoSelecionada] = useState(
+    {}
+  );
   const [troco, setTroco] = useState("");
   const [modalTrocoVisible, setModalTrocoVisible] = useState(false);
   const [modalEnderecoVisible, setModalEnderecoVisible] = useState(false);
@@ -31,35 +34,56 @@ const Checkout = ({
   const [observation, setObservation] = useState("");
 
   useEffect(() => {
-    const clienteLocalStorage = JSON.parse(Cookies.get("token"));
-    setCliente(clienteLocalStorage);
-  }, []);
+    try {
+      const clienteLocalStorage = JSON.parse(Cookies.get("token"));
+      setCliente(clienteLocalStorage);
+    } catch (e) {
+      console.error("Erro ao carregar token do cliente:", e);
+      onLogout();
+    }
+  }, [onLogout]);
 
   useEffect(() => {
     enderecosRef.current = enderecos;
   }, [enderecos]);
 
+  // Fecha o modal somente após o endereço ser atualizado
+  useEffect(() => {
+    if (enderecos.length > 0 && tipoEntrega === "entrega") {
+      setModalEnderecoVisible(false);
+    }
+  }, [enderecos, tipoEntrega]);
+
   const formatarTelefone = (telefone) => {
-    const apenasNumeros = telefone.replace(/\D/g, "");
-    const match = apenasNumeros.match(/(\d{2})(\d{5})(\d{4})/);
+    const apenasNumeros = telefone?.replace(/\D/g, "");
+    if (!apenasNumeros) return "";
+    const match = apenasNumeros.match(/^(\d{2})(\d{5})(\d{4})$/);
     if (match) {
-      return `(${match[1]}) ${match[2]} -${match[3]}`;
+      return `(${match[1]}) ${match[2]}-${match[3]}`;
     }
     return telefone;
   };
 
   const parseCurrencyToNumber = (value) => {
     if (!value) return 0;
-    const cleaned = value.replace(/[^\d,.-]/g, "").replace(/\./g, "").replace(",", ".");
+    const cleaned = value
+      .toString()
+      .replace(/[^\d,.-]/g, "")
+      .replace(/\./g, "")
+      .replace(",", ".");
     return parseFloat(cleaned) || 0;
   };
 
-  const calcularTotal = () => {
+  const calcularSubtotal = () => {
     if (!Array.isArray(cartItems) || cartItems.length === 0) return 0;
-    const subtotal = cartItems.reduce((total, item) => {
-      const itemTotal = item.totalPrice * item.count;
-      return total + itemTotal;
-    }, 0);
+    return cartItems.reduce(
+      (total, item) => total + item.totalPrice * item.count,
+      0
+    );
+  };
+
+  const calcularTotal = () => {
+    const subtotal = calcularSubtotal();
     return subtotal + parseFloat(taxaEntrega);
   };
 
@@ -67,14 +91,14 @@ const Checkout = ({
 
   const handleFinalizarPedido = async () => {
     if (!tipoEntrega) {
-      toast.warn("Por favor, selecione se deseja entrega ou retirada.", {
+      toast.warn("Por favor, selecione o tipo de entrega.", {
         theme: "colored",
         transition: Bounce,
       });
       return;
     }
 
-    if (total === 0) {
+    if (total <= 0) {
       toast.warn("Adicione produtos ao carrinho antes de finalizar.", {
         theme: "colored",
         transition: Bounce,
@@ -90,17 +114,48 @@ const Checkout = ({
       return;
     }
 
+    if (
+      tipoEntrega === "entrega" &&
+      (!enderecos[0]?.endereco || !enderecos[0]?.numero)
+    ) {
+      toast.warn(
+        "Por favor, selecione ou adicione um endereço de entrega válido.",
+        {
+          theme: "colored",
+          transition: Bounce,
+        }
+      );
+      return;
+    }
+
+    if (
+      formaPagamentoSelecionada.need_change &&
+      (!troco || parseCurrencyToNumber(troco) < total)
+    ) {
+      toast.warn("Por favor, informe o valor para o troco corretamente.", {
+        theme: "colored",
+        transition: Bounce,
+      });
+      setModalTrocoVisible(true);
+      return;
+    }
+
     const pedido = {
       customerId: cliente?.id,
       tenantId: tenantData.id,
-      itens: cartItems,
+      itens: cartItems.map((item) => ({
+        ...item,
+        totalPrice: item.totalPrice * item.count,
+      })),
       total,
       retirada: tipoEntrega === "retirada",
-      endereco: enderecos[0] || "{}",
+      endereco: enderecos[0] || null,
       formaPagamento: formaPagamentoSelecionada.id,
-      troco: formaPagamentoSelecionada.need_change ? parseCurrencyToNumber(troco) : null,
+      troco: formaPagamentoSelecionada.need_change
+        ? parseCurrencyToNumber(troco)
+        : null,
       observacaoPedido: observation,
-      nomeFormaPagamento: formaPagamentoSelecionada.name
+      nomeFormaPagamento: formaPagamentoSelecionada.name,
     };
 
     try {
@@ -116,11 +171,26 @@ const Checkout = ({
         const order = await postResponse.json();
         localStorage.removeItem("carrinho-" + tenantData.slug);
         setCartItems([]);
-        setLastOrder(pedido);
+        setLastOrder(order);
         navigate(`/${tenantData.slug}/orderCompleted`);
+      } else {
+        const errorData = await postResponse.json();
+        toast.error(
+          `Erro ao finalizar pedido: ${
+            errorData.message || postResponse.statusText
+          }`,
+          {
+            theme: "colored",
+            transition: Bounce,
+          }
+        );
       }
     } catch (error) {
       console.error("Erro na consulta à API:", error);
+      toast.error("Ocorreu um erro ao tentar finalizar o pedido.", {
+        theme: "colored",
+        transition: Bounce,
+      });
     }
   };
 
@@ -129,11 +199,9 @@ const Checkout = ({
     navigate(`/${tenantData.slug}/login`);
   };
 
-  const handleFormaPagamentoChange = (e) => {
-    const formaSelecionada = e.target.value;
-    setFormaPagamentoSelecionada(formaSelecionada);
-
-    if (formaSelecionada.need_change) {
+  const handleFormaPagamentoClick = (forma) => {
+    setFormaPagamentoSelecionada(forma);
+    if (forma.need_change) {
       setModalTrocoVisible(true);
     } else {
       setModalTrocoVisible(false);
@@ -141,29 +209,71 @@ const Checkout = ({
     }
   };
 
-  const handleAddressSubmit = useCallback((endereco) => {
-    if (!endereco.endereco || !endereco.numero || !endereco.bairro || !endereco.cidade) {
-      toast.warn("Por favor, preencha todos os campos obrigatórios.", {
-        theme: "colored",
-        transition: Bounce,
-      });
+  const handleAddressSubmit = useCallback(
+    (endereco) => {
+      if (!endereco.endereco || !endereco.numero || !endereco.bairro) {
+        toast.warn(
+          "Por favor, preencha todos os campos obrigatórios do endereço.",
+          {
+            theme: "colored",
+            transition: Bounce,
+          }
+        );
+        return;
+      }
+
+      const bairroCompleto = tenantData?.neighborhoods?.find(
+        (n) => n.id === endereco.bairroId
+      );
+      const cidadeCompleta = tenantData?.cities?.find(
+        (c) => c.id === endereco.cidadeId
+      );
+
+      const novoEndereco = {
+        ...endereco,
+        address: endereco.endereco,
+        number: endereco.numero,
+        nickname: endereco.apelidoEndereco,
+        zipcode: endereco.cep,
+        referencePoint: endereco.ptReferencia,
+        complement: endereco.complemento,
+        neighborhood: bairroCompleto || {
+          id: endereco.bairroId,
+          name: endereco.bairro,
+        },
+        city: cidadeCompleta || {
+          id: endereco.cidadeId,
+          name: endereco.cidade,
+        },
+      };
+
+      setEnderecos([novoEndereco]);
+      setTipoEntrega("entrega");
+      setTaxaEntrega(parseFloat(endereco.deliveryFee) || 0);
+    },
+    [tenantData]
+  );
+
+  const handleEntregaClick = () => {
+    if (!cliente?.addresses || cliente?.addresses.length === 0) {
+      setEnderecos([]);
+      setModalEnderecoVisible(true);
       return;
     }
-
-    setEnderecos([endereco]);
     setTipoEntrega("entrega");
-    enderecosRef.current = [endereco];
-    setTaxaEntrega(parseFloat(endereco.deliveryFee) || 0);
-    setModalEnderecoVisible(false);
-  }, []);
-
-  const handleEntregaChange = () => {
     setModalEnderecoVisible(true);
   };
 
+  const handleRetiradaClick = () => {
+    setTipoEntrega("retirada");
+    setTaxaEntrega(0);
+    setEnderecos([]);
+  };
+
   const handleModalEnderecoClose = () => {
-    if (!enderecosRef.current.length || !enderecosRef.current[0]?.endereco) {
+    if (!enderecos.length) {
       setTipoEntrega("");
+      setTaxaEntrega(0);
     }
     setModalEnderecoVisible(false);
   };
@@ -179,89 +289,113 @@ const Checkout = ({
 
   return (
     <div className="checkout-container">
-      <h2>Este pedido será entregue a:</h2>
-      <div className="customer-info">
-        {cliente ? (
-          <>
-            <p>{cliente.name}</p>
-            <p>{formatarTelefone(cliente.phone)}</p>
-          </>
-        ) : (
-          <p>Carregando informações do cliente...</p>
-        )}
-        <button onClick={handleLogout} className="change-button">
-          Trocar
-        </button>
-      </div>
-
-      <h2>Escolha o tipo da entrega:</h2>
-      <div className="delivery-card-list">
-        <div
-          className={`address-card ${tipoEntrega === "entrega" ? "selected" : ""}`}
-          onClick={handleEntregaChange}
-        >
-          <strong>Entrega</strong>
-          <p>Receber no seu endereço</p>
+      {/* Informações do Cliente */}
+      <section className="checkout-section">
+        <div className="section-header">
+          <h2>Seu pedido será para:</h2>
+          <button onClick={handleLogout} className="change-button">
+            Trocar
+          </button>
         </div>
-
-        <div
-          className={`address-card ${tipoEntrega === "retirada" ? "selected" : ""}`}
-          onClick={() => {
-            setTipoEntrega("retirada");
-            setTaxaEntrega(0);
-          }}
-        >
-          <strong>Retirada no local</strong>
-          <p>Buscar direto no balcão</p>
-        </div>
-      </div>
-
-      <div className="delivery-type">
-        {tipoEntrega === "retirada" && (
-          <>
-            <p>Você escolheu retirar o pedido no local.</p>
-            <span>
-              <MdLocationPin size={14} /> {tenantData.address}, {tenantData.number},{" "}
-              {tenantData.neighborhood} - {tenantData.city}
-            </span>
-          </>
-        )}
-
-        {tipoEntrega === "entrega" && (
-          <>
-            <p>O pedido será entregue em: </p>
-            {enderecos && enderecos.length > 0 && (
-              <span>
-                <MdLocationPin size={14} /> {enderecos[0].endereco}, {enderecos[0].numero},{" "}
-                {enderecos[0].bairro}, {enderecos[0].complemento}, {enderecos[0].cidade}
-              </span>
-            )}
-          </>
-        )}
-      </div>
-
-      <h2>Escolha a forma de pagamento:</h2>
-      <div className="payment-info">
-        <div className="payment-card-list">
-          {tenantData?.paymentTypes?.map(
-            (forma) =>
-              forma.isActive && (
-                <div
-                  key={forma.id}
-                  className={`address-card ${
-                    formaPagamentoSelecionada.id === forma.id ? "selected" : ""
-                  }`}
-                  onClick={() =>
-                    handleFormaPagamentoChange({ target: { value: forma } })
-                  }
-                >
-                  <strong>{forma.name}</strong>
-                </div>
-              )
+        <div className="card customer-card">
+          {cliente ? (
+            <>
+              <p>
+                <strong>{cliente.name}</strong>
+              </p>
+              <p>{formatarTelefone(cliente.phone)}</p>
+            </>
+          ) : (
+            <p>Carregando informações do cliente...</p>
           )}
         </div>
-      </div>
+      </section>
 
+      {/* Tipo de Entrega */}
+      <section className="checkout-section">
+        <h2>Escolha o tipo da entrega:</h2>
+        <div className="delivery-card-list">
+          <div
+            className={`card delivery-card ${
+              tipoEntrega === "entrega" ? "selected" : ""
+            }`}
+            onClick={handleEntregaClick}
+          >
+            <MdLocalShipping size={24} className="card-icon" />
+            <div className="card-content">
+              <strong>Entrega</strong>
+              <p>Receber no seu endereço</p>
+            </div>
+          </div>
+          <div
+            className={`card delivery-card ${
+              tipoEntrega === "retirada" ? "selected" : ""
+            }`}
+            onClick={handleRetiradaClick}
+          >
+            <MdStore size={24} className="card-icon" />
+            <div className="card-content">
+              <strong>Retirada no local</strong>
+              <p>Buscar direto no balcão</p>
+            </div>
+          </div>
+        </div>
+        {tipoEntrega === "retirada" && (
+          <div className="delivery-details">
+            <span>
+              <MdLocationPin size={14} /> {tenantData.address},{" "}
+              {tenantData.number}, {tenantData.neighborhood} - {tenantData.city}
+            </span>
+          </div>
+        )}
+        {tipoEntrega === "entrega" && enderecos.length > 0 && (
+          <div className="delivery-details">
+            <span>
+              <MdLocationPin size={14} /> {enderecos[0].neighborhood.name},{" "}
+              {enderecos[0].address}, {enderecos[0].number} -{" "}
+              {enderecos[0].city.name}
+            </span>
+          </div>
+        )}
+      </section>
+
+      {/* Forma de Pagamento */}
+      <section className="checkout-section">
+        <h2>Escolha a forma de pagamento:</h2>
+        <div className="payment-card-list">
+          {tenantData?.paymentTypes
+            ?.filter((forma) => forma.isActive)
+            .map((forma) => (
+              <div
+                key={forma.id}
+                className={`card payment-card ${
+                  formaPagamentoSelecionada.id === forma.id ? "selected" : ""
+                }`}
+                onClick={() => handleFormaPagamentoClick(forma)}
+              >
+                <RiMoneyDollarCircleLine size={24} className="card-icon" />
+                <div className="card-content">
+                  <strong>{forma.name}</strong>
+                  {forma.need_change && <p>Precisa de troco?</p>}
+                </div>
+              </div>
+            ))}
+        </div>
+      </section>
+
+      {/* Observações */}
+      <section className="checkout-section">
+        <h2>Observações do pedido:</h2>
+        <textarea
+          className="observations-textarea"
+          placeholder="Ex.: Apertar campainha, não buzinar, etc."
+          maxLength={150}
+          value={observation}
+          onChange={(e) => setObservation(e.target.value)}
+        />
+      </section>
+
+      {/* Modais */}
       <ModalTroco
         isVisible={modalTrocoVisible}
         onClose={() => setModalTrocoVisible(false)}
@@ -269,31 +403,24 @@ const Checkout = ({
         troco={troco}
         setTroco={setTroco}
         handleNoTroco={handleNoTroco}
+        total={total}
       />
 
       <ModalEndereco
         isVisible={modalEnderecoVisible}
         onClose={handleModalEnderecoClose}
         onAddressSubmit={handleAddressSubmit}
-        enderecoAtual={enderecos[0] || {}}
+        enderecoAtual={enderecos[0] || null}
         tenantData={tenantData}
         enderecos={cliente?.addresses || []}
       />
 
-      <h2>Observação do pedido:</h2>
-      <textarea
-        className="observations-mobile"
-        placeholder="Ex.: Apertar campainha, não buzinar, etc."
-        maxLength={150}
-        value={observation}
-        onChange={(e) => setObservation(e.target.value)}
-      />
-
+      {/* Resumo e Finalizar */}
       <div className="finish-order-info">
         <div className="total-box">
           <div className="total-row">
             <span>Subtotal:</span>
-            <strong>R$ {formatarNumero(calcularTotal() - taxaEntrega)}</strong>
+            <strong>R$ {formatarNumero(calcularSubtotal())}</strong>
           </div>
           <div className="total-row">
             <span>Taxa de entrega:</span>
@@ -303,14 +430,13 @@ const Checkout = ({
             <span>Total:</span>
             <strong>R$ {formatarNumero(total)}</strong>
           </div>
-          {formaPagamentoSelecionada.need_change && troco && (
-            <div className="total-row">
-              <span>Troco:</span>
+          {formaPagamentoSelecionada.need_change && troco && troco !== "0" && (
+            <div className="total-row total-row-troco">
+              <span>Troco para:</span>
               <strong>R$ {formatarNumero(parseCurrencyToNumber(troco))}</strong>
             </div>
           )}
         </div>
-
         <button onClick={handleFinalizarPedido} className="finalizar-button">
           Finalizar Pedido
         </button>

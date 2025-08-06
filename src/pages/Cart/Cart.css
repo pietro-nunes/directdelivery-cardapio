@@ -27,7 +27,7 @@
   max-width: 500px;
   width: calc(100% - 30px);
   box-sizing: border-box;
-  padding: 20px;
+  padding: 65px 30px;
   padding-bottom: 100px; /* Espaço para o footer fixo */
   position: relative;
   z-index: 1;

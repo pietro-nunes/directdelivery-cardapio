@@ -15,7 +15,7 @@
 .home {
   display: flex;
   flex-direction: column;
-  padding-top: 20px; /* Espaçamento superior */
+  padding-top: 70px; /* Espaçamento superior */
   background-color: var(--background-color); /* Aplica a cor de fundo */
 }
 
@@ -103,7 +103,7 @@
 /* Estilos aplicados quando a barra de categorias se torna "sticky" */
 .categories-wrapper.categories-sticky {
   position: sticky; /* A propriedade que faz a barra "colar" */
-  top: 0; /* Cola no topo da viewport */
+  top: 50px; /* Cola no topo da viewport */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Sombra suave quando sticky */
   z-index: 1000; /* Garante que fique acima de quase tudo */
   background-color: #ffffff; /* Fundo branco sólido quando sticky */

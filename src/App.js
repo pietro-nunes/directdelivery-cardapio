@@ -74,7 +74,6 @@ const App = () => {
         },
       ];
     });
-    console.log(cartItems);
   };
 
   // Recuperando o carrinho do localStorage quando o tenantData é alterado

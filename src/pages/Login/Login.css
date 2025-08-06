@@ -3,6 +3,7 @@
     justify-content: center;
     align-items: center;
     background-color: #f9f9f9; /* Fundo leve */
+    padding-top: 50px;
 }
 
 .login-form {

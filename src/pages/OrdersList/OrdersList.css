@@ -256,7 +256,7 @@
 /* Media Queries para Responsividade */
 @media (max-width: 768px) {
   .orders-list {
-    padding: 20px 15px; /* Reduz padding lateral em mobile */
+    padding: 70px 15px; /* Reduz padding lateral em mobile */
   }
 
   .orders-title {

@@ -1,11 +1,12 @@
 /* Header Styling */
 .header {
-    background-color: #ffffff; /* Fundo branco puro */
-    padding: 15px 25px;
+    background-color: #3cbaba; /* Fundo branco puro */
+    padding: 5px 25px;
     width: 100%;
+    height: 50px;
     box-sizing: border-box;
     box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08); /* Sombra suave */
-    position: sticky;
+    position: fixed;
     top: 0;
     z-index: 1000;
     font-family: 'Arial', sans-serif;
@@ -23,7 +24,7 @@
 .logo {
     font-size: 24px;
     font-weight: 700;
-    color: #1a9b9b; /* Cor principal para a marca */
+    color: #ffff; /* Cor principal para a marca */
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -32,7 +33,7 @@
 }
 
 .logo:hover {
-    color: #148f8f;
+    color: #ffff;
 }
 
 /* Esconder elementos de navegação não usados atualmente no seu HTML */
