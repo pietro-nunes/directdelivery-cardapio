@@ -34,7 +34,7 @@ const TenantRoutes = ({
   const fetchTenantData = async (slug) => {
     try {
       // console.log(`[INFO] Buscando tenant para o slug: ${slug}`);
-      const response = await fetch(`${config.baseURL}/tenants/${slug}`);
+      const response = await fetch(`${config.baseURL}/tenants/${slug}`, {method: 'GET' });
       if (!response.ok) {
         console.error(`[ERROR] API retornou status ${response.status}`);
         throw new Error(`Erro ao buscar tenant: ${response.status}`);

@@ -127,19 +127,7 @@ const Checkout = ({
       );
       return;
     }
-
-    if (
-      formaPagamentoSelecionada.need_change &&
-      (!troco || parseCurrencyToNumber(troco) < total)
-    ) {
-      toast.warn("Por favor, informe o valor para o troco corretamente.", {
-        theme: "colored",
-        transition: Bounce,
-      });
-      setModalTrocoVisible(true);
-      return;
-    }
-
+    
     const pedido = {
       customerId: cliente?.id,
       tenantId: tenantData.id,

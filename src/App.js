@@ -18,7 +18,7 @@ const App = () => {
   const [lastOrder, setLastOrder] = useState({}); // Estado global
 
   const handleLogin = (token) => {
-    Cookies.set("token", token, { expires: 3 / 24, secure: true }); // Definindo o cookie com expiração de 3 horas
+    Cookies.set("token", token, { expires: 5 / 24, secure: true }); // Definindo o cookie com expiração de 3 horas
     setIsLoggedIn(true);
   };
 
