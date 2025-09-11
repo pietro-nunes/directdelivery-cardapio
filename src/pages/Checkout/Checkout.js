@@ -156,10 +156,10 @@ const Checkout = ({
       });
 
       if (postResponse.ok) {
-        const order = await postResponse.json();
+        await postResponse.json();
         localStorage.removeItem("carrinho-" + tenantData.slug);
         setCartItems([]);
-        setLastOrder(order);
+        setLastOrder(pedido);
         navigate(`/${tenantData.slug}/orderCompleted`);
       } else {
         const errorData = await postResponse.json();

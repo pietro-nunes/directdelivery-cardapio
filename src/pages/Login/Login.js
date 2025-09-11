@@ -4,10 +4,12 @@ import "./Login.css";
 import { useNavigate } from "react-router-dom";
 import { useFetchWithLoading } from "../../contexts/fetchWithLoading";
 import config from "../../config";
+import { formatCPF, isValidCPF, onlyDigits } from "../../utils/functions";
 
 const Login = ({ onLogin, tenantData }) => {
   const [username, setUsername] = useState("");
   const [number, setNumber] = useState("");
+  const [cpf, setCPF] = useState("");
   const [error, setError] = useState("");
   const [clientExists, setClientExists] = useState(false);
   const navigate = useNavigate();
@@ -32,6 +34,23 @@ const Login = ({ onLogin, tenantData }) => {
     /\d/,
   ];
 
+  const cpfMask = [
+    /\d/,
+    /\d/,
+    /\d/,
+    ".",
+    /\d/,
+    /\d/,
+    /\d/,
+    ".",
+    /\d/,
+    /\d/,
+    /\d/,
+    "-",
+    /\d/,
+    /\d/,
+  ];
+
   const cleanPhoneNumber = (phone) => {
     return phone.replace(/\D/g, "");
   };
@@ -47,9 +66,11 @@ const Login = ({ onLogin, tenantData }) => {
       const data = await response.json();
       setClientExists(true);
       setUsername(data.name);
+      setCPF(formatCPF(data.cpf));
     } catch (error) {
       setClientExists(false);
       setUsername("");
+      setCPF("");
     }
   };
 
@@ -78,6 +99,7 @@ const Login = ({ onLogin, tenantData }) => {
             body: JSON.stringify({
               name: username,
               phone: cleanedNumber,
+              cpf: cpf,
             }),
           }
         );
@@ -90,8 +112,35 @@ const Login = ({ onLogin, tenantData }) => {
         } else {
           throw new Error("Erro ao cadastrar o cliente.");
         }
-      } else {
+      } else {  
         const data = await response.json();
+
+        if (data.name !== username || data.cpf !== onlyDigits(cpf)) {
+          const putResponse = await fetchWithLoading(
+            `${config.baseURL}/customers/${data.id}`,
+            {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                name: username,
+                phone: cleanedNumber,
+                cpf: onlyDigits(cpf),
+              }),
+            }
+          );
+
+          if (putResponse.ok) {
+            const data = await putResponse.json();
+            const tokenData = JSON.stringify(data);
+            onLogin(tokenData);
+            navigate(`/${tenantData.slug}/checkout`);
+          } else {
+            throw new Error("Erro ao atualizar o cliente.");
+          }
+        }
+
         const tokenData = JSON.stringify(data);
         onLogin(tokenData);
         navigate(`/${tenantData.slug}/checkout`);
@@ -102,7 +151,7 @@ const Login = ({ onLogin, tenantData }) => {
     }
   };
 
-  const isButtonDisabled = username.trim().length < 3;
+  const isButtonDisabled = username.trim().length < 3 || !isValidCPF(cpf);
 
   return (
     <div className="login-container">
@@ -128,6 +177,16 @@ const Login = ({ onLogin, tenantData }) => {
               onChange={(e) => setUsername(e.target.value)}
               placeholder="Seu nome completo"
               required
+            />
+          </div>
+          <div className="input-group">
+            <label>CPF:</label>
+            <MaskedInput
+              mask={cpfMask}
+              value={cpf}
+              onChange={(e) => setCPF(e.target.value)}
+              placeholder="XX.XXX.XXX-XX"
+              className="masked-input"
             />
           </div>
           {error && <p className="error">{error}</p>}

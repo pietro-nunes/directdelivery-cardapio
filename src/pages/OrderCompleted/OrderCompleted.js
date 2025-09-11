@@ -10,6 +10,8 @@ const OrderCompleted = ({ tenantData, orderDetails, sendWhatsApp }) => {
 
   const navigate = useNavigate();
 
+  console.log(orderDetails)
+
   const formatWhatsAppMessage = (orderDetails) => {
     const {
       id,
