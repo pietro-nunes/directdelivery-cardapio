@@ -6,7 +6,7 @@ import { useFetchWithLoading } from "../../contexts/fetchWithLoading";
 import config from "../../config";
 import { formatCPF, isValidCPF, onlyDigits } from "../../utils/functions";
 
-const Login = ({ onLogin, tenantData }) => {
+const Login = ({ onLogin, basePath }) => {
   const [username, setUsername] = useState("");
   const [number, setNumber] = useState("");
   const [cpf, setCPF] = useState("");
@@ -108,7 +108,7 @@ const Login = ({ onLogin, tenantData }) => {
           const data = await postResponse.json();
           const tokenData = JSON.stringify(data);
           onLogin(tokenData);
-          navigate(`/${tenantData.slug}/checkout`);
+          navigate(`${basePath}/checkout`);
         } else {
           throw new Error("Erro ao cadastrar o cliente.");
         }
@@ -135,7 +135,7 @@ const Login = ({ onLogin, tenantData }) => {
             const data = await putResponse.json();
             const tokenData = JSON.stringify(data);
             onLogin(tokenData);
-            navigate(`/${tenantData.slug}/checkout`);
+            navigate(`${basePath}/checkout`);
           } else {
             throw new Error("Erro ao atualizar o cliente.");
           }
@@ -143,7 +143,7 @@ const Login = ({ onLogin, tenantData }) => {
 
         const tokenData = JSON.stringify(data);
         onLogin(tokenData);
-        navigate(`/${tenantData.slug}/checkout`);
+        navigate(`${basePath}/checkout`);
       }
     } catch (error) {
       console.error("Erro na consulta à API:", error);

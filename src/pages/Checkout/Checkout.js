@@ -16,7 +16,10 @@ const Checkout = ({
   setCartItems,
   onLogout,
   tenantData,
+  basePath,
   setLastOrder,
+  isTableMode,
+  setPaymentData
 }) => {
   const navigate = useNavigate();
   const [enderecos, setEnderecos] = useState([]);
@@ -32,6 +35,7 @@ const Checkout = ({
   const [tipoEntrega, setTipoEntrega] = useState("");
   const { fetchWithLoading } = useFetchWithLoading();
   const [observation, setObservation] = useState("");
+  const [imgQrCode, setImgQrCode] = useState("");
 
   useEffect(() => {
     try {
@@ -127,7 +131,7 @@ const Checkout = ({
       );
       return;
     }
-    
+
     const pedido = {
       customerId: cliente?.id,
       tenantId: tenantData.id,
@@ -156,11 +160,30 @@ const Checkout = ({
       });
 
       if (postResponse.ok) {
-        await postResponse.json();
+        const dataPedido = await postResponse.json();
         localStorage.removeItem("carrinho-" + tenantData.slug);
         setCartItems([]);
         setLastOrder(pedido);
-        navigate(`/${tenantData.slug}/orderCompleted`);
+        if (formaPagamentoSelecionada.onlinePayment) {
+          const onlinePaymentResponse = await fetchWithLoading(
+            `${config.baseURL}/orders/canvi/pix/${dataPedido.tenantId}/${dataPedido.id}`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          const json = await onlinePaymentResponse.json();
+
+          setPaymentData(json)
+          console.log(json)
+          navigate(`${basePath}/payment`);
+          
+        } else {
+          navigate(`${basePath}/orderCompleted`);
+        }
       } else {
         const errorData = await postResponse.json();
         toast.error(
@@ -184,7 +207,7 @@ const Checkout = ({
 
   const handleLogout = () => {
     onLogout();
-    navigate(`/${tenantData.slug}/login`);
+    navigate(`${basePath}/login`);
   };
 
   const handleFormaPagamentoClick = (forma) => {
@@ -298,78 +321,129 @@ const Checkout = ({
           )}
         </div>
       </section>
-
       {/* Tipo de Entrega */}
-      <section className="checkout-section">
-        <h2>Escolha o tipo da entrega:</h2>
-        <div className="delivery-card-list">
-          <div
-            className={`card delivery-card ${
-              tipoEntrega === "entrega" ? "selected" : ""
-            }`}
-            onClick={handleEntregaClick}
-          >
-            <MdLocalShipping size={24} className="card-icon" />
-            <div className="card-content">
-              <strong>Entrega</strong>
-              <p>Receber no seu endereço</p>
-            </div>
-          </div>
-          <div
-            className={`card delivery-card ${
-              tipoEntrega === "retirada" ? "selected" : ""
-            }`}
-            onClick={handleRetiradaClick}
-          >
-            <MdStore size={24} className="card-icon" />
-            <div className="card-content">
-              <strong>Retirada no local</strong>
-              <p>Buscar direto no balcão</p>
-            </div>
-          </div>
-        </div>
-        {tipoEntrega === "retirada" && (
-          <div className="delivery-details">
-            <span>
-              <MdLocationPin size={14} /> {tenantData.address},{" "}
-              {tenantData.number}, {tenantData.neighborhood} - {tenantData.city}
-            </span>
-          </div>
-        )}
-        {tipoEntrega === "entrega" && enderecos.length > 0 && (
-          <div className="delivery-details">
-            <span>
-              <MdLocationPin size={14} /> {enderecos[0].neighborhood.name},{" "}
-              {enderecos[0].address}, {enderecos[0].number} -{" "}
-              {enderecos[0].city.name}
-            </span>
-          </div>
-        )}
-      </section>
-
-      {/* Forma de Pagamento */}
-      <section className="checkout-section">
-        <h2>Escolha a forma de pagamento:</h2>
-        <div className="payment-card-list">
-          {tenantData?.paymentTypes
-            ?.filter((forma) => forma.isActive)
-            .map((forma) => (
-              <div
-                key={forma.id}
-                className={`card payment-card ${
-                  formaPagamentoSelecionada.id === forma.id ? "selected" : ""
-                }`}
-                onClick={() => handleFormaPagamentoClick(forma)}
-              >
-                <RiMoneyDollarCircleLine size={24} className="card-icon" />
-                <div className="card-content">
-                  <strong>{forma.name}</strong>
-                  {forma.need_change && <p>Precisa de troco?</p>}
-                </div>
+      {isTableMode === false && (
+        <section className="checkout-section">
+          <h2>Escolha o tipo da entrega:</h2>
+          <div className="delivery-card-list">
+            <div
+              className={`card delivery-card ${
+                tipoEntrega === "entrega" ? "selected" : ""
+              }`}
+              onClick={handleEntregaClick}
+            >
+              <MdLocalShipping size={24} className="card-icon" />
+              <div className="card-content">
+                <strong>Entrega</strong>
+                <p>Receber no seu endereço</p>
               </div>
-            ))}
-        </div>
-      </section>
+            </div>
+            <div
+              className={`card delivery-card ${
+                tipoEntrega === "retirada" ? "selected" : ""
+              }`}
+              onClick={handleRetiradaClick}
+            >
+              <MdStore size={24} className="card-icon" />
+              <div className="card-content">
+                <strong>Retirada no local</strong>
+                <p>Buscar direto no balcão</p>
+              </div>
+            </div>
+          </div>
+          {tipoEntrega === "retirada" && (
+            <div className="delivery-details">
+              <span>
+                <MdLocationPin size={14} /> {tenantData.address},{" "}
+                {tenantData.number}, {tenantData.neighborhood} -{" "}
+                {tenantData.city}
+              </span>
+            </div>
+          )}
+          {tipoEntrega === "entrega" && enderecos.length > 0 && (
+            <div className="delivery-details">
+              <span>
+                <MdLocationPin size={14} /> {enderecos[0].neighborhood.name},{" "}
+                {enderecos[0].address}, {enderecos[0].number} -{" "}
+                {enderecos[0].city.name}
+              </span>
+            </div>
+          )}
+        </section>
+      )}
+      {/* Forma de Pagamento */}
+      {isTableMode === false && (
+        <section className="checkout-section">
+          <h2>Escolha a forma de pagamento:</h2>
+
+          {/* PAGUE ONLINE */}
+
+          {tenantData?.paymentTypes?.some(
+            (f) => f.isActive && f.onlinePayment
+          ) && (
+            <>
+              <h3>Pague online</h3>
+              <div className="payment-card-list">
+                {tenantData.paymentTypes
+                  .filter((forma) => forma.isActive && forma.onlinePayment)
+                  .map((forma) => (
+                    <div
+                      key={forma.id}
+                      className={`card payment-card ${
+                        formaPagamentoSelecionada.id === forma.id
+                          ? "selected"
+                          : ""
+                      }`}
+                      onClick={() => handleFormaPagamentoClick(forma)}
+                    >
+                      <RiMoneyDollarCircleLine
+                        size={24}
+                        className="card-icon"
+                      />
+                      <div className="card-content">
+                        <strong>{forma.name}</strong>
+                        {forma.need_change && <p>Precisa de troco?</p>}
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </>
+          )}
+
+          {/* PAGUE NA ENTREGA */}
+          {tenantData?.paymentTypes?.some(
+            (f) => f.isActive && !f.onlinePayment
+          ) && (
+            <>
+              <h3>Pague na entrega</h3>
+              <div className="payment-card-list">
+                {tenantData.paymentTypes
+                  .filter((forma) => forma.isActive && !forma.onlinePayment)
+                  .map((forma) => (
+                    <div
+                      key={forma.id}
+                      className={`card payment-card ${
+                        formaPagamentoSelecionada.id === forma.id
+                          ? "selected"
+                          : ""
+                      }`}
+                      onClick={() => handleFormaPagamentoClick(forma)}
+                    >
+                      <RiMoneyDollarCircleLine
+                        size={24}
+                        className="card-icon"
+                      />
+                      <div className="card-content">
+                        <strong>{forma.name}</strong>
+                        {forma.need_change && <p>Precisa de troco?</p>}
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </>
+          )}
+        </section>
+      )}
 
       {/* Observações */}
       <section className="checkout-section">
@@ -382,7 +456,6 @@ const Checkout = ({
           onChange={(e) => setObservation(e.target.value)}
         />
       </section>
-
       {/* Modais */}
       <ModalTroco
         isVisible={modalTrocoVisible}
@@ -393,7 +466,6 @@ const Checkout = ({
         handleNoTroco={handleNoTroco}
         total={total}
       />
-
       <ModalEndereco
         isVisible={modalEnderecoVisible}
         onClose={handleModalEnderecoClose}
@@ -402,7 +474,6 @@ const Checkout = ({
         tenantData={tenantData}
         enderecos={cliente?.addresses || []}
       />
-
       {/* Resumo e Finalizar */}
       <div className="finish-order-info">
         <div className="total-box">
@@ -428,6 +499,8 @@ const Checkout = ({
         <button onClick={handleFinalizarPedido} className="finalizar-button">
           Finalizar Pedido
         </button>
+
+        {imgQrCode !== "" && <img src={imgQrCode} alt="QrCode"></img>}
       </div>
     </div>
   );

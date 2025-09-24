@@ -16,6 +16,7 @@ const App = () => {
   });
   const [isRestaurantOpen, setIsRestaurantOpen] = useState(false); // Estado global
   const [lastOrder, setLastOrder] = useState({}); // Estado global
+  const [paymentData, setPaymentData] = useState({}); // Estado global
 
   const handleLogin = (token) => {
     Cookies.set("token", token, { expires: 5 / 24, secure: true }); // Definindo o cookie com expiração de 3 horas
@@ -76,33 +77,13 @@ const App = () => {
     });
   };
 
-  // Recuperando o carrinho do localStorage quando o tenantData é alterado
-  useEffect(() => {
-    if (tenantData && tenantData.slug) {
-      const cartKey = `carrinho-${tenantData.slug}`;
-
-      // Tentando recuperar o carrinho salvo
-      const carrinhoSalvo = localStorage.getItem(cartKey);
-      if (carrinhoSalvo) {
-        setCartItems(JSON.parse(carrinhoSalvo)); // Setando o carrinho com os dados salvos
-      }
-    }
-  }, [tenantData]); // Rodar quando o tenantData for alterado
-
-  // Salvando o carrinho no localStorage sempre que o cartItems mudar
-  useEffect(() => {
-    if (tenantData && tenantData.slug) {
-      const cartKey = `carrinho-${tenantData.slug}`;
-      localStorage.setItem(cartKey, JSON.stringify(cartItems)); // Salvar o carrinho no localStorage
-    }
-  }, [cartItems, tenantData]); // Rodar sempre que cartItems ou tenantData mudarem
-
   return (
     <LoadingProvider>
       <Router>
         <ToastContainer />
         <LoadingAnimation />
         <Routes>
+          {/* modo cardápio digital (como já existe) */}
           <Route
             path="/:slug/*"
             element={
@@ -119,6 +100,31 @@ const App = () => {
                 setIsRestaurantOpen={setIsRestaurantOpen}
                 lastOrder={lastOrder}
                 setLastOrder={setLastOrder}
+                paymentData={paymentData}
+                setPaymentData={setPaymentData}
+                /* sem mesa */
+              />
+            }
+          />
+
+          {/* modo mesa */}
+          <Route
+            path="/:slug/mesa/:tableNumber/*"
+            element={
+              <TenantRoutes
+                tenantData={tenantData}
+                setTenantData={setTenantData}
+                addToCart={addToCart}
+                cartItems={cartItems}
+                setCartItems={setCartItems}
+                handleLogin={handleLogin}
+                handleLogout={handleLogout}
+                isLoggedIn={isLoggedIn}
+                isRestaurantOpen={isRestaurantOpen}
+                setIsRestaurantOpen={setIsRestaurantOpen}
+                lastOrder={lastOrder}
+                setLastOrder={setLastOrder}
+                /* agora com mesa via params em TenantRoutes */
               />
             }
           />

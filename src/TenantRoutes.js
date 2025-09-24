@@ -6,11 +6,11 @@ import Header from "./components/Header/Header";
 import Checkout from "./pages/Checkout/Checkout";
 import FabButton from "./components/FabButton/FabButton";
 import Login from "./pages/Login/Login";
-import { useFetchWithLoading } from "./contexts/fetchWithLoading";
 import config from "./config";
 import FabButtonWhats from "./components/FabButtonWhats/FabButtonWhats";
 import OrdersList from "./pages/OrdersList/OrdersList";
 import OrderCompleted from "./pages/OrderCompleted/OrderCompleted";
+import PixPayment from "./pages/PixPayment/PixPayment";
 
 const TenantRoutes = ({
   tenantData,
@@ -24,17 +24,58 @@ const TenantRoutes = ({
   setIsRestaurantOpen,
   isRestaurantOpen,
   lastOrder,
-  setLastOrder
+  setLastOrder,
+  paymentData,
+  setPaymentData
 }) => {
-  const { slug } = useParams();
+  const { slug, tableNumber } = useParams();
   const [isLoadingTenant, setIsLoadingTenant] = useState(true); // Estado de carregamento
   const [hasError, setHasError] = useState(false); // Flag para erro de carregamento
+  const isTableMode = !!tableNumber;
+  const basePath = isTableMode ? `/${slug}/mesa/${tableNumber}` : `/${slug}`;
+  // -------------------------------
+  // 1) LER carrinho (tenant + mesa)
+  // -------------------------------
+  useEffect(() => {
+    if (tenantData?.slug) {
+      const key = `carrinho-${tenantData.slug}${
+        isTableMode ? `-mesa-${tableNumber}` : ""
+      }`;
+      try {
+        const raw = localStorage.getItem(key);
+        if (raw) {
+          setCartItems(JSON.parse(raw));
+        } else {
+          setCartItems([]);
+        }
+      } catch {
+        localStorage.removeItem(key);
+        setCartItems([]);
+      }
+    }
+  }, [tenantData?.slug, isTableMode, tableNumber, setCartItems]);
+
+  // --------------------------------
+  // 2) GRAVAR carrinho (tenant+mesa)
+  // --------------------------------
+  useEffect(() => {
+    if (tenantData?.slug) {
+      const key = `carrinho-${tenantData.slug}${
+        isTableMode ? `-mesa-${tableNumber}` : ""
+      }`;
+      try {
+        localStorage.setItem(key, JSON.stringify(cartItems));
+      } catch {}
+    }
+  }, [cartItems, tenantData?.slug, isTableMode, tableNumber]);
 
   // Função para buscar os dados do tenant
   const fetchTenantData = async (slug) => {
     try {
       // console.log(`[INFO] Buscando tenant para o slug: ${slug}`);
-      const response = await fetch(`${config.baseURL}/tenants/${slug}`, {method: 'GET' });
+      const response = await fetch(`${config.baseURL}/tenants/${slug}`, {
+        method: "GET",
+      });
       if (!response.ok) {
         console.error(`[ERROR] API retornou status ${response.status}`);
         throw new Error(`Erro ao buscar tenant: ${response.status}`);
@@ -86,9 +127,17 @@ const TenantRoutes = ({
 
   return (
     <>
-      <Header tenantData={tenantData} isLoggedIn={isLoggedIn} />
-      <FabButtonWhats tenantData={tenantData} message={"Olá! Gostaria que me enviasse o cardápio."} />
-      <FabButton slug={tenantData.slug} cartItems={cartItems} />
+      <Header
+        tenantData={tenantData}
+        isLoggedIn={isLoggedIn}
+        basePath={basePath}
+      />
+      <FabButtonWhats
+        tenantData={tenantData}
+        message={"Olá! Gostaria que me enviasse o cardápio."}
+        isTableMode={isTableMode}
+      />
+      <FabButton cartItems={cartItems} basePath={basePath} />
       <Routes>
         <Route
           path="/"
@@ -100,20 +149,22 @@ const TenantRoutes = ({
             />
           }
         />
-        <Route
-          path="orders"
-          element={
-            <OrdersList
-              tenantData={tenantData}
-            />
-          }
-        />
+        <Route path="orders" element={<OrdersList tenantData={tenantData} />} />
         <Route
           path="orderCompleted"
           element={
             <OrderCompleted
               tenantData={tenantData}
-              orderDetails={lastOrder} sendWhatsApp
+              orderDetails={lastOrder}
+              sendWhatsApp
+            />
+          }
+        />
+        <Route
+          path="payment"
+          element={
+            <PixPayment
+              payment={paymentData}
             />
           }
         />
@@ -121,7 +172,7 @@ const TenantRoutes = ({
           path="cart"
           element={
             <Cart
-              tenantData={tenantData}
+              basePath={basePath}
               cartItems={cartItems}
               setCartItems={setCartItems}
               isLoggedIn={isLoggedIn}
@@ -133,7 +184,7 @@ const TenantRoutes = ({
           path="checkout"
           element={
             !isLoggedIn || !isRestaurantOpen ? (
-              <Navigate to={`/${tenantData.slug}`} />
+              <Navigate to={basePath} />
             ) : (
               <Checkout
                 cartItems={cartItems}
@@ -141,6 +192,10 @@ const TenantRoutes = ({
                 tenantData={tenantData}
                 onLogout={handleLogout}
                 setLastOrder={setLastOrder}
+                tableNumber={tableNumber}
+                isTableMode={isTableMode}
+                setPaymentData={setPaymentData}
+                basePath={basePath}
               />
             )
           }
@@ -149,10 +204,10 @@ const TenantRoutes = ({
           path="login"
           element={
             isLoggedIn ? (
-              <Navigate to={`/${tenantData.slug}/checkout`} />
+              <Navigate to={`${basePath}/checkout`} />
             ) : (
               <Login
-                tenantData={tenantData}
+                basePath={basePath}
                 onLogin={handleLogin}
                 isLoggedIn={isLoggedIn}
               />

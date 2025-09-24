@@ -1,0 +1,326 @@
+.pix-payment-container {
+  text-align: center;
+  padding: 25px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  min-height: calc(100dvh - 60px);
+  box-sizing: border-box;
+  background-color: #f8f8f8;
+  gap: 25px;
+}
+
+/* Header da tela */
+.pix-payment-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.pix-payment-header svg {
+  color: #007bff;
+}
+
+.pix-payment-header h2 {
+  font-size: 1.8rem;
+  color: #333;
+  margin: 0;
+  font-weight: 700;
+}
+
+.pix-order-info {
+  font-size: 1rem;
+  color: #666;
+  margin: 0;
+}
+
+/* Card principal do pagamento */
+.pix-payment-card {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 25px;
+  width: 90%;
+  max-width: 450px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Seção do valor */
+.pix-amount-section {
+  text-align: center;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 2px solid #007bff;
+}
+
+.pix-amount-label {
+  display: block;
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.pix-amount-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #007bff;
+}
+
+/* Seção do timer */
+.pix-timer-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  background-color: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 6px;
+  color: #856404;
+  font-weight: 600;
+}
+
+.pix-timer-section.expired {
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+  color: #721c24;
+}
+
+.pix-timer-section svg {
+  flex-shrink: 0;
+}
+
+/* Seção do QR Code */
+.pix-qr-section {
+  display: flex;
+  justify-content: center;
+  margin: 15px 0;
+}
+
+.pix-qr-wrapper {
+  position: relative;
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: opacity 0.3s ease;
+}
+
+.pix-qr-wrapper.expired {
+  opacity: 0.5;
+}
+
+.pix-qr-image {
+  width: 200px;
+  height: 200px;
+  display: block;
+}
+
+.pix-expired-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(220, 53, 69, 0.9);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.pix-qr-placeholder {
+  width: 200px;
+  height: 200px;
+  background-color: #f8f9fa;
+  border: 2px dashed #dee2e6;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+/* Seção de ação (botão copiar) */
+.pix-action-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.pix-btn-primary {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 8px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  max-width: 280px;
+  box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+}
+
+.pix-btn-primary:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0, 123, 255, 0.3);
+}
+
+.pix-copied-feedback {
+  color: #25D366;
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 4px 12px;
+  background-color: rgba(37, 211, 102, 0.1);
+  border-radius: 4px;
+  animation: fadeInOut 2s ease-in-out;
+}
+
+@keyframes fadeInOut {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+/* Card de instruções */
+.pix-instructions-card {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 25px;
+  width: 90%;
+  max-width: 450px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  text-align: left;
+}
+
+.pix-instructions-card h3 {
+  font-size: 1.2rem;
+  color: #333;
+  margin: 0 0 20px 0;
+  font-weight: 600;
+  text-align: center;
+}
+
+.pix-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.pix-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.pix-step-number {
+  background-color: #007bff;
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.pix-step p {
+  margin: 0;
+  color: #555;
+  line-height: 1.4;
+  font-size: 0.95rem;
+}
+
+/* Estado de loading */
+.pix-loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  padding: 40px 20px;
+}
+
+.pix-loading-state svg {
+  color: #007bff;
+  animation: pulse 2s infinite;
+}
+
+.pix-loading-state h2 {
+  font-size: 1.5rem;
+  color: #333;
+  margin: 0;
+  font-weight: 600;
+}
+
+.pix-loading-state p {
+  color: #666;
+  margin: 0;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Media Queries para Desktop */
+@media (min-width: 768px) {
+  .pix-payment-container {
+    padding: 40px 20px;
+    gap: 30px;
+  }
+
+  .pix-payment-header h2 {
+    font-size: 2.2rem;
+  }
+
+  .pix-payment-card,
+  .pix-instructions-card {
+    width: 60%;
+    max-width: 550px;
+    padding: 30px;
+  }
+
+  .pix-amount-value {
+    font-size: 2.4rem;
+  }
+
+  .pix-qr-image {
+    width: 240px;
+    height: 240px;
+  }
+
+  .pix-qr-placeholder {
+    width: 240px;
+    height: 240px;
+  }
+
+  .pix-btn-primary {
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    max-width: 320px;
+  }
+
+  .pix-step p {
+    font-size: 1rem;
+  }
+}

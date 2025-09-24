@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import "./FabButtonWhats.css"; // Estilo do FAB
 import { FaWhatsapp } from "react-icons/fa";
 
-const FabButtonWhats = ({ tenantData, message }) => {
+const FabButtonWhats = ({ tenantData, message, isTableMode }) => {
 
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     const shareUrl = isMobile
@@ -23,7 +23,8 @@ const FabButtonWhats = ({ tenantData, message }) => {
         location.pathname === `/${tenantData.slug}/checkout` ||
         location.pathname === `/${tenantData.slug}/cart` ||
         location.pathname === `/${tenantData.slug}/login` ||
-        location.pathname === `/${tenantData.slug}/orderCompleted`
+        location.pathname === `/${tenantData.slug}/orderCompleted` ||
+        isTableMode
     ) {
         return null;
     }

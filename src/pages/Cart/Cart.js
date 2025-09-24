@@ -11,7 +11,7 @@ const Cart = ({
   cartItems,
   setCartItems,
   isLoggedIn,
-  tenantData,
+  basePath,
   isRestaurantOpen,
 }) => {
   const navigate = useNavigate();
@@ -63,9 +63,9 @@ const Cart = ({
     }
 
     if (isLoggedIn) {
-      navigate(`/${tenantData.slug}/checkout`);
+      navigate(`${basePath}/checkout`);
     } else {
-      navigate(`/${tenantData.slug}/login`);
+      navigate(`${basePath}/login`);
     }
   };
 
@@ -90,7 +90,7 @@ const Cart = ({
             <button
               type="button"
               className="confirm-button"
-              onClick={() => navigate(`/${tenantData.slug}`)}
+              onClick={() => navigate(`${basePath}`)}
             >
               Começar compra
             </button>
