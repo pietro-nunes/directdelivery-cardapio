@@ -1,19 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "./PixPayment.css";
 
+/* Ícones inline */
 const IconQrCode = (props) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+       viewBox="0 0 24 24" fill="none" stroke="currentColor"
+       strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
     <rect x="3" y="3" width="7" height="7"></rect>
     <rect x="14" y="3" width="7" height="7"></rect>
     <rect x="3" y="14" width="7" height="7"></rect>
@@ -22,67 +14,59 @@ const IconQrCode = (props) => (
 );
 
 const IconCopy = (props) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+       viewBox="0 0 24 24" fill="none" stroke="currentColor"
+       strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
     <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
   </svg>
 );
 
 const IconClock = (props) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+       viewBox="0 0 24 24" fill="none" stroke="currentColor"
+       strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
     <circle cx="12" cy="12" r="10"></circle>
     <polyline points="12,6 12,12 16,14"></polyline>
   </svg>
 );
 
-export default function Payment({ payment }) {
+const DURATION_SECONDS = 7 * 60; // 15 minutos
+
+export default function PixPayment({ payment }) {
   const [copied, setCopied] = useState(false);
   const [now, setNow] = useState(Date.now());
 
-  // Lógica do cronômetro
+  // Atualiza o "agora" a cada segundo
   useEffect(() => {
     const timer = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(timer);
   }, []);
 
-  const expiresAtMs = useMemo(() => {
-    if (!payment?.expires_at) return null;
-    const date = new Date(payment.expires_at);
-    return isNaN(date.getTime()) ? null : date.getTime();
-  }, [payment?.expires_at]);
+  // Momento de início do cronômetro (quando chega um novo pagamento)
+  // Use id e/ou txid se fizer sentido para "resetar" o contador ao gerar outro Pix
+  const startAtMs = useMemo(() => Date.now(), [payment?.id, payment?.txid]);
+
+  // Expira 15 minutos após o início
+  const expiresAtMs = useMemo(
+    () => startAtMs + DURATION_SECONDS * 1000,
+    [startAtMs]
+  );
 
   const remainingTime = useMemo(() => {
-    if (!expiresAtMs) return null;
     const diff = Math.max(0, Math.floor((expiresAtMs - now) / 1000));
     const minutes = String(Math.floor(diff / 60)).padStart(2, "0");
     const seconds = String(diff % 60).padStart(2, "0");
     return { total: diff, label: `${minutes}:${seconds}` };
   }, [expiresAtMs, now]);
-  
+
+  const isExpired = remainingTime.total === 0;
+
   const formatCurrency = (v) =>
-    (Number(v) || 0).toLocaleString("pt-BR", { style: 'currency', currency: 'BRL' });
+    (Number(v) || 0).toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    });
 
   const handleCopyCode = async () => {
     if (!payment?.qrCode) return;
@@ -110,8 +94,6 @@ export default function Payment({ payment }) {
     );
   }
 
-  const isExpired = remainingTime && remainingTime.total === 0;
-
   return (
     <div className="pix-payment-container">
       <div className="pix-payment-header">
@@ -123,17 +105,17 @@ export default function Payment({ payment }) {
       <div className="pix-payment-card">
         <div className="pix-amount-section">
           <span className="pix-amount-label">Valor a pagar</span>
-          <div className="pix-amount-value">{formatCurrency(payment.amount)}</div>
+          <div className="pix-amount-value">
+            {formatCurrency(payment.amount)}
+          </div>
         </div>
 
-        {remainingTime && (
-          <div className={`pix-timer-section ${isExpired ? "expired" : ""}`}>
-            <IconClock size={20} />
-            <span>
-              {isExpired ? "Código expirado!" : `Expira em ${remainingTime.label}`}
-            </span>
-          </div>
-        )}
+        <div className={`pix-timer-section ${isExpired ? "expired" : ""}`}>
+          <IconClock size={20} />
+          <span>
+            {isExpired ? "Código expirado!" : `Expira em ${remainingTime.label}`}
+          </span>
+        </div>
 
         <div className="pix-qr-section">
           {payment.qrCodeImage ? (
@@ -156,7 +138,9 @@ export default function Payment({ payment }) {
               <IconCopy size={20} />
               Copiar código Pix
             </button>
-            {copied && <div className="pix-copied-feedback">✓ Código copiado!</div>}
+            {copied && (
+              <div className="pix-copied-feedback">✓ Código copiado!</div>
+            )}
           </div>
         )}
       </div>

@@ -35,7 +35,6 @@ const Checkout = ({
   const [tipoEntrega, setTipoEntrega] = useState("");
   const { fetchWithLoading } = useFetchWithLoading();
   const [observation, setObservation] = useState("");
-  const [imgQrCode, setImgQrCode] = useState("");
 
   useEffect(() => {
     try {
@@ -148,6 +147,7 @@ const Checkout = ({
         : null,
       observacaoPedido: observation,
       nomeFormaPagamento: formaPagamentoSelecionada.name,
+      pagamentoOnline: formaPagamentoSelecionada.onlinePayment
     };
 
     try {
@@ -178,7 +178,6 @@ const Checkout = ({
           const json = await onlinePaymentResponse.json();
 
           setPaymentData(json)
-          console.log(json)
           navigate(`${basePath}/payment`);
           
         } else {
@@ -499,8 +498,6 @@ const Checkout = ({
         <button onClick={handleFinalizarPedido} className="finalizar-button">
           Finalizar Pedido
         </button>
-
-        {imgQrCode !== "" && <img src={imgQrCode} alt="QrCode"></img>}
       </div>
     </div>
   );

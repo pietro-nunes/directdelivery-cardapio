@@ -1,27 +1,26 @@
 export function formatarNumero(valor) {
-    // Converte para número caso seja string
-    const numero = parseFloat(valor);
+  // Converte para número caso seja string
+  const numero = parseFloat(valor);
 
-    // Verifica se é um número válido antes de formatar
-    if (isNaN(numero)) {
-        return 'Valor inválido';
-    }
+  // Verifica se é um número válido antes de formatar
+  if (isNaN(numero)) {
+    return "Valor inválido";
+  }
 
-    return numero.toFixed(2).replace('.', ',');
+  return numero.toFixed(2).replace(".", ",");
 }
 
 export function toTitleCase(str) {
   return str
-    .toLowerCase()                // converte tudo para minúsculas
-    .split(' ')                   // quebra em palavras
-    .map(word => {
+    .toLowerCase() // converte tudo para minúsculas
+    .split(" ") // quebra em palavras
+    .map((word) => {
       // se a “palavra” estiver vazia (ex.: espaços extras), mantém como está
       if (!word) return word;
       return word[0].toUpperCase() + word.slice(1);
     })
-    .join(' ');
+    .join(" ");
 }
-
 
 export const onlyDigits = (s) => (s || "").replace(/\D/g, "");
 
@@ -31,7 +30,8 @@ export function isValidCPF(raw) {
 
   const calc = (factor) => {
     let sum = 0;
-    for (let i = 0; i < factor - 1; i++) sum += parseInt(c[i], 10) * (factor - i);
+    for (let i = 0; i < factor - 1; i++)
+      sum += parseInt(c[i], 10) * (factor - i);
     const dv = (sum * 10) % 11;
     return dv === 10 ? 0 : dv;
   };
@@ -43,10 +43,20 @@ export function isValidCPF(raw) {
 
 // sua máscara:
 const cpfMask = [
-  /\d/, /\d/, /\d/, ".",
-  /\d/, /\d/, /\d/, ".",
-  /\d/, /\d/, /\d/, "-",
-  /\d/, /\d/
+  /\d/,
+  /\d/,
+  /\d/,
+  ".",
+  /\d/,
+  /\d/,
+  /\d/,
+  ".",
+  /\d/,
+  /\d/,
+  /\d/,
+  "-",
+  /\d/,
+  /\d/,
 ];
 
 // formata usando um array de máscara (strings e RegExp)
@@ -75,4 +85,3 @@ function formatWithMask(value, mask) {
 export function formatCPF(value) {
   return formatWithMask(value, cpfMask);
 }
-
