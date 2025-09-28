@@ -26,7 +26,7 @@ const TenantRoutes = ({
   lastOrder,
   setLastOrder,
   paymentData,
-  setPaymentData
+  setPaymentData,
 }) => {
   const { slug, tableNumber } = useParams();
   const [isLoadingTenant, setIsLoadingTenant] = useState(true); // Estado de carregamento
@@ -162,11 +162,7 @@ const TenantRoutes = ({
         />
         <Route
           path="payment"
-          element={
-            <PixPayment
-              payment={paymentData}
-            />
-          }
+          element={<PixPayment payment={paymentData} basePath={basePath} />}
         />
         <Route
           path="cart"

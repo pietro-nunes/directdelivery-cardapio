@@ -1,11 +1,23 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./PixPayment.css";
+import { useFetchWithLoading } from "../../contexts/LoadingContext";
+import config from "../../config";
 
 /* Ícones inline */
 const IconQrCode = (props) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-       viewBox="0 0 24 24" fill="none" stroke="currentColor"
-       strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
     <rect x="3" y="3" width="7" height="7"></rect>
     <rect x="14" y="3" width="7" height="7"></rect>
     <rect x="3" y="14" width="7" height="7"></rect>
@@ -14,40 +26,65 @@ const IconQrCode = (props) => (
 );
 
 const IconCopy = (props) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-       viewBox="0 0 24 24" fill="none" stroke="currentColor"
-       strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
     <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
   </svg>
 );
 
 const IconClock = (props) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-       viewBox="0 0 24 24" fill="none" stroke="currentColor"
-       strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
     <circle cx="12" cy="12" r="10"></circle>
     <polyline points="12,6 12,12 16,14"></polyline>
   </svg>
 );
 
-const DURATION_SECONDS = 7 * 60; // 15 minutos
+// 15 minutos
+const DURATION_SECONDS = 7 * 60;
 
-export default function PixPayment({ payment }) {
+export default function PixPayment({ payment, basePath = "" }) {
+  const navigate = useNavigate();
+  const { fetchWithLoading } = useFetchWithLoading();
+
   const [copied, setCopied] = useState(false);
   const [now, setNow] = useState(Date.now());
+  const [status, setStatus] = useState(payment?.status || "created");
+  const [startAtMs, setStartAtMs] = useState(Date.now());
 
-  // Atualiza o "agora" a cada segundo
+  // Atualiza o relógio a cada segundo
   useEffect(() => {
     const timer = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(timer);
   }, []);
 
-  // Momento de início do cronômetro (quando chega um novo pagamento)
-  // Use id e/ou txid se fizer sentido para "resetar" o contador ao gerar outro Pix
-  const startAtMs = useMemo(() => Date.now(), [payment?.id, payment?.txid]);
+  // Reseta o início do contador quando mudar o pedido/txid/status
+  useEffect(() => {
+    setStartAtMs(Date.now());
+    if (payment?.status) setStatus(String(payment.status).toLowerCase());
+  }, [payment?.orderId, payment?.txid, payment?.status]);
 
-  // Expira 15 minutos após o início
   const expiresAtMs = useMemo(
     () => startAtMs + DURATION_SECONDS * 1000,
     [startAtMs]
@@ -61,6 +98,7 @@ export default function PixPayment({ payment }) {
   }, [expiresAtMs, now]);
 
   const isExpired = remainingTime.total === 0;
+  const isPaid = (status || "").toLowerCase() === "paid";
 
   const formatCurrency = (v) =>
     (Number(v) || 0).toLocaleString("pt-BR", {
@@ -78,6 +116,54 @@ export default function PixPayment({ payment }) {
       console.error("Falha ao copiar o código:", err);
     }
   };
+
+  // Busca status por pedido (sua rota atual)
+  const fetchPaymentStatus = useCallback(
+    async (orderId) => {
+      try {
+        const response = await fetchWithLoading(
+          `${config.baseURL}/orders/canvi/payment/pix/${orderId}`
+        );
+        const data = await response.json();
+        return data; // { status: "paid" } ou estruturas aninhadas
+      } catch (error) {
+        console.error("Erro ao buscar status do pagamento:", error);
+        return null;
+      }
+    },
+    [fetchWithLoading]
+  );
+
+  // Polling a cada 10s usando payment.orderId
+  useEffect(() => {
+    if (!payment?.orderId || isExpired || isPaid) return;
+
+    let isMounted = true;
+    const checkStatus = async () => {
+      const data = await fetchPaymentStatus(payment.orderId);
+      const newStatus =
+        data?.status ?? data?.payment?.status ?? data?.data?.status ?? "";
+
+      if (!isMounted) return;
+
+      if (newStatus) {
+        setStatus(String(newStatus).toLowerCase());
+      }
+      if (String(newStatus).toLowerCase() === "paid") {
+        setTimeout(() => navigate(`${basePath}/orderCompleted`), 150);
+      }
+    };
+
+    // chamada imediata
+    checkStatus();
+
+    // intervalo de 10s
+    const interval = setInterval(checkStatus, 10_000);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, [payment?.orderId, isExpired, isPaid, fetchPaymentStatus, navigate, basePath]);
 
   // Tela de carregamento
   if (!payment) {
@@ -117,6 +203,17 @@ export default function PixPayment({ payment }) {
           </span>
         </div>
 
+        {/* Nota sutil: tempo de aprovação e nome CANVI */}
+        <div className="pix-subtle-note" aria-live="polite">
+          <span>
+            A confirmação do pagamento pode levar até <strong>60 segundos</strong>.
+          </span>
+          <span className="pix-subtle-note-break">•</span>
+          <span>
+            O Pix irá aparecer em nome de <span className="pix-brand-soft">CANVI</span>.
+          </span>
+        </div>
+
         <div className="pix-qr-section">
           {payment.qrCodeImage ? (
             <div className={`pix-qr-wrapper ${isExpired ? "expired" : ""}`}>
@@ -132,7 +229,7 @@ export default function PixPayment({ payment }) {
           )}
         </div>
 
-        {!isExpired && (
+        {!isExpired && !isPaid && (
           <div className="pix-action-section">
             <button className="pix-btn-primary" onClick={handleCopyCode}>
               <IconCopy size={20} />
@@ -141,6 +238,12 @@ export default function PixPayment({ payment }) {
             {copied && (
               <div className="pix-copied-feedback">✓ Código copiado!</div>
             )}
+          </div>
+        )}
+
+        {isPaid && (
+          <div className="pix-paid-banner">
+            Pagamento aprovado! Redirecionando…
           </div>
         )}
       </div>

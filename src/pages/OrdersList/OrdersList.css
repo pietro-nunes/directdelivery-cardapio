@@ -5,7 +5,9 @@
   margin: 0 auto;
   text-align: center;
   background-color: #f8f8f8; /* Fundo suave para a página */
-  min-height: calc(100dvh - 60px); /* Garante que ocupe a altura da viewport (ajuste 60px se tiver header/footer fixo) */
+  min-height: calc(
+    100dvh - 60px
+  ); /* Garante que ocupe a altura da viewport (ajuste 60px se tiver header/footer fixo) */
   box-sizing: border-box;
 }
 
@@ -38,8 +40,12 @@
 
 /* Animação de giro para o ícone de refresh */
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Card de cada Pedido */
@@ -72,8 +78,8 @@
 }
 
 .order-card p strong {
-    color: #333;
-    font-weight: 600;
+  color: #333;
+  font-weight: 600;
 }
 
 /* Seção de Itens do Pedido */
@@ -128,30 +134,29 @@
 
 /* Linha de progresso */
 .order-status::before {
-    content: '';
-    position: absolute;
-    top: 30px; /* Ajuste para alinhar com o centro do ícone */
-    left: 5%; /* Começa antes do primeiro item */
-    right: 5%; /* Termina depois do último item */
-    height: 4px;
-    background-color: #e0e0e0; /* Cor da linha de fundo */
-    border-radius: 2px;
-    z-index: 0;
+  content: "";
+  position: absolute;
+  top: 30px; /* Ajuste para alinhar com o centro do ícone */
+  left: 5%; /* Começa antes do primeiro item */
+  right: 5%; /* Termina depois do último item */
+  height: 4px;
+  background-color: #e0e0e0; /* Cor da linha de fundo */
+  border-radius: 2px;
+  z-index: 0;
 }
 
 .order-status::after {
-    content: '';
-    position: absolute;
-    top: 30px; /* Ajuste para alinhar com o centro do ícone */
-    left: 5%;
-    height: 4px;
-    background-color: #1a9b9b; /* Cor da linha de progresso ativa */
-    border-radius: 2px;
-    z-index: 0;
-    width: 0%; /* Largura inicial, será ajustada via JS/State se necessário, ou CSS se todos os ativos já tiverem classe */
-    transition: width 0.5s ease-out; /* Transição suave */
+  content: "";
+  position: absolute;
+  top: 30px; /* Ajuste para alinhar com o centro do ícone */
+  left: 5%;
+  height: 4px;
+  background-color: #1a9b9b; /* Cor da linha de progresso ativa */
+  border-radius: 2px;
+  z-index: 0;
+  width: 0%; /* Largura inicial, será ajustada via JS/State se necessário, ou CSS se todos os ativos já tiverem classe */
+  transition: width 0.5s ease-out; /* Transição suave */
 }
-
 
 .status-step {
   display: flex;
@@ -197,10 +202,11 @@
 }
 
 /* Estilo para quando não há pedidos */
-.orders-list > p { /* Seleciona o p direto do orders-list */
-    font-size: 1.1rem;
-    color: #777;
-    margin-top: 50px;
+.orders-list > p {
+  /* Seleciona o p direto do orders-list */
+  font-size: 1.1rem;
+  color: #777;
+  margin-top: 50px;
 }
 
 /* Animação para o card de pedido */
@@ -252,7 +258,6 @@
   color: #27ae60; /* Ícone verde */
 }
 
-
 /* Media Queries para Responsividade */
 @media (max-width: 768px) {
   .orders-list {
@@ -288,7 +293,7 @@
   }
 
   .order-item span:first-child {
-      margin-bottom: 3px; /* Espaço entre nome e preço empilhados */
+    margin-bottom: 3px; /* Espaço entre nome e preço empilhados */
   }
 
   .order-status {
@@ -301,9 +306,9 @@
 
   .order-status::before,
   .order-status::after {
-      top: 25px; /* Ajuste para o centro do ícone menor */
-      left: 20px; /* Ajuste para mobile */
-      right: 20px; /* Ajuste para mobile */
+    top: 25px; /* Ajuste para o centro do ícone menor */
+    left: 20px; /* Ajuste para mobile */
+    right: 20px; /* Ajuste para mobile */
   }
 
   .status-step {
@@ -329,13 +334,149 @@
 
 /* Animação para quando não há pedidos */
 .no-orders-message {
-    font-size: 1.2rem;
-    color: #888;
-    margin-top: 50px;
-    animation: fadeIn 1s ease-out forwards;
+  font-size: 1.2rem;
+  color: #888;
+  margin-top: 50px;
+  animation: fadeIn 1s ease-out forwards;
 }
 
 @keyframes fadeIn {
-    0% { opacity: 0; }
-    100% { opacity: 1; }
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
+
+/* AVISO: Pagamento online aprovado (estilo "observações") */
+.order-payment-paid {
+  margin: 10px 0 14px;
+  padding: 10px 12px;
+  border: 1px solid #d1e7dd;
+  background: #f0f9f4;
+  border-radius: 8px;
+}
+
+.order-payment-paid .paid-text {
+  margin: 0;
+  color: #0f5132;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.order-payment-paid .paid-check-icon {
+  color: #2db36b;
+  flex-shrink: 0;
+}
+
+.order-payment-paid .paid-subtext {
+  margin: 6px 0 0 26px; /* alinhado ao texto após o ícone */
+  font-size: 0.92rem;
+  color: #2b6a49;
+  opacity: 0.9;
+}
+
+/* AVISO: Pagamento online expirado (estilo observações) */
+.order-payment-expired {
+  margin: 10px 0 14px;
+  padding: 10px 12px;
+  border: 1px solid #f5c2c7;
+  background: #fff5f5;
+  border-radius: 8px;
+}
+
+.order-payment-expired .expired-text {
+  margin: 0;
+  color: #842029;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.order-payment-expired .expired-icon {
+  color: #c0343a;
+  flex-shrink: 0;
+}
+
+.order-payment-expired .expired-subtext {
+  margin: 6px 0 0 24px; /* alinhado após o ícone */
+  font-size: 0.92rem;
+  color: #a33a40;
+  opacity: 0.95;
+}
+
+/* Aguardando pagamento (created) */
+.order-payment-awaiting {
+  margin: 10px 0 14px;
+  padding: 10px 12px;
+  border: 1px solid #ffe69c;
+  background: #fff9db;
+  border-radius: 8px;
+}
+
+.order-payment-awaiting .awaiting-text {
+  margin: 0 0 10px 0;
+  color: #8a6d3b;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.order-payment-awaiting .awaiting-icon {
+  color: #d39e00;
+  flex-shrink: 0;
+}
+
+.order-qr-thumb-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 8px 0 10px;
+}
+
+.order-qr-thumb {
+  width: 160px;
+  height: 160px;
+  background: #fff;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.order-btn-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  background: #0d6efd;
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.order-btn-copy:hover {
+  transform: translateY(-1px);
+  background: #0b5ed7;
+  box-shadow: 0 4px 10px rgba(13, 110, 253, 0.2);
+}
+
+.order-copied-hint {
+  margin-top: 8px;
+  color: #198754;
+  font-weight: 600;
+  font-size: 0.92rem;
+  background: rgba(25, 135, 84, 0.08);
+  padding: 4px 10px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+/* (mantém os estilos que você já adicionou para .order-payment-paid e .order-payment-expired) */

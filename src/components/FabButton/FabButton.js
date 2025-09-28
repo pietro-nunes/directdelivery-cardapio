@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate, useLocation, useParams } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./FabButton.css"; // Estilo do FAB
 import { FaShoppingCart } from "react-icons/fa";
 
@@ -17,7 +17,8 @@ const FabButton = ({ basePath, cartItems }) => {
     location.pathname === `${basePath}/checkout` ||
     location.pathname === `${basePath}/cart` ||
     location.pathname === `${basePath}/login` ||
-    location.pathname === `${basePath}/orderCompleted`
+    location.pathname === `${basePath}/orderCompleted` ||
+    location.pathname === `${basePath}/payment`
   ) {
     return null;
   }
