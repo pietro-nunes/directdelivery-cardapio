@@ -1,30 +1,48 @@
-/* src/components/BestSellerProductCard/BestSellerProductCard.css */
+/* BestSellerProductCard.css - Design Premium */
 
 .best-seller-product-card {
-  /* Estilos base para MOBILE (prioridade total) */
-  background-color: #fff;
-  border-radius: 12px;
+  background: var(--gradient-card);
+  border-radius: calc(var(--radius) + 4px);
   overflow: hidden;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra mais suave para mobile */
+  box-shadow: var(--shadow-soft);
   display: flex;
   flex-direction: column;
-  width: calc(100% - 20px); /* Ocupa quase 100% da largura, com padding lateral do carousel */
-  min-width: 250px; /* Garante um tamanho mínimo aceitável em mobile */
+  width: calc(100% - 20px);
+  min-width: 260px;
+  max-width: 280px;
   margin: 0;
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-  cursor: pointer; /* Indica que o card é clicável */
-  border: 1px solid #1a9b9b; /* Borda de destaque com sua cor */
+  transition: var(--transition-bounce);
+  cursor: pointer;
+  border: 2px solid hsl(var(--primary) / 0.2);
+  position: relative;
+  scroll-snap-align: center;
 }
 
-/* Não há transform no hover em mobile para evitar bugs de rolagem */
-/* .best-seller-product-card:hover { ... } */
+.best-seller-product-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gradient-primary);
+  opacity: 0;
+  transition: var(--transition-smooth);
+  z-index: 0;
+}
+
+.best-seller-product-card:hover::before {
+  opacity: 0.05;
+}
+
+.best-seller-product-card:active {
+  transform: scale(0.98);
+}
 
 .best-seller-image-wrapper {
   position: relative;
   width: 100%;
-  height: 150px; /* Altura da imagem mais adequada para mobile */
+  height: 160px;
   overflow: hidden;
-  border-bottom: 2px solid #1a9b9b; /* Borda abaixo da imagem com sua cor */
+  border-bottom: 3px solid hsl(var(--primary));
+  background: linear-gradient(135deg, hsl(var(--primary) / 0.1), hsl(var(--primary) / 0.05));
 }
 
 .best-seller-product-image {
@@ -32,134 +50,169 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: var(--transition-smooth);
 }
 
+.best-seller-product-card:hover .best-seller-product-image {
+  transform: scale(1.1);
+}
+
+/* Badge animado de destaque */
 .best-seller-badge {
   position: absolute;
-  top: 8px; /* Ajuste para mobile */
-  right: 8px; /* Ajuste para mobile */
-  background-color: #1a9b9b; /* Cor de fundo do badge com sua cor */
-  color: #fff;
-  padding: 5px 10px; /* Padding menor para mobile */
+  top: 10px;
+  right: 10px;
+  background: var(--gradient-primary);
+  color: hsl(var(--primary-foreground));
+  padding: 6px 12px;
   border-radius: 20px;
-  font-size: 0.75em; /* Fonte menor para mobile */
-  font-weight: bold;
+  font-size: 0.7rem;
+  font-weight: 800;
   letter-spacing: 0.5px;
   z-index: 10;
-  animation: pulse 1.5s infinite ease-in-out;
+  box-shadow: var(--shadow-glow);
+  animation: pulseGlow 2s infinite ease-in-out;
+  text-transform: uppercase;
 }
 
-@keyframes pulse {
-  0% {
+@keyframes pulseGlow {
+  0%, 100% {
     transform: scale(1);
+    box-shadow: var(--shadow-glow);
   }
   50% {
     transform: scale(1.05);
-  }
-  100% {
-    transform: scale(1);
+    box-shadow: 0 0 32px hsl(var(--primary) / 0.4);
   }
 }
 
 .best-seller-info {
-  padding: 12px; /* Padding menor para mobile */
+  padding: 16px;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  justify-content: space-between; /* Para empurrar o preço para baixo */
+  justify-content: space-between;
+  position: relative;
+  z-index: 1;
 }
 
 .best-seller-name {
-  font-size: 1.1em; /* Fonte menor para mobile */
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 6px; /* Margem menor para mobile */
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: hsl(var(--foreground));
+  margin-bottom: 8px;
   line-height: 1.3;
+  letter-spacing: -0.3px;
+  transition: var(--transition-smooth);
+}
+
+.best-seller-product-card:hover .best-seller-name {
+  color: hsl(var(--primary));
 }
 
 .best-seller-description {
-  font-size: 0.8em; /* Fonte menor para mobile */
-  color: #666;
-  margin-bottom: 12px; /* Margem menor para mobile */
+  font-size: 0.85rem;
+  color: hsl(var(--muted-foreground));
+  margin-bottom: 14px;
   flex-grow: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+  line-height: 1.5;
 }
 
 .best-seller-price-display {
-  /* Novo contêiner para o preço */
-  text-align: right; /* Alinha o preço à direita */
-  margin-top: 8px; /* Espaço acima do preço */
+  text-align: right;
+  margin-top: 10px;
+  padding-top: 12px;
+  border-top: 1px solid hsl(var(--border) / 0.3);
 }
 
 .best-seller-price {
-  font-size: 1.3em; /* Fonte do preço, levemente maior para destaque */
-  font-weight: bolder;
-  color: #1a9b9b; /* Cor do preço com sua cor principal */
+  font-size: 1.4rem;
+  font-weight: 900;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.5px;
 }
 
-/* Removido completamente o .best-seller-price-add (pois foi renomeado e ajustado) */
-/* Removido completamente os estilos do botão, já que ele não existe mais */
-/* .best-seller-add-button { ... } */
-/* .best-seller-add-button:disabled { ... } */
+/* Animação de entrada */
+@keyframes slideInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
 
+.best-seller-product-card {
+  animation: slideInScale 0.5s ease-out;
+}
 
-/* --- Media Queries para telas MAIORES (Tablet e Desktop) --- */
-
-/* Tablet em diante */
+/* Media Queries - Tablet e Desktop */
 @media (min-width: 481px) {
   .best-seller-product-card {
-    width: 280px; /* Largura padrão para tablet/desktop */
-    min-width: 280px;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); /* Sombra mais proeminente */
-    border: 2px solid #1a9b9b; /* Borda de destaque com sua cor */
+    width: 290px;
+    min-width: 290px;
+    box-shadow: var(--shadow-medium);
+    border-width: 2px;
   }
 
   .best-seller-product-card:hover {
-    transform: translateY(-5px); /* Efeito de levantar no hover (só em telas maiores) */
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    transform: translateY(-8px) rotate(1deg);
+    box-shadow: var(--shadow-strong);
+    border-color: hsl(var(--primary) / 0.5);
   }
 
   .best-seller-image-wrapper {
-    height: 180px; /* Altura da imagem maior para tablet/desktop */
-    border-bottom: 2px solid #1a9b9b; /* Borda abaixo da imagem com sua cor */
+    height: 190px;
   }
 
   .best-seller-badge {
-    top: 10px;
-    right: 10px;
-    padding: 6px 12px;
-    font-size: 0.8em;
-    background-color: #1a9b9b; /* Cor de fundo do badge com sua cor */
+    top: 12px;
+    right: 12px;
+    padding: 8px 14px;
+    font-size: 0.75rem;
   }
 
   .best-seller-info {
-    padding: 15px;
+    padding: 18px;
   }
 
   .best-seller-name {
-    font-size: 1.3em;
-    margin-bottom: 8px;
+    font-size: 1.25rem;
+    margin-bottom: 10px;
   }
 
   .best-seller-description {
-    font-size: 0.9em;
-    margin-bottom: 15px;
+    font-size: 0.9rem;
+    margin-bottom: 16px;
   }
 
   .best-seller-price-display {
-    margin-top: 10px; /* Mais espaço acima do preço em telas maiores */
+    margin-top: 12px;
+    padding-top: 14px;
   }
 
   .best-seller-price {
-    font-size: 1.5em; /* Preço maior em telas maiores */
+    font-size: 1.6rem;
   }
 }
 
-/* Desktop em diante (se precisar de algo ainda maior ou específico) */
 @media (min-width: 1025px) {
-  /* Adicione estilos aqui se quiser que os cards dos mais vendidos se comportem de forma diferente em telas muito grandes */
+  .best-seller-product-card {
+    width: 300px;
+    min-width: 300px;
+  }
+
+  .best-seller-image-wrapper {
+    height: 200px;
+  }
 }

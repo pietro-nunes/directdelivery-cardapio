@@ -1,59 +1,98 @@
-/* Product Card */
+/* ProductCard.css - Design Moderno e Elegante */
+
 .product-card {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px;
-  background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.07);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  padding: 16px;
+  background: var(--gradient-card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
+  transition: var(--transition-smooth);
   cursor: pointer;
-  /* IMPORTANTE: Removemos 'width: 100%;' e 'margin: 8px auto;' daqui.
-     O grid pai vai controlar o preenchimento e centralização. */
-  max-width: 520px; /* Mantemos o max-width para cada card não ficar gigante */
+  max-width: 520px;
   overflow: hidden;
-  /* Adicione flex-shrink: 0; se você notar que o card está encolhendo indevidamente
-     em telas muito pequenas antes do media query de 1fr. */
-  flex-shrink: 0;
+  border: 1px solid hsl(var(--border) / 0.5);
+  position: relative;
+}
+
+.product-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--gradient-primary);
+  opacity: 0;
+  transition: var(--transition-smooth);
+  z-index: 0;
 }
 
 .product-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-strong);
+  border-color: hsl(var(--primary) / 0.3);
+}
+
+.product-card:hover::before {
+  opacity: 0.03;
+}
+
+.product-card:active {
+  transform: translateY(-2px);
 }
 
 .product-info {
   flex: 1;
-  padding-right: 15px;
+  padding-right: 16px;
   text-align: left;
+  z-index: 1;
+  position: relative;
 }
 
 .product-info h3 {
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin: 0 0 6px 0;
-  color: #333;
-  line-height: 1.3;
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  color: hsl(var(--foreground));
+  line-height: 1.4;
+  letter-spacing: -0.3px;
+  transition: var(--transition-smooth);
+}
+
+.product-card:hover .product-info h3 {
+  color: hsl(var(--primary));
 }
 
 .product-description {
-  color: #777;
-  font-size: 0.95rem;
-  margin: 0 0 8px 0;
-  line-height: 1.4;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.9rem;
+  margin: 0 0 10px 0;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .product-price {
-  font-size: 1.05rem;
-  color: #333;
-  margin-top: 10px;
-  font-weight: 600;
+  font-size: 1.1rem;
+  color: hsl(var(--foreground));
+  margin-top: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .discounted-price {
-  font-weight: 700;
-  color: #1a9b9b;
+  font-weight: 800;
+  font-size: 1.2rem;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .product-image {
@@ -62,123 +101,105 @@
   height: 100px;
   border-radius: 50%;
   overflow: hidden;
-  border: 2px solid #f0f0f0;
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.04);
+  border: 3px solid hsl(var(--primary) / 0.15);
+  box-shadow: var(--shadow-soft);
+  transition: var(--transition-bounce);
+  position: relative;
+  z-index: 1;
+}
+
+.product-card:hover .product-image {
+  transform: scale(1.05) rotate(2deg);
+  border-color: hsl(var(--primary) / 0.4);
+  box-shadow: var(--shadow-glow);
 }
 
 .product-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: var(--transition-smooth);
 }
 
----
-
-/* Estilos do Container Pai - Onde a mágica acontece */
-.home {
-  font-family: "Arial", sans-serif;
-  background-color: #f8f8f8;
-  padding: 10px;
-  text-align: left;
+.product-card:hover .product-image img {
+  transform: scale(1.1);
 }
 
-.category-title {
-  font-size: 28px;
-  font-weight: 500;
-  color: #333;
-  margin-bottom: 20px;
-  padding-bottom: 10px;
-  border-bottom: 2px solid #eee;
-  text-align: left;
-}
-
-.category {
-  padding: 0 10px;
-  margin-top: 20px;
-}
-
-.product-list {
-  display: grid;
-  /* Esta é a linha mais importante para preencher o espaço! */
-  grid-template-columns: repeat(
-    auto-fit,
-    minmax(280px, 1fr)
-  ); /* Cada coluna terá no mínimo 280px, e se estenderá (1fr) para preencher */
-  gap: 15px; /* Espaço entre os cards */
-  padding: 20px 0;
-
-  /* Centraliza os itens dentro de suas células de grid e o grid como um todo */
-  justify-content: center; /* Centraliza o grupo de colunas se houver espaço sobrando */
-
-  /* Define uma largura máxima para o CONTEÚDO geral da lista e centraliza */
-  max-width: 1200px; /* Largura máxima para a lista de produtos. Ajuste conforme necessário. */
-  margin: 0 auto; /* Centraliza a lista de produtos na página */
-}
-
-
-/* Responsividade - Mobile First */
+/* Responsividade Mobile */
 @media (max-width: 768px) {
   .product-card {
-    padding: 12px;
-    /* No mobile, o card vai ocupar 100% da sua coluna (1fr),
-       mas ainda respeitando o max-width de 520px. */
+    padding: 14px;
   }
 
   .product-info {
-    padding-right: 10px;
+    padding-right: 12px;
   }
 
   .product-info h3 {
-    font-size: 1.1rem;
-    margin-bottom: 4px;
+    font-size: 1.05rem;
+    margin-bottom: 6px;
   }
 
   .product-description {
     font-size: 0.85rem;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
   }
 
   .product-price {
-    font-size: 0.95rem;
-    margin-top: 8px;
+    font-size: 1rem;
+    margin-top: 10px;
+  }
+
+  .discounted-price {
+    font-size: 1.1rem;
   }
 
   .product-image {
-    width: 80px;
-    height: 80px;
-  }
-
-  .product-list {
-    grid-template-columns: 1fr; /* Em mobile, apenas uma coluna. Ela ocupará 100% da largura. */
-    gap: 10px;
-    /* Em mobile, a lista pode ter um max-width menor para não esticar demais um único card */
-    max-width: 520px; /* Garante que a lista não fique muito larga em tablets no modo retrato */
+    width: 85px;
+    height: 85px;
+    border-width: 2px;
   }
 }
 
 @media (max-width: 480px) {
   .product-card {
-    padding: 10px;
+    padding: 12px;
   }
+
   .product-info h3 {
     font-size: 1rem;
   }
+
   .product-description {
     font-size: 0.8rem;
   }
+
   .product-price {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
   }
+
+  .discounted-price {
+    font-size: 1.05rem;
+  }
+
   .product-image {
-    width: 70px;
-    height: 70px;
+    width: 75px;
+    height: 75px;
   }
 }
 
-/* Estilos para a mensagem "Explore o nosso cardápio:" */
-.home > p {
-  font-size: 18px;
-  color: #555;
-  margin-bottom: 30px;
-  text-align: center;
+/* Animação de entrada */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.product-card {
+  animation: slideIn 0.4s ease-out;
 }

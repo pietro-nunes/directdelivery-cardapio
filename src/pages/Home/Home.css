@@ -1,187 +1,263 @@
-/* Home.css */
-
-/* Definição de variáveis CSS para cores - Opcional, mas boa prática */
-:root {
-  --primary-color: #1a9b9b; /* Sua nova cor principal */
-  --secondary-color: #007bff; /* Exemplo de cor secundária para botões */
-  --secondary-hover-color: #0056b3; /* Cor de hover para botões */
-  --background-color: #f8f8f8; /* Cor de fundo geral da página */
-  --text-color-dark: #333;
-  --text-color-medium: #666;
-  --border-color: #e0e0e0;
-}
-
-/* Estilos gerais da página Home */
 .home {
   display: flex;
   flex-direction: column;
-  padding-top: 70px; /* Espaçamento superior */
-  background-color: var(--background-color); /* Aplica a cor de fundo */
+  padding-top: 70px;
+  background: var(--gradient-subtle);
+  min-height: 100vh;
 }
 
 /* Seção de informações do restaurante */
 .restaurant-info-section {
-  margin-bottom: 25px; /* Espaçamento após as informações do restaurante */
-  padding: 0 15px; /* Padding lateral para mobile */
+  margin-bottom: 30px;
+  padding: 0 15px;
+  animation: fadeInDown 0.6s ease-out;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Seção de Mais Vendidos */
 .best-sellers-section {
-  margin-bottom: 30px; /* Espaçamento após a seção de mais vendidos (mobile) */
+  margin-bottom: 40px;
+  animation: fadeIn 0.8s ease-out 0.2s both;
 }
 
-/* Estilos para títulos de seção (Mais Vendidos, Categorias) */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Títulos de seção com gradiente */
 .section-title {
-  font-size: 22px; /* Tamanho da fonte para mobile */
-  font-weight: 700;
-  margin-bottom: 8px; /* Margem entre título e subtítulo */
-  color: var(--text-color-dark);
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 8px;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   text-align: center;
-  padding: 0 15px; /* Padding lateral para mobile */
+  padding: 0 15px;
+  letter-spacing: -0.5px;
 }
 
-/* Estilos para subtítulo da seção de Mais Vendidos */
 .section-subtitle {
-  font-size: 16px; /* Tamanho da fonte para mobile */
-  color: var(--text-color-medium);
+  font-size: 15px;
+  color: hsl(var(--muted-foreground));
   text-align: center;
-  margin-bottom: 20px; /* Espaçamento após o subtítulo (mobile) */
-  padding: 0 15px; /* Padding lateral para mobile */
+  margin-bottom: 24px;
+  padding: 0 15px;
+  font-weight: 500;
 }
 
-/* Estilo para o carrossel de Mais Vendidos */
+/* Carrossel de Mais Vendidos com scroll suave */
 .best-sellers-carousel {
   display: flex;
-  overflow-x: auto; /* Permite a rolagem horizontal */
-  -webkit-overflow-scrolling: touch; /* Melhor rolagem em iOS */
-  scroll-snap-type: x mandatory; /* Efeito de "snap" ao rolar */
-  gap: 15px; /* Espaçamento entre os cards (mobile) */
-  padding: 10px 15px; /* Padding interno para o carrossel (mobile) */
-  list-style: none; /* Remove marcadores */
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  gap: 16px;
+  padding: 12px 15px 20px;
+  list-style: none;
   margin: 0;
-  scrollbar-width: none;
 }
 
-/* Estilização da barra de rolagem para WebKit (Chrome, Safari, etc.) */
 .best-sellers-carousel::-webkit-scrollbar {
-  height: 8px; /* Altura da barra de rolagem */
+  height: 6px;
 }
 
 .best-sellers-carousel::-webkit-scrollbar-track {
-  background: transparent; /* Fundo transparente */
+  background: hsl(var(--muted) / 0.3);
+  border-radius: 10px;
+  margin: 0 15px;
 }
 
 .best-sellers-carousel::-webkit-scrollbar-thumb {
-  background-color: var(--primary-color); /* Sua cor principal */
+  background: var(--gradient-primary);
   border-radius: 10px;
-  border: 2px solid transparent; /* Adiciona uma "borda" transparente para espaçamento visual */
+  transition: var(--transition-smooth);
 }
 
-/* Texto "Explore o nosso cardápio" */
+.best-sellers-carousel::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary));
+}
+
+/* Texto de exploração do cardápio */
 .explore-menu-text {
-  font-size: 20px; /* Tamanho da fonte para mobile */
-  font-weight: 600;
-  margin-top: 25px; /* Espaço após o carrossel de mais vendidos (mobile) */
-  margin-bottom: 15px;
-  color: var(--text-color-dark);
+  font-size: 20px;
+  font-weight: 700;
+  margin-top: 30px;
+  margin-bottom: 18px;
+  color: hsl(var(--foreground));
   text-align: center;
-  padding: 0 15px; /* Padding lateral para mobile */
+  padding: 0 15px;
+  position: relative;
 }
 
-/* Container que envolve as categorias - a barra "sticky" */
+.explore-menu-text::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: var(--gradient-primary);
+  border-radius: 2px;
+}
+
+/* Wrapper de categorias com efeito glassmorphism */
 .categories-wrapper {
-  padding: 10px 0;
-  background-color: var(--background-color);
-  border-bottom: 1px solid var(--border-color);
+  padding: 12px 0;
+  background: hsl(var(--background) / 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid hsl(var(--border) / 0.5);
   width: 100%;
   left: 0;
-  box-sizing: border-box; /* Garante que padding e borda não aumentem a largura total */
-  z-index: 2; /* Garante que fique acima de outros elementos ao rolar */
-  transition: box-shadow 0.3s ease-in-out, background-color 0.3s ease-in-out;
+  box-sizing: border-box;
+  z-index: 2;
+  transition: var(--transition-smooth);
 }
 
-/* Estilos aplicados quando a barra de categorias se torna "sticky" */
 .categories-wrapper.categories-sticky {
-  position: sticky; /* A propriedade que faz a barra "colar" */
-  top: 50px; /* Cola no topo da viewport */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Sombra suave quando sticky */
-  z-index: 1000; /* Garante que fique acima de quase tudo */
-  background-color: #ffffff; /* Fundo branco sólido quando sticky */
-  border-bottom: none; /* Remove a borda se a sombra já a substitui visualmente */
+  position: sticky;
+  top: 50px;
+  box-shadow: var(--shadow-medium);
+  z-index: 1000;
+  background: hsl(var(--background) / 0.98);
+  border-bottom: 2px solid hsl(var(--primary) / 0.2);
 }
 
+/* Título de categoria com animação */
 .category-title {
-  font-size: 20px; /* Tamanho da fonte para mobile */
-  font-weight: 700;
-  margin-bottom: 15px; /* Espaçamento abaixo do título da categoria (mobile) */
-  color: var(--text-color-dark);
-  padding: 0 15px; /* Padding lateral para mobile */
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 18px;
+  margin-top: 30px;
+  color: hsl(var(--foreground));
+  padding: 0 15px;
+  position: relative;
+  display: inline-block;
+  letter-spacing: -0.3px;
 }
 
-/* Lista de produtos dentro de cada categoria (grid) */
+.category-title::before {
+  content: '';
+  position: absolute;
+  left: 15px;
+  bottom: -4px;
+  width: 40px;
+  height: 4px;
+  background: var(--gradient-primary);
+  border-radius: 2px;
+}
+
+/* Grid de produtos responsivo e moderno */
 .product-list {
   display: grid;
-  grid-template-columns: 1fr; /* Por padrão, uma coluna para mobile */
-  gap: 15px; /* Espaçamento entre os cards de produto (mobile) */
-  padding: 0 15px; /* Padding lateral para mobile */
+  grid-template-columns: 1fr;
+  gap: 16px;
+  padding: 0 15px 30px;
+  animation: fadeInUp 0.6s ease-out;
 }
 
-/* --- Media Queries para telas MAIORES (Tablet e Desktop) --- */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
-/* Tablet em diante */
+/* Media Queries - Tablet */
 @media (min-width: 481px) {
   .restaurant-info-section {
-    padding: 0 20px; /* Padding lateral para tablet/desktop */
+    padding: 0 24px;
   }
 
   .best-sellers-section {
-    margin-bottom: 40px; /* Mais espaço para tablet/desktop */
+    margin-bottom: 50px;
   }
 
   .section-title {
-    font-size: 28px; /* Tamanho da fonte para tablet/desktop */
+    font-size: 32px;
     margin-bottom: 10px;
-    padding: 0 20px;
+    padding: 0 24px;
   }
 
   .section-subtitle {
-    font-size: 18px; /* Tamanho da fonte para tablet/desktop */
-    margin-bottom: 30px;
-    padding: 0 20px;
+    font-size: 17px;
+    margin-bottom: 32px;
+    padding: 0 24px;
   }
 
   .best-sellers-carousel {
-    gap: 20px; /* Espaçamento maior entre os cards */
-    padding: 10px 20px; /* Padding interno maior */
+    gap: 20px;
+    padding: 16px 24px 24px;
   }
 
   .explore-menu-text {
-    font-size: 24px;
-    margin-top: 30px;
-    margin-bottom: 20px;
-    padding: 0 20px;
+    font-size: 26px;
+    margin-top: 40px;
+    margin-bottom: 24px;
+    padding: 0 24px;
   }
 
   .category-title {
-    font-size: 24px;
-    margin-bottom: 20px;
-    padding: 0 20px;
+    font-size: 26px;
+    margin-bottom: 24px;
+    padding: 0 24px;
+  }
+
+  .category-title::before {
+    left: 24px;
+    width: 50px;
+    height: 5px;
   }
 
   .product-list {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Grid com múltiplas colunas */
-    gap: 20px;
-    padding: 0 20px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+    padding: 0 24px 40px;
   }
 }
 
-/* Desktop em diante (telas maiores que 768px, por exemplo) */
+/* Media Queries - Desktop */
 @media (min-width: 769px) {
-  /* Pode adicionar ajustes específicos para desktop aqui se necessário */
-  /* Ex: centralizar o conteúdo da home em uma largura máxima */
-  /* .home {
+  .home {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding-top: 80px;
+  }
+
+  .section-title {
+    font-size: 36px;
+  }
+
+  .product-list {
     max-width: 1200px;
     margin: 0 auto;
-    box-shadow: 0 0 15px rgba(0,0,0,0.05);
-  } */
+    padding: 0 32px 50px;
+  }
+
+  .category-title {
+    font-size: 28px;
+  }
 }
