@@ -95,6 +95,8 @@ body {
 /* --- Botão "Trocar" e Informações Adicionais --- */
 .customer-card {
   position: relative;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .change-button {

@@ -19,7 +19,8 @@ const Checkout = ({
   basePath,
   setLastOrder,
   isTableMode,
-  setPaymentData
+  setPaymentData,
+  tableNumber,
 }) => {
   const navigate = useNavigate();
   const [enderecos, setEnderecos] = useState([]);
@@ -93,7 +94,7 @@ const Checkout = ({
   const total = calcularTotal();
 
   const handleFinalizarPedido = async () => {
-    if (!tipoEntrega) {
+    if (!tipoEntrega && !isTableMode) {
       toast.warn("Por favor, selecione o tipo de entrega.", {
         theme: "colored",
         transition: Bounce,
@@ -109,7 +110,7 @@ const Checkout = ({
       return;
     }
 
-    if (!formaPagamentoSelecionada.id) {
+    if (!formaPagamentoSelecionada.id && !isTableMode) {
       toast.warn("Por favor, selecione uma forma de pagamento.", {
         theme: "colored",
         transition: Bounce,
@@ -132,14 +133,14 @@ const Checkout = ({
     }
 
     const pedido = {
-      customerId: cliente?.id,
+      customerId: isTableMode ? null : cliente?.id,
       tenantId: tenantData.id,
       itens: cartItems.map((item) => ({
         ...item,
         totalPrice: item.totalPrice * item.count,
       })),
       total,
-      retirada: tipoEntrega === "retirada",
+      retirada: isTableMode ? true : tipoEntrega === "retirada",
       endereco: enderecos[0] || null,
       formaPagamento: formaPagamentoSelecionada.id,
       troco: formaPagamentoSelecionada.need_change
@@ -147,9 +148,12 @@ const Checkout = ({
         : null,
       observacaoPedido: observation,
       nomeFormaPagamento: formaPagamentoSelecionada.name,
-      pagamentoOnline: formaPagamentoSelecionada.onlinePayment
+      pagamentoOnline: formaPagamentoSelecionada.onlinePayment,
+      tabId: isTableMode ? 1 : null,
+      tableNumber: isTableMode ? parseInt(tableNumber) : null,
     };
 
+    console.log(pedido);
     try {
       const postResponse = await fetchWithLoading(`${config.baseURL}/orders`, {
         method: "POST",
@@ -177,9 +181,8 @@ const Checkout = ({
 
           const json = await onlinePaymentResponse.json();
 
-          setPaymentData(json)
+          setPaymentData(json);
           navigate(`${basePath}/payment`);
-          
         } else {
           navigate(`${basePath}/orderCompleted`);
         }
@@ -476,14 +479,18 @@ const Checkout = ({
       {/* Resumo e Finalizar */}
       <div className="finish-order-info">
         <div className="total-box">
-          <div className="total-row">
-            <span>Subtotal:</span>
-            <strong>R$ {formatarNumero(calcularSubtotal())}</strong>
-          </div>
-          <div className="total-row">
-            <span>Taxa de entrega:</span>
-            <strong>R$ {formatarNumero(taxaEntrega)}</strong>
-          </div>
+          {!isTableMode && (
+            <>
+              <div className="total-row">
+                <span>Subtotal:</span>
+                <strong>R$ {formatarNumero(calcularSubtotal())}</strong>
+              </div>
+              <div className="total-row">
+                <span>Taxa de entrega:</span>
+                <strong>R$ {formatarNumero(taxaEntrega)}</strong>
+              </div>
+            </>
+          )}
           <div className="total-row total-row-highlight">
             <span>Total:</span>
             <strong>R$ {formatarNumero(total)}</strong>

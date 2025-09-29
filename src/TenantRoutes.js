@@ -131,6 +131,7 @@ const TenantRoutes = ({
         tenantData={tenantData}
         isLoggedIn={isLoggedIn}
         basePath={basePath}
+        isTableMode={isTableMode}
       />
       <FabButtonWhats
         tenantData={tenantData}
