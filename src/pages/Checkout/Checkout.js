@@ -3,10 +3,16 @@ import "./Checkout.css";
 import ModalEndereco from "../../components/ModalEndereco/ModalEndereco";
 import { useNavigate } from "react-router-dom";
 import ModalTroco from "../../components/ModalTroco/ModalTroco";
+import ModalQRCode from "../../components/ModalQRCode/ModalQRCode";
 import { Bounce, toast } from "react-toastify";
 import { useFetchWithLoading } from "../../contexts/fetchWithLoading";
 import config from "../../config";
-import { MdLocationPin, MdLocalShipping, MdStore } from "react-icons/md";
+import {
+  MdLocationPin,
+  MdLocalShipping,
+  MdStore,
+  MdTableBar,
+} from "react-icons/md";
 import { RiMoneyDollarCircleLine } from "react-icons/ri";
 import Cookies from "js-cookie";
 import { formatarNumero } from "../../utils/functions";
@@ -36,6 +42,11 @@ const Checkout = ({
   const [tipoEntrega, setTipoEntrega] = useState("");
   const { fetchWithLoading } = useFetchWithLoading();
   const [observation, setObservation] = useState("");
+  const [qrOpen, setQrOpen] = useState(false);
+  const [scannedComanda, setScannedComanda] = useState(null);
+  const submitAfterScanRef = useRef(false);
+  const isSubmittingRef = useRef(false);
+  const scannedTabIdRef = useRef(null); // número da comanda lido no QR
 
   useEffect(() => {
     try {
@@ -94,72 +105,79 @@ const Checkout = ({
   const total = calcularTotal();
 
   const handleFinalizarPedido = async () => {
-    if (!tipoEntrega && !isTableMode) {
-      toast.warn("Por favor, selecione o tipo de entrega.", {
-        theme: "colored",
-        transition: Bounce,
-      });
-      return;
+    // 🔴 Exige QR sempre em modo mesa
+    if (isTableMode && !scannedTabIdRef.current) {
+      setQrOpen(true);
+      return; // NÃO prossegue; envio só após leitura do QR
     }
 
-    if (total <= 0) {
-      toast.warn("Adicione produtos ao carrinho antes de finalizar.", {
-        theme: "colored",
-        transition: Bounce,
-      });
-      return;
-    }
+    if (isSubmittingRef.current) return;
+    isSubmittingRef.current = true;
 
-    if (!formaPagamentoSelecionada.id && !isTableMode) {
-      toast.warn("Por favor, selecione uma forma de pagamento.", {
-        theme: "colored",
-        transition: Bounce,
-      });
-      return;
-    }
-
-    if (
-      tipoEntrega === "entrega" &&
-      (!enderecos[0]?.endereco || !enderecos[0]?.numero)
-    ) {
-      toast.warn(
-        "Por favor, selecione ou adicione um endereço de entrega válido.",
-        {
+    try {
+      if (!tipoEntrega && !isTableMode) {
+        toast.warn("Por favor, selecione o tipo de entrega.", {
           theme: "colored",
           transition: Bounce,
-        }
-      );
-      return;
-    }
+        });
+        isSubmittingRef.current = false;
+        return;
+      }
 
-    const pedido = {
-      customerId: isTableMode ? null : cliente?.id,
-      tenantId: tenantData.id,
-      itens: cartItems.map((item) => ({
-        ...item,
-        totalPrice: item.totalPrice * item.count,
-      })),
-      total,
-      retirada: isTableMode ? true : tipoEntrega === "retirada",
-      endereco: enderecos[0] || null,
-      formaPagamento: formaPagamentoSelecionada.id,
-      troco: formaPagamentoSelecionada.need_change
-        ? parseCurrencyToNumber(troco)
-        : null,
-      observacaoPedido: observation,
-      nomeFormaPagamento: formaPagamentoSelecionada.name,
-      pagamentoOnline: formaPagamentoSelecionada.onlinePayment,
-      tabId: isTableMode ? 1 : null,
-      tableNumber: isTableMode ? parseInt(tableNumber) : null,
-    };
+      if (total <= 0) {
+        toast.warn("Adicione produtos ao carrinho antes de finalizar.", {
+          theme: "colored",
+          transition: Bounce,
+        });
+        isSubmittingRef.current = false;
+        return;
+      }
 
-    console.log(pedido);
-    try {
+      if (!formaPagamentoSelecionada.id && !isTableMode) {
+        toast.warn("Por favor, selecione uma forma de pagamento.", {
+          theme: "colored",
+          transition: Bounce,
+        });
+        isSubmittingRef.current = false;
+        return;
+      }
+
+      if (
+        tipoEntrega === "entrega" &&
+        (!enderecos[0]?.endereco || !enderecos[0]?.numero)
+      ) {
+        toast.warn(
+          "Por favor, selecione ou adicione um endereço de entrega válido.",
+          { theme: "colored", transition: Bounce }
+        );
+        isSubmittingRef.current = false;
+        return;
+      }
+
+      const pedido = {
+        customerId: isTableMode ? null : cliente?.id,
+        tenantId: tenantData.id,
+        itens: cartItems.map((item) => ({
+          ...item,
+          totalPrice: item.totalPrice * item.count,
+        })),
+        total,
+        retirada: isTableMode ? true : tipoEntrega === "retirada",
+        endereco: enderecos[0] || null,
+        formaPagamento: formaPagamentoSelecionada.id,
+        troco: formaPagamentoSelecionada.need_change
+          ? parseCurrencyToNumber(troco)
+          : null,
+        observacaoPedido: observation,
+        nomeFormaPagamento: formaPagamentoSelecionada.name,
+        pagamentoOnline: formaPagamentoSelecionada.onlinePayment,
+        tabId: isTableMode ? Number(scannedTabIdRef.current) : null, // ✅ sempre do QR
+        tableNumber: isTableMode ? Number(tableNumber) : null, // ignorado em mesa
+      };
+
       const postResponse = await fetchWithLoading(`${config.baseURL}/orders`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(pedido),
       });
 
@@ -168,19 +186,13 @@ const Checkout = ({
         localStorage.removeItem("carrinho-" + tenantData.slug);
         setCartItems([]);
         setLastOrder(pedido);
+
         if (formaPagamentoSelecionada.onlinePayment) {
           const onlinePaymentResponse = await fetchWithLoading(
             `${config.baseURL}/orders/canvi/pix/${dataPedido.tenantId}/${dataPedido.id}`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
+            { method: "POST", headers: { "Content-Type": "application/json" } }
           );
-
           const json = await onlinePaymentResponse.json();
-
           setPaymentData(json);
           navigate(`${basePath}/payment`);
         } else {
@@ -204,6 +216,8 @@ const Checkout = ({
         theme: "colored",
         transition: Bounce,
       });
+    } finally {
+      isSubmittingRef.current = false;
     }
   };
 
@@ -300,6 +314,35 @@ const Checkout = ({
     setModalTrocoVisible(false);
   };
 
+  const handleQrScan = (decodedText) => {
+    try {
+      const match = String(decodedText).match(/\d+/);
+      const numero = match ? parseInt(match[0], 10) : null;
+
+      if (!numero) {
+        toast.warn("QR lido, mas não encontrei número da comanda.", {
+          theme: "colored",
+          transition: Bounce,
+        });
+        return;
+      }
+
+      scannedTabIdRef.current = numero; // guarda para o envio
+      setQrOpen(false);
+
+      // Envia na sequência, já com o tabId lido
+      handleFinalizarPedido();
+    } catch (e) {
+      console.error("Falha ao interpretar QR:", e);
+      toast.error("Erro ao interpretar QR Code.", {
+        theme: "colored",
+        transition: Bounce,
+      });
+    } finally {
+      setQrOpen(false);
+    }
+  };
+
   return (
     <div className="checkout-container">
       {/* Informações do Cliente */}
@@ -371,6 +414,26 @@ const Checkout = ({
               </span>
             </div>
           )}
+        </section>
+      )}
+      {/* Mesa */}
+      {isTableMode === true && (
+        <section className="checkout-section">
+          <h2>Atendimento na mesa</h2>
+          <div
+            className="card delivery-card selected"
+            style={{ cursor: "default" }}
+            aria-live="polite"
+          >
+            <MdTableBar size={24} className="card-icon" />
+            <div className="card-content">
+              <strong>Entrega na mesa</strong>
+              <p>
+                Seu pedido será entregue na mesa{" "}
+                <strong>Nº {tableNumber}</strong>.
+              </p>
+            </div>
+          </div>
         </section>
       )}
       {/* Forma de Pagamento */}
@@ -446,7 +509,6 @@ const Checkout = ({
           )}
         </section>
       )}
-
       {/* Observações */}
       <section className="checkout-section">
         <h2>Observações do pedido:</h2>
@@ -475,6 +537,12 @@ const Checkout = ({
         enderecoAtual={enderecos[0] || null}
         tenantData={tenantData}
         enderecos={cliente?.addresses || []}
+      />
+      {/* Modal QR para ler comanda/mesa */}
+      <ModalQRCode
+        isOpen={qrOpen}
+        onClose={() => setQrOpen(false)}
+        onScan={handleQrScan}
       />
       {/* Resumo e Finalizar */}
       <div className="finish-order-info">

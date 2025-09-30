@@ -6,8 +6,13 @@ import { FaWhatsapp } from "react-icons/fa";
 import { formatarNumero } from "../../utils/functions";
 import { useNavigate } from "react-router-dom";
 
-const OrderCompleted = ({ tenantData, orderDetails, sendWhatsApp }) => {
-
+const OrderCompleted = ({
+  tenantData,
+  orderDetails,
+  sendWhatsApp,
+  isTableMode,
+  basePath,
+}) => {
   const navigate = useNavigate();
 
   const formatWhatsAppMessage = (orderDetails) => {
@@ -136,26 +141,38 @@ const OrderCompleted = ({ tenantData, orderDetails, sendWhatsApp }) => {
       />
       <div className="order-summary">
         <p>
-          <strong>Data:</strong>{" "}
-          {new Date().toLocaleString()}
+          <strong>Data:</strong> {new Date().toLocaleString()}
         </p>
         <p>
           <strong>Total: </strong> R$ {formatarNumero(orderDetails.total)}
         </p>
       </div>
       <div className="action-buttons">
-        <button
-          className="btn-secondary"
-          onClick={() => navigate(`/${tenantData.slug}/orders`)}
-        >
-          Acompanhar Pedido
-        </button>
-        <button
-          className="btn-primary"
-          onClick={sendWhatsApp ? handleShare : null}
-        >
-          <FaWhatsapp size={20} /> Enviar pelo WhatsApp (Opcional)
-        </button>
+        {!isTableMode ? (
+          <>
+            <button
+              className="btn-secondary"
+              onClick={() => navigate(`/${tenantData.slug}/orders`)}
+            >
+              Acompanhar Pedido
+            </button>
+            <button
+              className="btn-primary"
+              onClick={sendWhatsApp ? handleShare : null}
+            >
+              <FaWhatsapp size={20} /> Enviar pelo WhatsApp (Opcional)
+            </button>
+          </>
+        ) : (
+          <>
+            <button
+              className="btn-secondary"
+              onClick={() => navigate(`${basePath}`)}
+            >
+              Voltar ao cardápio
+            </button>
+          </>
+        )}
       </div>
     </div>
   );

@@ -35,6 +35,8 @@ All colors MUST be HSL.
 
     --radius: 0.75rem;
 
+    
+
     /* Gradients */
     --gradient-primary: linear-gradient(
       135deg,
@@ -144,6 +146,17 @@ All colors MUST be HSL.
   /* Previne scroll do body quando modais estão abertos */
   body:has([data-state="open"][role="dialog"]),
   body:has([data-state="open"][role="alertdialog"]) {
-    overflow: hidden;
+    overflow: hidden !important;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Garante que elementos dentro do body também não façam scroll */
+  body:has([data-state="open"][role="dialog"])
+    > *:not([role="dialog"]):not([data-radix-popper-content-wrapper]),
+  body:has([data-state="open"][role="alertdialog"])
+    > *:not([role="alertdialog"]):not([data-radix-popper-content-wrapper]) {
+    pointer-events: none;
   }
 }

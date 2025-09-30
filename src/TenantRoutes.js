@@ -158,6 +158,8 @@ const TenantRoutes = ({
               tenantData={tenantData}
               orderDetails={lastOrder}
               sendWhatsApp
+              isTableMode={isTableMode}
+              basePath={basePath}
             />
           }
         />

@@ -1,0 +1,24 @@
+/* src/components/ModalQRCode/ModalQRCode.css */
+.qrmodal-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.5);
+  display: grid; place-items: center;
+  z-index: 9999;
+}
+.qrmodal {
+  width: min(92vw, 420px);
+  background: #fff;
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 12px 48px rgba(0,0,0,.2);
+}
+.qrmodal h3 { margin: 0 0 6px; }
+.qrmodal p  { margin: 0 0 12px; color: #555; }
+.qrmodal-reader { min-height: 280px; }
+.qrmodal-close {
+  margin-top: 12px;
+  width: 100%;
+  background: #eee;
+  border: none; border-radius: 8px;
+  padding: 10px; font-weight: 600; cursor: pointer;
+}
