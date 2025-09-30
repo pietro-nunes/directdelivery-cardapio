@@ -10,8 +10,7 @@ export default function ModalQRCode({ isOpen, onClose, onScan }) {
 
   const [errorMsg, setErrorMsg] = useState("");
   const [isStarting, setIsStarting] = useState(false);
-  const [permChecked, setPermChecked] = useState(false);
-  const [hasPermission, setHasPermission] = useState(false);
+  const [hasTriedStart, setHasTriedStart] = useState(false);
 
   const stopScanner = useCallback(async () => {
     try {
@@ -24,12 +23,17 @@ export default function ModalQRCode({ isOpen, onClose, onScan }) {
     }
   }, []);
 
+  const importHtml5Qrcode = async () => {
+    const mod = await import("html5-qrcode");
+    return mod?.Html5Qrcode;
+  };
+
   const pickBackCameraId = async (Html5Qrcode) => {
     try {
       const devices = await Html5Qrcode.getCameras();
       if (!devices || !devices.length) return null;
-      const norm = (s) => (s || "").toLowerCase();
 
+      const norm = (s) => (s || "").toLowerCase();
       const preferred = devices.find((d) => {
         const l = norm(d.label);
         return (
@@ -39,7 +43,6 @@ export default function ModalQRCode({ isOpen, onClose, onScan }) {
           l.includes("environment")
         );
       });
-
       const fallbackRear = devices[devices.length - 1];
       return (preferred || fallbackRear)?.id ?? null;
     } catch {
@@ -47,47 +50,20 @@ export default function ModalQRCode({ isOpen, onClose, onScan }) {
     }
   };
 
-  // Import dinâmico apenas do pacote principal
-  const importHtml5Qrcode = async () => {
-    const mod = await import("html5-qrcode");
-    return mod?.Html5Qrcode;
-  };
-
-  const requestCameraPermission = useCallback(async () => {
+  // 1) Solicita permissão explicitamente por um gesto do usuário
+  const requestPermission = useCallback(async () => {
     if (!navigator.mediaDevices?.getUserMedia) {
-      setErrorMsg("Este navegador não suporta acesso à câmera.");
-      setHasPermission(false);
-      return false;
+      throw new Error("Este navegador não suporta acesso à câmera.");
     }
-    try {
-      const test = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { ideal: "environment" } },
-        audio: false,
-      });
-      test.getTracks().forEach((t) => t.stop());
-      setHasPermission(true);
-      setErrorMsg("");
-      return true;
-    } catch (err) {
-      const msg = String(err?.name || err?.message || err || "");
-      if (!window.isSecureContext) {
-        setErrorMsg("Para usar a câmera no celular, acesse via HTTPS (ou localhost).");
-      } else if (msg.includes("NotAllowedError")) {
-        setErrorMsg("Permissão negada. Autorize a câmera nas configurações do navegador.");
-      } else if (msg.includes("NotFoundError")) {
-        setErrorMsg("Nenhuma câmera encontrada neste dispositivo.");
-      } else if (msg.includes("NotReadableError")) {
-        setErrorMsg("A câmera está em uso por outro app/aba. Feche-o e tente novamente.");
-      } else if (/safari/i.test(navigator.userAgent)) {
-        setErrorMsg("No iPhone, use Safari com HTTPS e permita o acesso à câmera.");
-      } else {
-        setErrorMsg("Não foi possível acessar a câmera.");
-      }
-      setHasPermission(false);
-      return false;
-    }
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { ideal: "environment" } },
+      audio: false,
+    });
+    // encerra imediatamente — vamos reiniciar via html5-qrcode
+    stream.getTracks().forEach((t) => t.stop());
   }, []);
 
+  // 2) Inicia o leitor após a permissão
   const startScanner = useCallback(async () => {
     if (isStartingRef.current) return;
     isStartingRef.current = true;
@@ -95,21 +71,17 @@ export default function ModalQRCode({ isOpen, onClose, onScan }) {
     setErrorMsg("");
 
     try {
-      if (!hasPermission) {
-        const ok = await requestCameraPermission();
-        if (!ok) throw new Error("Permissão de câmera não concedida.");
-      }
-
       const Html5Qrcode = await importHtml5Qrcode();
 
-      const inner = document.createElement("div");
       const id = elIdRef.current;
       containerRef.current.innerHTML = "";
+      const inner = document.createElement("div");
       inner.id = id;
       containerRef.current.appendChild(inner);
 
       instanceRef.current = new Html5Qrcode(id, { verbose: false });
 
+      // tenta traseira por deviceId; fallback para facingMode
       const backId = await pickBackCameraId(Html5Qrcode);
       const startSource = backId
         ? { deviceId: { exact: backId } }
@@ -132,30 +104,57 @@ export default function ModalQRCode({ isOpen, onClose, onScan }) {
       );
     } catch (err) {
       console.error("Falha ao iniciar câmera/QR:", err);
-      const msg = String(err?.message || err || "");
+      const msg = String(err?.name || err?.message || err || "");
       let hint = "Não foi possível acessar a câmera.";
       if (!window.isSecureContext) {
-        hint = "A câmera exige HTTPS. Abra o site via https:// (não http://).";
+        hint =
+          "A câmera exige HTTPS no celular. Use https:// (ou localhost em desktop).";
       } else if (msg.includes("NotAllowedError")) {
-        hint = "Permissão negada. Autorize o acesso à câmera nas configurações do navegador.";
+        hint =
+          "Permissão negada. Autorize a câmera nas configurações do navegador.";
       } else if (msg.includes("NotFoundError")) {
         hint = "Nenhuma câmera encontrada neste dispositivo.";
       } else if (msg.includes("NotReadableError")) {
-        hint = "A câmera pode estar em uso por outro app/aba. Feche outros apps e tente novamente.";
+        hint =
+          "A câmera pode estar em uso por outro app/aba. Feche-os e tente novamente.";
       } else if (/safari/i.test(navigator.userAgent)) {
-        hint = "No iPhone, use o Safari com HTTPS e permita o acesso à câmera.";
+        hint =
+          "No iPhone/iPad, use Safari com HTTPS e toque em “Conceder permissão e iniciar”.";
       }
       setErrorMsg(hint);
       await stopScanner();
     } finally {
       isStartingRef.current = false;
       setIsStarting(false);
+      setHasTriedStart(true);
     }
-  }, [hasPermission, onScan, requestCameraPermission, stopScanner]);
+  }, [onScan, stopScanner]);
+
+  // Clique principal: solicita permissão e inicia
+  const handleGrantAndStart = async () => {
+    try {
+      setErrorMsg("");
+      setIsStarting(true);
+      await requestPermission(); // <-- mantém a parte de SOLICITAR PERMISSÃO
+      await startScanner();
+    } catch (err) {
+      console.error(err);
+      let txt =
+        "Não foi possível solicitar a permissão. Verifique as configurações do navegador.";
+      if (!window.isSecureContext) {
+        txt =
+          "A permissão da câmera exige HTTPS no celular. Use https:// (ou localhost em desktop).";
+      }
+      setErrorMsg(txt);
+      setHasTriedStart(true);
+    } finally {
+      setIsStarting(false);
+    }
+  };
 
   const handleRetry = async () => {
     await stopScanner();
-    await startScanner();
+    await handleGrantAndStart();
   };
 
   const handleCancel = useCallback(async () => {
@@ -163,37 +162,14 @@ export default function ModalQRCode({ isOpen, onClose, onScan }) {
     onClose?.();
   }, [onClose, stopScanner]);
 
+  // Limpa quando o modal fecha
   useEffect(() => {
-    let mounted = true;
-    (async () => {
-      if (!isOpen) return;
-      try {
-        if (navigator.permissions?.query) {
-          const res = await navigator.permissions.query({ name: "camera" });
-          if (!mounted) return;
-          if (res.state === "granted") {
-            setHasPermission(true);
-          } else {
-            setHasPermission(false);
-          }
-        }
-      } catch {}
-      if (mounted) setPermChecked(true);
-    })();
-    return () => {
-      mounted = false;
-    };
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (!isOpen) return;
-    if (permChecked && hasPermission) {
-      startScanner();
-    }
-    return () => {
+    if (!isOpen) {
       stopScanner();
-    };
-  }, [isOpen, permChecked, hasPermission, startScanner, stopScanner]);
+      setErrorMsg("");
+      setHasTriedStart(false);
+    }
+  }, [isOpen, stopScanner]);
 
   if (!isOpen) return null;
 
@@ -203,41 +179,75 @@ export default function ModalQRCode({ isOpen, onClose, onScan }) {
         <h3>Ler QR Code</h3>
         <p>Aponte a câmera traseira para o QR da comanda.</p>
 
-        {!permChecked && <p>Preparando câmera…</p>}
-
-        {permChecked && !hasPermission && (
-          <div className="qrmodal-permission">
-            <p>Precisamos da sua permissão para acessar a câmera.</p>
-            {!window.isSecureContext && (
-              <p className="qrmodal-hint">
-                Dica: no celular, use <strong>HTTPS</strong> (ngrok/mkcert) ou localhost.
-              </p>
-            )}
-            <button
-              className="qrmodal-retry"
-              onClick={async () => {
-                const ok = await requestCameraPermission();
-                if (ok) startScanner();
-              }}
-              disabled={isStarting}
-            >
-              Permitir câmera
-            </button>
-          </div>
+        {/* Passo obrigatório (gesto) para Safari/iOS e navegadores móveis */}
+        {!hasTriedStart && (
+          <button
+            className="qrmodal-retry"
+            onClick={handleGrantAndStart}
+            disabled={isStarting}
+          >
+            {isStarting ? "Iniciando câmera…" : "Conceder permissão e iniciar"}
+          </button>
         )}
 
         {errorMsg && (
           <div className="qrmodal-error">
             {errorMsg}
-            <button className="qrmodal-retry" onClick={handleRetry} disabled={isStarting}>
-              Tentar novamente
-            </button>
+            <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+              <button
+                className="qrmodal-retry"
+                onClick={handleRetry}
+                disabled={isStarting}
+              >
+                Tentar novamente
+              </button>
+
+              {/* Fallback: upload de imagem com QR */}
+              <label className="qrmodal-retry" style={{ cursor: "pointer" }}>
+                Ler de uma imagem
+                <input
+                  type="file"
+                  accept="image/*"
+                  style={{ display: "none" }}
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    try {
+                      const Html5Qrcode = await importHtml5Qrcode();
+                      const id = elIdRef.current;
+
+                      if (!instanceRef.current) {
+                        containerRef.current.innerHTML = "";
+                        const inner = document.createElement("div");
+                        inner.id = id;
+                        containerRef.current.appendChild(inner);
+                        instanceRef.current = new Html5Qrcode(id, { verbose: false });
+                      }
+
+                      const result = await instanceRef.current.scanFileV2(file, true);
+                      if (result?.decodedText) {
+                        onScan?.(result.decodedText);
+                      } else {
+                        setErrorMsg("Não consegui reconhecer um QR nessa imagem.");
+                      }
+                    } catch (er) {
+                      console.error(er);
+                      setErrorMsg("Falha ao ler o QR da imagem.");
+                    }
+                  }}
+                />
+              </label>
+            </div>
           </div>
         )}
 
         <div ref={containerRef} className="qrmodal-reader" />
 
-        <button className="qrmodal-close" onClick={handleCancel} disabled={isStarting}>
+        <button
+          className="qrmodal-close"
+          onClick={handleCancel}
+          disabled={isStarting}
+        >
           Cancelar
         </button>
       </div>
