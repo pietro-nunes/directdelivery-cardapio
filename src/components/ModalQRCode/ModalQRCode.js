@@ -13,6 +13,7 @@ export default function ModalQRCode({ isOpen, onClose, onScan }) {
   const [isStarting, setIsStarting] = useState(false);
   const [hasTriedStart, setHasTriedStart] = useState(false);
 
+  // --- util: parar e limpar leitor ---
   const stopScanner = useCallback(async () => {
     clearTimeout(frameTimerRef.current);
     frameTimerRef.current = null;
@@ -26,15 +27,18 @@ export default function ModalQRCode({ isOpen, onClose, onScan }) {
     }
   }, []);
 
+  // --- import dinâmico (ESM) ---
   const importHtml5Qrcode = async () => {
     const mod = await import("html5-qrcode");
     return mod?.Html5Qrcode;
   };
 
+  // --- tenta escolher câmera traseira ---
   const pickBackCameraId = async (Html5Qrcode) => {
     try {
       const devices = await Html5Qrcode.getCameras();
       if (!devices || !devices.length) return null;
+
       const norm = (s) => (s || "").toLowerCase();
       const preferred = devices.find((d) => {
         const l = norm(d.label);
@@ -45,7 +49,8 @@ export default function ModalQRCode({ isOpen, onClose, onScan }) {
           l.includes("environment")
         );
       });
-      // fallback “último” costuma ser traseira em muitos devices
+
+      // fallback: último costuma ser traseira em vários devices
       const fallbackRear = devices[devices.length - 1];
       return (preferred || fallbackRear)?.id ?? null;
     } catch {
@@ -53,19 +58,29 @@ export default function ModalQRCode({ isOpen, onClose, onScan }) {
     }
   };
 
-  // 1) Solicita permissão via gesto do usuário
+  // --- pede permissão em gesto do usuário (iOS requer) ---
   const requestPermission = useCallback(async () => {
     if (!navigator.mediaDevices?.getUserMedia) {
       throw new Error("Este navegador não suporta acesso à câmera.");
     }
+
+    // dica: alguns iOS só liberam labels após enumerateDevices
+    try { await navigator.mediaDevices.enumerateDevices(); } catch {}
+
     const stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: { ideal: "environment" } },
+      video: {
+        facingMode: { ideal: "environment" },
+        // Essas “hints” ajudam Safari/Chrome iOS a escolher melhor
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      },
       audio: false,
     });
-    // encerra imediatamente — lib assumirá depois
+    // encerra de imediato — a lib assumirá depois
     stream.getTracks().forEach((t) => t.stop());
   }, []);
 
+  // --- garante um div interno pra lib renderizar ---
   const ensureContainer = () => {
     const id = elIdRef.current;
     containerRef.current.innerHTML = "";
@@ -75,7 +90,7 @@ export default function ModalQRCode({ isOpen, onClose, onScan }) {
     return id;
   };
 
-  // Tenta iniciar com uma fonte específica; se não houver frames em X segundos, rejeita
+  // --- tenta iniciar com uma fonte; se não gerar frames em X ms, falha ---
   const tryStartWithSource = async (Html5Qrcode, source) => {
     const id = ensureContainer();
     instanceRef.current = new Html5Qrcode(id, { verbose: false });
@@ -86,19 +101,17 @@ export default function ModalQRCode({ isOpen, onClose, onScan }) {
       rememberLastUsedCamera: false,
       showTorchButtonIfSupported: true,
       showZoomSliderIfSupported: true,
-      aspectRatio: 1,
+      aspectRatio: 1
     };
 
     let gotAnyFrame = false;
-
-    // Html5-qrcode não expõe “frame”, então usamos timeout:
-    // se em 3s ainda não houve callback de falha/leitura, assumimos travado.
     const FRAMES_TIMEOUT_MS = 3000;
+
     clearTimeout(frameTimerRef.current);
     frameTimerRef.current = setTimeout(() => {
       if (!gotAnyFrame) {
-        // força erro que será capturado pelo caller
         instanceRef.current?.stop().finally(() => {
+          // será capturado no caller
           throw new Error("Sem frames do vídeo (timeout).");
         });
       }
@@ -111,14 +124,12 @@ export default function ModalQRCode({ isOpen, onClose, onScan }) {
         gotAnyFrame = true;
         onScan?.(decodedText);
       },
-      // “onScanFailure” é chamado por ciclo; usamos como indicação de frames vivos
-      () => {
-        gotAnyFrame = true;
-      }
+      // onScanFailure roda a cada ciclo — usamos como “tem frames”
+      () => { gotAnyFrame = true; }
     );
   };
 
-  // 2) Inicia o leitor com múltiplas estratégias (traseira → environment → user)
+  // --- inicia leitor com múltiplas estratégias ---
   const startScanner = useCallback(async () => {
     if (isStartingRef.current) return;
     isStartingRef.current = true;
@@ -128,50 +139,44 @@ export default function ModalQRCode({ isOpen, onClose, onScan }) {
     try {
       const Html5Qrcode = await importHtml5Qrcode();
 
-      // STRAT A: deviceId traseira
+      // A) tentar por deviceId (traseira)
       try {
         const backId = await pickBackCameraId(Html5Qrcode);
         if (backId) {
           await tryStartWithSource(Html5Qrcode, { deviceId: { exact: backId } });
-          return; // sucesso
+          return;
         }
         throw new Error("Sem deviceId traseiro detectado.");
-      } catch (eA) {
-        // continua para B
+      } catch {
+        // continua
       }
 
-      // STRAT B: facingMode environment
+      // B) environment
       try {
         await tryStartWithSource(Html5Qrcode, { facingMode: "environment" });
-        return; // sucesso
-      } catch (eB) {
-        // continua para C
+        return;
+      } catch {
+        // continua
       }
 
-      // STRAT C: facingMode user (selfie) — último recurso
+      // C) user (frontal) — último recurso
       await tryStartWithSource(Html5Qrcode, { facingMode: "user" });
-      // sucesso (talvez apareça frontal, mas pelo menos não fica cinza)
     } catch (err) {
       console.error("Falha ao iniciar câmera/QR:", err);
       const msg = String(err?.name || err?.message || err || "");
       let hint = "Não foi possível acessar a câmera.";
       if (!window.isSecureContext) {
-        hint =
-          "A câmera exige HTTPS no celular. Use https:// (ou localhost no desktop).";
+        hint = "A câmera exige HTTPS no celular. Use https:// (ou localhost no desktop).";
       } else if (msg.includes("NotAllowedError")) {
-        hint =
-          "Permissão negada. Autorize a câmera nas configurações do navegador.";
+        hint = "Permissão negada. Autorize a câmera nas configurações do navegador.";
       } else if (msg.includes("NotFoundError")) {
         hint = "Nenhuma câmera encontrada neste dispositivo.";
       } else if (msg.includes("NotReadableError")) {
-        hint =
-          "A câmera pode estar em uso por outro app/aba. Feche-os e tente novamente.";
+        hint = "A câmera pode estar em uso por outro app/aba. Feche-os e tente novamente.";
       } else if (/safari/i.test(navigator.userAgent)) {
-        hint =
-          "No iPhone/iPad, use Safari com HTTPS e toque em “Conceder permissão e iniciar”.";
+        hint = "No iPhone/iPad, use Safari com HTTPS e toque em “Conceder permissão e iniciar”.";
       } else if (msg.includes("Sem frames")) {
-        hint =
-          "Vídeo não gerou frames. Tente “Tentar novamente” ou escolha outra câmera.";
+        hint = "Vídeo não gerou frames. Toque em “Tentar novamente” ou escolha outra câmera.";
       }
       setErrorMsg(hint);
       await stopScanner();
@@ -184,20 +189,18 @@ export default function ModalQRCode({ isOpen, onClose, onScan }) {
     }
   }, [onScan, stopScanner]);
 
-  // Clique principal: solicita permissão e inicia
+  // --- pedir permissão e iniciar (em clique do usuário) ---
   const handleGrantAndStart = async () => {
     try {
       setErrorMsg("");
       setIsStarting(true);
-      await requestPermission(); // mantém a solicitação explícita de permissão
+      await requestPermission();
       await startScanner();
     } catch (err) {
       console.error(err);
-      let txt =
-        "Não foi possível solicitar a permissão. Verifique as configurações do navegador.";
+      let txt = "Não foi possível solicitar a permissão. Verifique as configurações do navegador.";
       if (!window.isSecureContext) {
-        txt =
-          "A permissão da câmera exige HTTPS no celular. Use https:// (ou localhost no desktop).";
+        txt = "A permissão da câmera exige HTTPS no celular. Use https:// (ou localhost no desktop).";
       }
       setErrorMsg(txt);
       setHasTriedStart(true);
@@ -216,7 +219,21 @@ export default function ModalQRCode({ isOpen, onClose, onScan }) {
     onClose?.();
   }, [onClose, stopScanner]);
 
-  // Limpa quando o modal fecha
+  // pausa se aba/tab ficar oculta (iOS suspende stream) e tenta retomar
+  useEffect(() => {
+    const onVis = async () => {
+      if (document.hidden) {
+        await stopScanner();
+      } else if (isOpen) {
+        // retoma quando volta
+        setTimeout(() => handleGrantAndStart(), 150);
+      }
+    };
+    document.addEventListener("visibilitychange", onVis);
+    return () => document.removeEventListener("visibilitychange", onVis);
+  }, [isOpen, handleGrantAndStart, stopScanner]);
+
+  // limpa quando fechar
   useEffect(() => {
     if (!isOpen) {
       stopScanner();
