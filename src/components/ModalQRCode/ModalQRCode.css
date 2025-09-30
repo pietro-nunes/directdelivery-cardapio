@@ -1,24 +1,107 @@
-/* src/components/ModalQRCode/ModalQRCode.css */
+/* fundo escurecido */
 .qrmodal-backdrop {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,.5);
-  display: grid; place-items: center;
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 15, 20, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   z-index: 9999;
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
 }
+
+/* container do modal */
 .qrmodal {
-  width: min(92vw, 420px);
-  background: #fff;
-  border-radius: 12px;
-  padding: 18px;
-  box-shadow: 0 12px 48px rgba(0,0,0,.2);
-}
-.qrmodal h3 { margin: 0 0 6px; }
-.qrmodal p  { margin: 0 0 12px; color: #555; }
-.qrmodal-reader { min-height: 280px; }
-.qrmodal-close {
-  margin-top: 12px;
   width: 100%;
-  background: #eee;
-  border: none; border-radius: 8px;
-  padding: 10px; font-weight: 600; cursor: pointer;
+  max-width: 520px;
+  background: #fff;
+  border-radius: 14px;
+  padding: 20px 20px 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  animation: qrmodal-in 0.2s ease-out both;
+}
+
+@keyframes qrmodal-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+.qrmodal h3 {
+  margin: 0 0 6px;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -.2px;
+}
+
+.qrmodal p {
+  margin: 0 0 12px;
+  color: #4b5563;
+  font-size: 0.95rem;
+}
+
+/* área onde o html5-qrcode injeta o vídeo/canvas */
+.qrmodal-reader {
+  min-height: 280px;
+  border: 2px dashed #e5e7eb;
+  border-radius: 12px;
+  background: #fafafa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+
+/* mensagem de erro + botão retry */
+.qrmodal-error {
+  background: #fff3cd;
+  color: #664d03;
+  border: 1px solid #ffe69c;
+  padding: 10px 12px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+}
+
+.qrmodal-retry {
+  margin-left: 10px;
+  background: #0d6efd;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.qrmodal-retry:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* botão fechar */
+.qrmodal-close {
+  width: 100%;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 14px;
+  background: #f3f4f6;
+  color: #111827;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .2s ease;
+}
+
+.qrmodal-close:hover {
+  background: #e5e7eb;
+}
+
+@media (max-width: 520px) {
+  .qrmodal { 
+    margin: 0 14px;
+    border-radius: 12px;
+    padding: 18px 16px 14px;
+  }
+  .qrmodal-reader { min-height: 240px; }
 }
