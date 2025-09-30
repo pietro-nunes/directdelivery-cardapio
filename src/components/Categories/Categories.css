@@ -1,152 +1,88 @@
-/* Categories.css - Design Moderno e Interativo */
+/* Categories.css - Clean & Minimal Design */
 
 .categories-container {
   display: flex;
   justify-content: flex-start;
   align-items: center;
   margin: 0;
-  padding: 0 20px 12px 20px;
+  padding: 16px 20px;
   overflow-x: auto;
   overflow-y: hidden;
   white-space: nowrap;
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
-  scrollbar-width: thin;
-  scrollbar-color: hsl(var(--primary) / 0.3) transparent;
+  scrollbar-width: none;
   width: 100%;
   box-sizing: border-box;
   position: relative;
+  gap: 8px;
 }
 
-/* Barra de rolagem moderna */
+/* Hide scrollbar */
 .categories-container::-webkit-scrollbar {
-  height: 4px;
+  display: none;
 }
 
-.categories-container::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.categories-container::-webkit-scrollbar-thumb {
-  background: var(--gradient-primary);
-  border-radius: 10px;
-  transition: var(--transition-smooth);
-}
-
-.categories-container::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--primary));
-}
-
-/* Item de categoria com design moderno */
+/* Category item - minimal pill design */
 .category-item {
-  font-size: 16px;
-  font-weight: 600;
-  padding: 10px 18px;
-  margin: 0 6px;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 20px;
   cursor: pointer;
   color: hsl(var(--muted-foreground));
   transition: var(--transition-smooth);
   flex-shrink: 0;
-  border-radius: calc(var(--radius) - 2px);
+  border-radius: calc(var(--radius) * 2);
   position: relative;
-  letter-spacing: -0.2px;
-  background: transparent;
-  border: 1.5px solid transparent;
+  letter-spacing: -0.01em;
+  background: hsl(var(--background));
+  border: 1px solid hsl(var(--border));
+  white-space: nowrap;
 }
 
-/* Efeito hover elegante */
+/* Hover effect */
 .category-item:hover {
   color: hsl(var(--primary));
-  background: hsl(var(--primary) / 0.08);
-  transform: translateY(-2px);
-  border-color: hsl(var(--primary) / 0.2);
+  border-color: hsl(var(--primary) / 0.5);
+  background: hsl(var(--primary) / 0.04);
 }
 
-/* Categoria ativa com gradiente e sombra */
+/* Active state - filled pill */
 .category-item.active {
   color: hsl(var(--primary-foreground));
-  font-weight: 700;
-  background: var(--gradient-primary);
-  box-shadow: var(--shadow-glow);
-  border-color: transparent;
-  transform: translateY(0);
+  font-weight: 600;
+  background: hsl(var(--primary));
+  border-color: hsl(var(--primary));
+  box-shadow: var(--shadow-soft);
 }
 
 .category-item.active:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 0 32px hsl(var(--primary) / 0.3);
+  background: hsl(var(--primary));
+  border-color: hsl(var(--primary));
+  box-shadow: var(--shadow-medium);
 }
 
-/* Animação de entrada */
-@keyframes fadeInScale {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.category-item {
-  animation: fadeInScale 0.3s ease-out;
-}
-
-/* Responsividade - Mobile */
+/* Responsive */
 @media (max-width: 768px) {
   .categories-container {
-    padding: 0 12px 10px 12px;
-    justify-content: flex-start;
+    padding: 12px 16px;
+    gap: 6px;
   }
 
   .category-item {
-    font-size: 15px;
-    padding: 8px 16px;
-    margin: 0 4px;
+    font-size: 13px;
+    padding: 6px 16px;
   }
 }
 
 @media (max-width: 480px) {
   .categories-container {
-    padding: 0 8px 10px 8px;
+    padding: 12px 12px;
+    gap: 6px;
   }
 
   .category-item {
-    font-size: 14px;
-    padding: 8px 14px;
-    margin: 0 3px;
+    font-size: 13px;
+    padding: 6px 14px;
   }
-}
-
-/* Indicadores de scroll (fade edges) */
-.categories-container::before,
-.categories-container::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 12px;
-  width: 40px;
-  pointer-events: none;
-  z-index: 1;
-  transition: var(--transition-smooth);
-}
-
-.categories-container::before {
-  left: 0;
-  background: linear-gradient(to right, hsl(var(--background)) 0%, transparent 100%);
-}
-
-.categories-container::after {
-  right: 0;
-  background: linear-gradient(to left, hsl(var(--background)) 0%, transparent 100%);
-}
-
-/* Remove fade edges quando sticky */
-.categories-sticky .categories-container::before {
-  background: linear-gradient(to right, hsl(var(--background) / 0.98) 0%, transparent 100%);
-}
-
-.categories-sticky .categories-container::after {
-  background: linear-gradient(to left, hsl(var(--background) / 0.98) 0%, transparent 100%);
 }

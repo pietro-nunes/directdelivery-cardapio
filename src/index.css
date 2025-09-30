@@ -36,8 +36,16 @@ All colors MUST be HSL.
     --radius: 0.75rem;
 
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(174 70% 36%), hsl(174 70% 50%));
-    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%), hsl(210 40% 98%));
+    --gradient-primary: linear-gradient(
+      135deg,
+      hsl(174 70% 36%),
+      hsl(174 70% 50%)
+    );
+    --gradient-subtle: linear-gradient(
+      180deg,
+      hsl(0 0% 100%),
+      hsl(210 40% 98%)
+    );
     --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(210 40% 99%));
 
     /* Shadows */
@@ -91,9 +99,21 @@ All colors MUST be HSL.
     --ring: 174 70% 50%;
 
     /* Gradients Dark */
-    --gradient-primary: linear-gradient(135deg, hsl(174 70% 40%), hsl(174 70% 55%));
-    --gradient-subtle: linear-gradient(180deg, hsl(222.2 84% 4.9%), hsl(217.2 32.6% 17.5%));
-    --gradient-card: linear-gradient(145deg, hsl(222.2 84% 4.9%), hsl(217.2 32.6% 12%));
+    --gradient-primary: linear-gradient(
+      135deg,
+      hsl(174 70% 40%),
+      hsl(174 70% 55%)
+    );
+    --gradient-subtle: linear-gradient(
+      180deg,
+      hsl(222.2 84% 4.9%),
+      hsl(217.2 32.6% 17.5%)
+    );
+    --gradient-card: linear-gradient(
+      145deg,
+      hsl(222.2 84% 4.9%),
+      hsl(217.2 32.6% 12%)
+    );
 
     /* Shadows Dark */
     --shadow-soft: 0 2px 8px hsl(0 0% 0% / 0.3);
@@ -119,5 +139,11 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+  }
+
+  /* Previne scroll do body quando modais estão abertos */
+  body:has([data-state="open"][role="dialog"]),
+  body:has([data-state="open"][role="alertdialog"]) {
+    overflow: hidden;
   }
 }
