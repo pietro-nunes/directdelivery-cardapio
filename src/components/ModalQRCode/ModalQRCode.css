@@ -43,15 +43,22 @@
 
 /* área onde o html5-qrcode injeta o vídeo/canvas */
 .qrmodal-reader {
-  min-height: 280px;
-  border: 2px dashed #e5e7eb;
-  border-radius: 12px;
-  background: #fafafa;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 14px;
+  width: 100%;
+  max-width: 420px;
+  min-height: 280px;         /* <<< importante */
+  display: block;
+  margin: 12px auto;
+  background: #000;          /* fundo neutro enquanto não pinta vídeo */
+  border-radius: 8px;
+  overflow: hidden;
 }
+
+.qrmodal-reader video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+}
+
 
 /* mensagem de erro + botão retry */
 .qrmodal-error {
