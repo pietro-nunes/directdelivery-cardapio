@@ -11,6 +11,7 @@ import FabButtonWhats from "./components/FabButtonWhats/FabButtonWhats";
 import OrdersList from "./pages/OrdersList/OrdersList";
 import OrderCompleted from "./pages/OrderCompleted/OrderCompleted";
 import PixPayment from "./pages/PixPayment/PixPayment";
+import SafeArea from "./components/SafeArea/SafeArea";
 
 const TenantRoutes = ({
   tenantData,
@@ -126,7 +127,7 @@ const TenantRoutes = ({
   // console.log("[SUCCESS] Tenant carregado com sucesso:", tenantData);
 
   return (
-    <>
+    <SafeArea>
       <Header
         tenantData={tenantData}
         isLoggedIn={isLoggedIn}
@@ -214,7 +215,7 @@ const TenantRoutes = ({
           }
         />
       </Routes>
-    </>
+    </SafeArea>
   );
 };
 
