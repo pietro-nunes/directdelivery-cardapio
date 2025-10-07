@@ -80,7 +80,7 @@ const ModalTroco = ({
         <div className="troco__modal-content">
           <h4>Precisa de troco?</h4>
           <form onSubmit={handleSubmit}>
-            <label>Informe o valor do troco:</label>
+            <label>Informe o valor que você irá pagar:</label>
             <input
               ref={inputRef}
               type="text"

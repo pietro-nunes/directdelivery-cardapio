@@ -15,7 +15,7 @@ import {
 } from "react-icons/md";
 import { RiMoneyDollarCircleLine } from "react-icons/ri";
 import Cookies from "js-cookie";
-import { formatarNumero } from "../../utils/functions";
+import { formatarNumero, toTitleCase } from "../../utils/functions";
 
 const Checkout = ({
   cartItems,
@@ -92,7 +92,7 @@ const Checkout = ({
   const calcularSubtotal = () => {
     if (!Array.isArray(cartItems) || cartItems.length === 0) return 0;
     return cartItems.reduce(
-      (total, item) => total + item.totalPrice * item.count,
+      (total, item) => total + item.unitPrice * item.count,
       0
     );
   };
@@ -399,9 +399,17 @@ const Checkout = ({
           {tipoEntrega === "retirada" && (
             <div className="delivery-details">
               <span>
-                <MdLocationPin size={14} /> {tenantData.address},{" "}
-                {tenantData.number}, {tenantData.neighborhood} -{" "}
-                {tenantData.city}
+                <MdLocationPin size={14} />
+                {tenantData.address &&
+                  tenantData.address !== "0" &&
+                  `${toTitleCase(tenantData.address)}, `}
+                {tenantData.number &&
+                  tenantData.number !== "0" &&
+                  `${tenantData.number}, `}
+                {tenantData.neighborhood &&
+                  tenantData.neighborhood !== "0" &&
+                  `${toTitleCase(tenantData.neighborhood)} - `}
+                {tenantData.city && tenantData.city !== "0" && toTitleCase(tenantData.city)}
               </span>
             </div>
           )}
@@ -466,7 +474,7 @@ const Checkout = ({
                         className="card-icon"
                       />
                       <div className="card-content">
-                        <strong>{forma.name}</strong>
+                        <strong>{toTitleCase(forma.name)}</strong>
                         {forma.need_change && <p>Precisa de troco?</p>}
                       </div>
                     </div>
@@ -499,7 +507,7 @@ const Checkout = ({
                         className="card-icon"
                       />
                       <div className="card-content">
-                        <strong>{forma.name}</strong>
+                        <strong>{toTitleCase(forma.name)}</strong>
                         {forma.need_change && <p>Precisa de troco?</p>}
                       </div>
                     </div>

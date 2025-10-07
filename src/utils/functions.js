@@ -85,3 +85,19 @@ function formatWithMask(value, mask) {
 export function formatCPF(value) {
   return formatWithMask(value, cpfMask);
 }
+
+export function formatDateUTC(dateStr) {
+  if (!dateStr) return '';
+
+  const date = new Date(dateStr);
+
+  // usa métodos UTC para não aplicar fuso
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(date.getUTCDate()).padStart(2, '0');
+  const hours = String(date.getUTCHours()).padStart(2, '0');
+  const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+  const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+
+  return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+}

@@ -136,7 +136,7 @@
 .info-message {
   text-align: center;
   font-size: 13px;
-  color: hsl(var(--muted-foreground));
+  color: hsl(var(--gradient-subtle));
   margin-top: 20px;
   line-height: 1.5;
   padding: 12px;

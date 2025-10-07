@@ -139,6 +139,89 @@
   font-weight: 700;
 }
 
+/* Seção de Endereço */
+.order-address-section {
+  margin: 15px 0;
+  padding: 12px;
+  background: hsl(var(--muted) / 0.3);
+  border-radius: calc(var(--radius) - 2px);
+  border-left: 3px solid hsl(var(--primary));
+}
+
+.order-address-section h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: hsl(var(--primary));
+  margin-bottom: 8px;
+  letter-spacing: -0.2px;
+}
+
+.order-address-section p {
+  font-size: 0.9rem;
+  color: hsl(var(--foreground));
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+
+/* Detalhamento do Total */
+.order-total-breakdown {
+  margin: 15px 0;
+  padding: 14px;
+  background: hsl(var(--primary) / 0.05);
+  border-radius: calc(var(--radius) - 2px);
+  border: 1px solid hsl(var(--border));
+}
+
+.order-subtotal,
+.order-delivery-fee,
+.order-total-final {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  font-size: 0.95rem;
+}
+
+.order-subtotal span:first-child,
+.order-delivery-fee span:first-child {
+  color: hsl(var(--foreground));
+  font-weight: 500;
+}
+
+.order-subtotal span:last-child,
+.order-delivery-fee span:last-child {
+  color: hsl(var(--foreground));
+  font-weight: 600;
+}
+
+.order-total-final {
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 2px solid hsl(var(--border));
+  font-size: 1.1rem;
+}
+
+.order-total-final span:first-child {
+  color: hsl(var(--primary));
+  font-weight: 800;
+}
+
+.order-total-final span:last-child {
+  color: hsl(var(--primary));
+  font-weight: 800;
+}
+
+/* Observação do pedido */
+.order-observation {
+  margin: 12px 0;
+  padding: 10px 12px;
+  background: hsl(var(--muted) / 0.2);
+  border-radius: calc(var(--radius) - 3px);
+  border-left: 3px solid hsl(var(--accent));
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
 /* Seção de Itens do Pedido */
 .order-items {
   margin-top: 20px;
@@ -297,21 +380,35 @@
 .status-canceled {
   text-align: center;
   width: 100%;
-  padding: 10px 0;
+  padding: 14px 0;
+  background: hsl(var(--destructive) / 0.05);
+  border: 1px solid hsl(var(--destructive) / 0.2);
+  border-radius: calc(var(--radius) - 2px);
+  animation: fadeIn 0.5s ease-out;
 }
 
+/* Título "Pedido Cancelado" */
 .canceled-text {
-  font-size: 1.2rem;
-  font-weight: 700;
+  font-size: 1.3rem;
+  font-weight: 800;
   color: hsl(var(--destructive));
-  margin-bottom: 5px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
+/* Observação do cancelamento */
 .canceled-observation {
-  font-size: 0.9rem;
-  color: hsl(var(--muted-foreground));
+  font-size: 0.95rem;
+  color: hsl(var(--destructive));
   font-style: italic;
-  font-weight: 500;
+  font-weight: 600;
+  padding: 8px 12px;
+  border-radius: calc(var(--radius) - 3px);
+  display: inline-block;
+  animation: fadeIn 0.4s ease-out;
 }
 
 .status-ready {
@@ -578,6 +675,26 @@
     width: 140px;
     height: 140px;
   }
+
+  .order-address-section {
+    margin: 12px 0;
+    padding: 10px;
+  }
+
+  .order-total-breakdown {
+    margin: 12px 0;
+    padding: 12px;
+  }
+
+  .order-subtotal,
+  .order-delivery-fee,
+  .order-total-final {
+    font-size: 0.9rem;
+  }
+
+  .order-total-final {
+    font-size: 1rem;
+  }
 }
 
 /* Animação de pulso sutil para cards recém-adicionados */
@@ -596,4 +713,3 @@
 .order-card:nth-child(5) {
   animation-delay: 0.4s;
 }
-  

@@ -10,62 +10,47 @@
   justify-content: center;
   align-items: flex-end;
   z-index: 1000;
-  overflow: hidden; /* Remove o scroll da página principal */
+  overflow: hidden;
 }
 
 .end__modal-content {
   display: flex;
   flex-direction: column;
-  background: white;
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+  background: hsl(var(--background));
+  box-shadow: var(--shadow-strong);
   width: 100%;
-  max-height: 100vh; /* Permite que o modal ocupe a altura total em mobile */
+  height: 100vh;
+  max-height: 100vh;
   padding: 30px 20px 20px;
   box-sizing: border-box;
   animation: slide-in 0.3s ease forwards;
-  overflow-y: auto; /* Permite o scroll apenas dentro do modal */
+  overflow-y: auto;
   gap: 25px;
 }
 
 .modal-title {
   font-size: 1.6rem;
   font-weight: 700;
-  color: #1e1e1e;
+  color: hsl(var(--foreground));
   margin: 0 0 10px 0;
   text-align: center;
 }
 
 .address-instruction {
   font-size: 0.9rem;
-  color: #666;
+  color: hsl(var(--muted-foreground));
   margin: 0;
   text-align: center;
   line-height: 1.5;
 }
 
-/* --- Botão de Voltar para Mobile (Corrigido) --- */
+/* --- Botão de Voltar Mobile (Oculto) --- */
 .back-button-mobile {
-  cursor: pointer;
-  z-index: 10;
-  border-radius: 50%;
-  transition: background-color 0.2s ease;
-  align-self: flex-start;
-  margin-bottom: 20px;
-  padding: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.back-button-mobile:hover {
-  background-color: #f0f0f0;
+  display: none;
 }
 
 .back-icon-mobile {
-  width: 20px;
-  height: 20px;
-  color: #444;
-  stroke-width: 2.5;
+  display: none;
 }
 
 /* --- Lista de Endereços Salvos --- */
@@ -76,25 +61,25 @@
 }
 
 .address-card {
-  border: 1px solid #e0e0e0;
-  border-radius: 12px;
+  border: 1px solid hsl(var(--border));
+  border-radius: calc(var(--radius) + 2px);
   padding: 20px;
-  background-color: #fff;
+  background: hsl(var(--card));
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
+  transition: var(--transition-smooth);
   position: relative;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-soft);
 }
 
 .address-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-medium);
 }
 
 .address-card.selected {
-  border-color: #4a90e2;
-  background-color: #f5f8ff;
-  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.2);
+  border-color: hsl(var(--primary));
+  background: hsl(var(--primary) / 0.05);
+  box-shadow: var(--shadow-glow);
 }
 
 .address-card.selected::before {
@@ -104,14 +89,14 @@
   right: 20px;
   transform: translateY(-50%);
   font-size: 1.5rem;
-  color: #4a90e2;
+  color: hsl(var(--primary));
   font-weight: bold;
 }
 
 .address-card strong {
   display: block;
   font-weight: 600;
-  color: #2e2e2e;
+  color: hsl(var(--foreground));
   margin-bottom: 5px;
   font-size: 1.15rem;
 }
@@ -119,11 +104,16 @@
 .address-card p,
 .address-card small {
   margin: 0;
-  color: #777;
+  color: hsl(var(--muted-foreground));
   font-size: 0.95rem;
 }
 
 /* --- Formulário de Endereço --- */
+.formModal {
+  display: flex;
+  flex-direction: column;
+}
+
 .form-fields {
   display: flex;
   flex-direction: column;
@@ -132,7 +122,7 @@
 
 .input-label {
   font-size: 0.85rem;
-  color: #666;
+  color: hsl(var(--muted-foreground));
   margin: 0;
   font-weight: 500;
 }
@@ -143,18 +133,19 @@
   width: 100%;
   padding: 14px;
   box-sizing: border-box;
-  border: 1px solid #ccc;
-  border-radius: 10px;
+  border: 1px solid hsl(var(--input));
+  border-radius: var(--radius);
   font-size: 1rem;
-  background-color: #f9f9f9;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  transition: var(--transition-smooth);
 }
 
 .form-fields input:focus,
 .form-fields select:focus,
 .masked-input:focus {
-  border-color: #4a90e2;
-  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+  border-color: hsl(var(--primary));
+  box-shadow: 0 0 0 3px hsl(var(--primary) / 0.1);
   outline: none;
 }
 
@@ -171,7 +162,7 @@
   margin-top: 5px;
   font-size: 1.1rem;
   font-weight: 600;
-  color: #2e2e2e;
+  color: hsl(var(--primary));
   text-align: right;
   padding: 0 5px;
 }
@@ -188,45 +179,45 @@
 .back-to-list-button,
 .confirm-button {
   padding: 14px 24px;
-  border-radius: 10px;
+  border-radius: var(--radius);
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: var(--transition-smooth);
   flex-grow: 1;
+  border: none;
 }
 
 .add-new-address-button {
   background-color: transparent;
-  color: #4a90e2;
-  border: 1px solid #4a90e2;
+  color: hsl(var(--primary));
+  border: 1px solid hsl(var(--primary));
 }
 
 .add-new-address-button:hover {
-  background-color: #4a90e2;
-  color: white;
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  box-shadow: var(--shadow-glow);
 }
 
 .back-to-list-button {
-  background-color: #f0f0f0;
-  color: #444;
-  border: none;
+  background-color: hsl(var(--muted));
+  color: hsl(var(--muted-foreground));
 }
 
 .back-to-list-button:hover {
-  background-color: #e0e0e0;
+  background-color: hsl(var(--muted) / 0.8);
 }
 
 .confirm-button {
-  background-color: #5cb85c;
-  color: white;
-  border: none;
-  box-shadow: 0 4px 15px rgba(92, 184, 92, 0.3);
+  background: var(--gradient-primary);
+  color: hsl(var(--primary-foreground));
+  box-shadow: var(--shadow-medium);
 }
 
 .confirm-button:hover {
-  background-color: #4cae4c;
-  box-shadow: 0 6px 20px rgba(92, 184, 92, 0.4);
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-1px);
 }
 
 /* --- Animações e Responsividade --- */
@@ -246,7 +237,8 @@
   .end__modal-content {
     width: 550px;
     height: auto;
-    border-radius: 16px;
+    max-height: 90vh;
+    border-radius: calc(var(--radius) + 8px);
     padding: 40px;
     animation: fade-in 0.3s ease forwards;
     gap: 30px;
@@ -260,9 +252,6 @@
       opacity: 1;
       transform: translateY(0);
     }
-  }
-  .back-button-mobile {
-    display: none;
   }
   .modal-buttons-row {
     justify-content: flex-end;

@@ -64,9 +64,7 @@ const TenantRoutes = ({
       const key = `carrinho-${tenantData.slug}${
         isTableMode ? `-mesa-${tableNumber}` : ""
       }`;
-      try {
-        localStorage.setItem(key, JSON.stringify(cartItems));
-      } catch {}
+      localStorage.setItem(key, JSON.stringify(cartItems));
     }
   }, [cartItems, tenantData?.slug, isTableMode, tableNumber]);
 

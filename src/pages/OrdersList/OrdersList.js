@@ -4,13 +4,13 @@ import { useFetchWithLoading } from "../../contexts/fetchWithLoading";
 import config from "../../config";
 import Cookies from "js-cookie";
 import { FiRefreshCw, FiAlertCircle, FiCopy } from "react-icons/fi";
-import { formatarNumero } from "../../utils/functions";
+import { formatarNumero, formatDateUTC } from "../../utils/functions";
 import { MdOutlineCheck } from "react-icons/md";
 
 const OrdersList = ({ tenantData }) => {
   const [orders, setOrders] = useState([]);
   const [timeLeft, setTimeLeft] = useState(60);
-  const [copiedMap, setCopiedMap] = useState({}); // { [orderId]: true | false }
+  const [copiedMap, setCopiedMap] = useState({});
   const { fetchWithLoading } = useFetchWithLoading();
 
   const statusSteps = ["accepted", "preparing", "enroute", "delivered"];
@@ -125,11 +125,46 @@ const OrdersList = ({ tenantData }) => {
           return (
             <div key={order.id} className="order-card">
               <h3>Pedido #{order.id}</h3>
-              <p>Data: {new Date(order.createdAt).toLocaleString()}</p>
-              <p>Total: R$ {formatarNumero(order.total)}</p>
+              <p>Data: {formatDateUTC(order.createdAt)}</p>
+
+              {/* Endereço de entrega */}
+              {order.address && (
+                <div className="order-address-section">
+                  <h4>Endereço de Entrega:</h4>
+                  <p>
+                    {order.address.address}
+                    {order.address.complement && `, ${order.address.complement}`}
+                  </p>
+                  <p>
+                    {order.address.bairro}, {order.address.cidade} - CEP: {order.address.cep}
+                  </p>
+                </div>
+              )}
+
+              {/* Detalhamento do Total */}
+              <div className="order-total-breakdown">
+                <div className="order-subtotal">
+                  <span>Subtotal dos itens:</span>
+                  <span>R$ {formatarNumero(order.total - (order.address?.deliveryFee || 0))}</span>
+                </div>
+                {order.address?.deliveryFee > 0 && (
+                  <div className="order-delivery-fee">
+                    <span>Taxa de entrega:</span>
+                    <span>R$ {formatarNumero(order.address.deliveryFee)}</span>
+                  </div>
+                )}
+                <div className="order-total-final">
+                  <span>Total:</span>
+                  <span>R$ {formatarNumero(order.total)}</span>
+                </div>
+              </div>
 
               {/* Observação do pedido */}
-              <p>Observação: {order.observation}</p>
+              {order.observation && (
+                <p className="order-observation">
+                  <strong>Observação:</strong> {order.observation}
+                </p>
+              )}
 
               {/* AVISO: Pagamento online aprovado */}
               {isOnlinePaid && (

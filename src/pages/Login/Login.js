@@ -99,7 +99,7 @@ const Login = ({ onLogin, basePath }) => {
             body: JSON.stringify({
               name: username,
               phone: cleanedNumber,
-              cpf: cpf,
+              cpf: onlyDigits(cpf),
             }),
           }
         );
@@ -112,7 +112,7 @@ const Login = ({ onLogin, basePath }) => {
         } else {
           throw new Error("Erro ao cadastrar o cliente.");
         }
-      } else {  
+      } else {
         const data = await response.json();
 
         if (data.name !== username || data.cpf !== onlyDigits(cpf)) {
@@ -198,9 +198,11 @@ const Login = ({ onLogin, basePath }) => {
             Avançar
           </button>
         </form>
-        <p className="info-message">
-          Para concluir o pedido, pedimos que se identifique
-        </p>
+        {isButtonDisabled && (
+          <p className="info-message">
+            Para concluir o pedido, pedimos que se identifique
+          </p>
+        )}
       </div>
     </div>
   );
