@@ -3,7 +3,6 @@
   max-width: 900px;
   margin: 0 auto;
   text-align: center;
-  background: var(--gradient-subtle);
   min-height: calc(100dvh - 60px);
   box-sizing: border-box;
   animation: fadeIn 0.6s ease-out;
@@ -18,14 +17,10 @@
   }
 }
 
-/* Título da seção de Pedidos */
 .orders-title {
   font-size: 2.2rem;
   font-weight: 800;
-  background: var(--gradient-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: hsl(var(--primary));
   margin-bottom: 25px;
   text-transform: uppercase;
   letter-spacing: -0.5px;
@@ -43,7 +38,6 @@
   }
 }
 
-/* Timer de Atualização */
 .update-timer {
   font-size: 0.95rem;
   margin-bottom: 25px;
@@ -61,7 +55,6 @@
   animation: spin 2s linear infinite;
 }
 
-/* Animação de giro para o ícone de refresh */
 @keyframes spin {
   0% {
     transform: rotate(0deg);
@@ -71,18 +64,17 @@
   }
 }
 
-/* Card de cada Pedido */
 .order-card {
-  background: var(--gradient-card);
+  background: hsl(var(--card));
   border: 2px solid hsl(var(--border));
   border-radius: var(--radius);
-  box-shadow: var(--shadow-medium);
+  box-shadow: 0 2px 8px hsl(var(--foreground) / 0.05);
   padding: 25px;
   margin-bottom: 25px;
   text-align: left;
   animation: fadeInUp 500ms ease-out forwards;
   opacity: 0;
-  transition: var(--transition-smooth);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
 }
@@ -94,17 +86,16 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: var(--gradient-primary);
+  background: hsl(var(--primary));
   opacity: 0.8;
 }
 
 .order-card:hover {
   transform: translateY(-3px);
-  box-shadow: var(--shadow-strong);
+  box-shadow: 0 8px 20px hsl(var(--foreground) / 0.1);
   border-color: hsl(var(--primary) / 0.4);
 }
 
-/* Animação para o card de pedido */
 @keyframes fadeInUp {
   0% {
     transform: translateY(20px);
@@ -116,7 +107,6 @@
   }
 }
 
-/* Título do Pedido no Card */
 .order-card h3 {
   font-size: 1.5rem;
   color: hsl(var(--primary));
@@ -125,7 +115,6 @@
   letter-spacing: -0.3px;
 }
 
-/* Parágrafos de Data e Total */
 .order-card p {
   font-size: 0.95rem;
   color: hsl(var(--foreground));
@@ -139,7 +128,6 @@
   font-weight: 700;
 }
 
-/* Seção de Endereço */
 .order-address-section {
   margin: 15px 0;
   padding: 12px;
@@ -163,7 +151,6 @@
   line-height: 1.4;
 }
 
-/* Detalhamento do Total */
 .order-total-breakdown {
   margin: 15px 0;
   padding: 14px;
@@ -211,7 +198,6 @@
   font-weight: 800;
 }
 
-/* Observação do pedido */
 .order-observation {
   margin: 12px 0;
   padding: 10px 12px;
@@ -222,7 +208,6 @@
   font-style: italic;
 }
 
-/* Seção de Itens do Pedido */
 .order-items {
   margin-top: 20px;
   padding-top: 20px;
@@ -237,7 +222,6 @@
   letter-spacing: -0.2px;
 }
 
-/* Cada Item do Pedido */
 .order-item {
   display: flex;
   justify-content: space-between;
@@ -246,7 +230,7 @@
   font-size: 0.9rem;
   color: hsl(var(--foreground));
   border-bottom: 1px dashed hsl(var(--border) / 0.6);
-  transition: var(--transition-smooth);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .order-item:hover {
@@ -281,13 +265,11 @@
   position: relative;
 }
 
-/* Nova classe para esconder a linha de progresso */
 .order-status.status-hidden-line::before,
 .order-status.status-hidden-line::after {
   content: none;
 }
 
-/* Linha de progresso */
 .order-status::before {
   content: "";
   position: absolute;
@@ -306,7 +288,7 @@
   top: 30px;
   left: 5%;
   height: 4px;
-  background: var(--gradient-primary);
+  background: hsl(var(--primary));
   border-radius: 2px;
   z-index: 0;
   width: 0%;
@@ -339,16 +321,16 @@
   margin-bottom: 8px;
   font-size: 18px;
   color: hsl(var(--muted-foreground));
-  transition: var(--transition-smooth);
-  box-shadow: var(--shadow-soft);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px hsl(var(--foreground) / 0.1);
 }
 
 .status-step.active .status-icon {
-  background: var(--gradient-primary);
+  background: hsl(var(--primary));
   border-color: hsl(var(--primary));
   color: hsl(var(--primary-foreground));
   font-weight: bold;
-  box-shadow: var(--shadow-glow);
+  box-shadow: 0 4px 12px hsl(var(--primary) / 0.3);
   animation: scaleIn 0.4s ease-out;
 }
 
@@ -368,7 +350,6 @@
   font-weight: 700;
 }
 
-/* Estilo para quando não há pedidos */
 .orders-list > p {
   font-size: 1.1rem;
   color: hsl(var(--muted-foreground));
@@ -376,21 +357,20 @@
   font-weight: 500;
 }
 
-/* NOVOS ESTILOS PARA PEDIDOS CANCELADOS E PRONTOS */
+/* PEDIDO CANCELADO */
 .status-canceled {
   text-align: center;
   width: 100%;
-  padding: 14px 0;
-  background: hsl(var(--destructive) / 0.05);
-  border: 1px solid hsl(var(--destructive) / 0.2);
+  padding: 16px;
+  background: hsl(var(--destructive) / 0.08);
+  border: 2px solid hsl(var(--destructive) / 0.4);
   border-radius: calc(var(--radius) - 2px);
   animation: fadeIn 0.5s ease-out;
 }
 
-/* Título "Pedido Cancelado" */
 .canceled-text {
-  font-size: 1.3rem;
-  font-weight: 800;
+  font-size: 1.2rem;
+  font-weight: 700;
   color: hsl(var(--destructive));
   margin-bottom: 8px;
   display: flex;
@@ -399,33 +379,42 @@
   gap: 8px;
 }
 
-/* Observação do cancelamento */
 .canceled-observation {
   font-size: 0.95rem;
   color: hsl(var(--destructive));
   font-style: italic;
   font-weight: 600;
   padding: 8px 12px;
+  background: hsl(var(--destructive) / 0.05);
   border-radius: calc(var(--radius) - 3px);
   display: inline-block;
   animation: fadeIn 0.4s ease-out;
 }
 
+/* PEDIDO PRONTO PARA RETIRADA */
 .status-ready {
   text-align: center;
   width: 100%;
-  padding: 10px 0;
+  padding: 18px;
+  background: hsl(120 50% 96%);
+  border: 2px solid hsl(120 50% 50%);
+  border-radius: calc(var(--radius) - 2px);
+  animation: fadeIn 0.5s ease-out;
+}
+
+.ready-text {
+  margin: 0;
+  color: hsl(120 60% 35%);
+  font-size: 1.3rem;
+  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  color: hsl(var(--primary));
-  font-size: 1.2rem;
-  font-weight: 700;
+  gap: 10px;
 }
 
 .ready-check-icon {
-  color: hsl(var(--primary));
+  color: hsl(120 60% 35%);
 }
 
 /* AVISO: Pagamento online aprovado */
@@ -436,7 +425,6 @@
   background: hsl(var(--primary) / 0.08);
   border-radius: calc(var(--radius) - 2px);
   animation: fadeIn 0.5s ease-out;
-  backdrop-filter: blur(8px);
 }
 
 .order-payment-paid .paid-text {
@@ -469,7 +457,6 @@
   background: hsl(var(--destructive) / 0.08);
   border-radius: calc(var(--radius) - 2px);
   animation: fadeIn 0.5s ease-out;
-  backdrop-filter: blur(8px);
 }
 
 .order-payment-expired .expired-text {
@@ -502,7 +489,6 @@
   background: hsl(var(--primary) / 0.05);
   border-radius: calc(var(--radius) - 2px);
   animation: fadeIn 0.5s ease-out;
-  backdrop-filter: blur(8px);
 }
 
 .order-payment-awaiting .awaiting-text {
@@ -532,13 +518,13 @@
   padding: 10px;
   border-radius: calc(var(--radius) - 2px);
   border: 2px solid hsl(var(--border));
-  box-shadow: var(--shadow-medium);
-  transition: var(--transition-smooth);
+  box-shadow: 0 4px 12px hsl(var(--foreground) / 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .order-qr-thumb:hover {
   transform: scale(1.05);
-  box-shadow: var(--shadow-strong);
+  box-shadow: 0 6px 18px hsl(var(--foreground) / 0.15);
 }
 
 .order-btn-copy {
@@ -546,21 +532,21 @@
   align-items: center;
   gap: 8px;
   border: none;
-  background: var(--gradient-primary);
+  background: hsl(var(--primary));
   color: hsl(var(--primary-foreground));
   padding: 12px 18px;
   border-radius: calc(var(--radius) - 2px);
   font-weight: 700;
   cursor: pointer;
-  transition: var(--transition-bounce);
-  box-shadow: var(--shadow-soft);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px hsl(var(--primary) / 0.2);
   font-size: 0.95rem;
   letter-spacing: 0.2px;
 }
 
 .order-btn-copy:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-glow);
+  box-shadow: 0 4px 16px hsl(var(--primary) / 0.3);
 }
 
 .order-btn-copy:active {
@@ -580,7 +566,6 @@
   border: 1px solid hsl(var(--primary) / 0.3);
 }
 
-/* Animação para quando não há pedidos */
 .no-orders-message {
   font-size: 1.2rem;
   color: hsl(var(--muted-foreground));
@@ -695,9 +680,16 @@
   .order-total-final {
     font-size: 1rem;
   }
+
+  .canceled-text {
+    font-size: 1.1rem;
+  }
+
+  .ready-text {
+    font-size: 1.15rem;
+  }
 }
 
-/* Animação de pulso sutil para cards recém-adicionados */
 .order-card:nth-child(2) {
   animation-delay: 0.1s;
 }

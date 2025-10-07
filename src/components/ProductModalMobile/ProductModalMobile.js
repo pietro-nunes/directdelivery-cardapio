@@ -2,7 +2,13 @@ import React, { useState, useEffect, useRef } from "react";
 import "./ProductModalMobile.css";
 import { Bounce, toast } from "react-toastify";
 import { formatarNumero, toTitleCase } from "../../utils/functions";
-import { FiTrash2, FiRotateCw, FiChevronLeft, FiMinus, FiPlus } from "react-icons/fi";
+import {
+  FiTrash2,
+  FiRotateCw,
+  FiChevronLeft,
+  FiMinus,
+  FiPlus,
+} from "react-icons/fi";
 import config from "../../config";
 
 const ProductModalMobile = ({
@@ -180,10 +186,13 @@ const ProductModalMobile = ({
         onClick={(e) => e.stopPropagation()}
       >
         <button
-          className={`back-button-overlay ${scrolled ? 'scrolled' : ''}`}
+          className={`back-button-overlay ${scrolled ? "scrolled" : ""}`}
           onClick={closeModal}
         >
-          <FiChevronLeft size={30} color={scrolled || !hasImage ? "#333" : "#fff"} />
+          <FiChevronLeft
+            size={30}
+            color={scrolled || !hasImage ? "#333" : "#fff"}
+          />
         </button>
 
         <div className="modal-main-content" ref={mainContentRef}>
@@ -227,9 +236,7 @@ const ProductModalMobile = ({
                       Até {product.flavorAllowed}
                     </span>
                     {product.flavorMandatory > 0 && (
-                      <span className="badge badge-mandatory">
-                        Obrigatório
-                      </span>
+                      <span className="badge badge-mandatory">Obrigatório</span>
                     )}
                   </div>
                 </h4>
@@ -246,10 +253,7 @@ const ProductModalMobile = ({
                           )
                         : parseFloat(relation.price || 0);
                     return (
-                      <label
-                        className="custom-checkbox-card"
-                        key={relation.id}
-                      >
+                      <label className="custom-checkbox-card" key={relation.id}>
                         <input
                           type="checkbox"
                           checked={selectedFlavors.includes(relation.id)}
@@ -278,53 +282,10 @@ const ProductModalMobile = ({
               </div>
             )}
 
-            {additionals.length > 0 && (
-              <div className="option-section-card">
-                <h4 className="options-header">
-                  Adicionais
-                  <div className="options-badges">
-                    <span className="badge badge-info">
-                      Opcional
-                    </span>
-                  </div>
-                </h4>
-                <div className="options-list-grid">
-                  {additionals.map((relation) => (
-                    <label
-                      className="custom-checkbox-card"
-                      key={relation.id}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={selectedAdditionals.includes(relation.id)}
-                        onChange={() => toggleAdditional(relation.id)}
-                      />
-                      <div className="checkbox-content">
-                        <span className="option-name">
-                          {toTitleCase(relation.relatedProduct.name)}
-                        </span>
-                        {relation.relatedProduct.description && (
-                          <span className="option-desc">
-                            {toTitleCase(relation.relatedProduct.description)}
-                          </span>
-                        )}
-                        {parseFloat(relation.price || 0) > 0 && (
-                          <span className="option-price">
-                            + R$ {formatarNumero(relation.price)}
-                          </span>
-                        )}
-                      </div>
-                      <span className="checkbox-indicator"></span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            )}
-
             {compositions.length > 0 && (
               <div className="option-section-card">
                 <h4 className="options-header">
-                  Composições
+                  Deseja remover algum ingrediente?
                   <div className="options-badges">
                     <span className="badge badge-info">
                       Clique para remover
@@ -361,13 +322,49 @@ const ProductModalMobile = ({
               </div>
             )}
 
+            {additionals.length > 0 && (
+              <div className="option-section-card">
+                <h4 className="options-header">
+                  Quer turbinar seu prato com adicionais?
+                  <div className="options-badges">
+                    <span className="badge badge-info">Opcional</span>
+                  </div>
+                </h4>
+                <div className="options-list-grid">
+                  {additionals.map((relation) => (
+                    <label className="custom-checkbox-card" key={relation.id}>
+                      <input
+                        type="checkbox"
+                        checked={selectedAdditionals.includes(relation.id)}
+                        onChange={() => toggleAdditional(relation.id)}
+                      />
+                      <div className="checkbox-content">
+                        <span className="option-name">
+                          {toTitleCase(relation.relatedProduct.name)}
+                        </span>
+                        {relation.relatedProduct.description && (
+                          <span className="option-desc">
+                            {toTitleCase(relation.relatedProduct.description)}
+                          </span>
+                        )}
+                        {parseFloat(relation.price || 0) > 0 && (
+                          <span className="option-price">
+                            + R$ {formatarNumero(relation.price)}
+                          </span>
+                        )}
+                      </div>
+                      <span className="checkbox-indicator"></span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="option-section-card">
               <h4 className="options-header">
                 Observações
                 <div className="options-badges">
-                  <span className="badge badge-info">
-                    Opcional
-                  </span>
+                  <span className="badge badge-info">Opcional</span>
                 </div>
               </h4>
               <textarea
@@ -396,7 +393,10 @@ const ProductModalMobile = ({
             onClick={handleAddToCart}
             className="add-to-cart-button-mobile"
           >
-            Adicionar <span className="add-to-cart-price">R$ {formatarNumero(calculateTotalPrice())}</span>
+            Adicionar{" "}
+            <span className="add-to-cart-price">
+              R$ {formatarNumero(calculateTotalPrice())}
+            </span>
           </button>
         </div>
       </div>

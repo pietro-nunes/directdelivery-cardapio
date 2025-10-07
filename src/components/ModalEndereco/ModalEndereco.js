@@ -191,6 +191,7 @@ const ModalEndereco = ({
               <label className="input-label">Apelido:</label>
               <input
                 type="text"
+                maxLength={40}
                 name="apelidoEndereco"
                 value={form.apelidoEndereco}
                 onChange={handleChange}
@@ -198,6 +199,7 @@ const ModalEndereco = ({
               />
               <label className="input-label">Endereço:</label>
               <input
+                maxLength={45}
                 type="text"
                 name="endereco"
                 value={form.endereco}
@@ -215,6 +217,7 @@ const ModalEndereco = ({
               />
               <label className="input-label">Complemento:</label>
               <input
+                maxLength={40}
                 type="text"
                 name="complemento"
                 value={form.complemento}
@@ -269,6 +272,7 @@ const ModalEndereco = ({
               </div>
               <label className="input-label">Ponto de Referência:</label>
               <input
+                maxLength={40}
                 type="text"
                 name="ptReferencia"
                 value={form.ptReferencia}
@@ -281,7 +285,12 @@ const ModalEndereco = ({
                 type="button"
                 className="back-to-list-button"
                 onClick={() => {
-                  setShowAddressList(true);
+                  if (enderecos.length > 0) {
+                    setShowAddressList(true);
+                  } else {
+                    onClose();
+                  }
+
                   resetForm();
                 }}
               >

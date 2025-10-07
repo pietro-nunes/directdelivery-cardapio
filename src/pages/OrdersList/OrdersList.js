@@ -4,8 +4,8 @@ import { useFetchWithLoading } from "../../contexts/fetchWithLoading";
 import config from "../../config";
 import Cookies from "js-cookie";
 import { FiRefreshCw, FiAlertCircle, FiCopy } from "react-icons/fi";
-import { formatarNumero, formatDateUTC } from "../../utils/functions";
-import { MdOutlineCheck } from "react-icons/md";
+import { MdOutlineCheck, MdLocationPin } from "react-icons/md";
+import { formatarNumero, formatDateUTC, toTitleCase } from "../../utils/functions";
 
 const OrdersList = ({ tenantData }) => {
   const [orders, setOrders] = useState([]);
@@ -98,7 +98,7 @@ const OrdersList = ({ tenantData }) => {
 
   return (
     <div className="orders-list">
-      <h2 className="orders-title">Seus Pedidos</h2>
+      <h2 className="orders-title">Meus Pedidos</h2>
       <p className="update-timer">
         <FiRefreshCw /> Atualizando em: {timeLeft}s
       </p>
@@ -137,6 +137,28 @@ const OrdersList = ({ tenantData }) => {
                   </p>
                   <p>
                     {order.address.bairro}, {order.address.cidade} - CEP: {order.address.cep}
+                  </p>
+                </div>
+              )}
+
+              {/* Local de retirada */}
+              {!order.address && (
+                <div className="order-address-section">
+                  <h4>Retirada no Local:</h4>
+                  <p>
+                    <span>
+                      <MdLocationPin size={14} />
+                      {tenantData.address &&
+                        tenantData.address !== "0" &&
+                        `${toTitleCase(tenantData.address)}, `}
+                      {tenantData.number &&
+                        tenantData.number !== "0" &&
+                        `${tenantData.number}, `}
+                      {tenantData.neighborhood &&
+                        tenantData.neighborhood !== "0" &&
+                        `${toTitleCase(tenantData.neighborhood)} - `}
+                      {tenantData.city && tenantData.city !== "0" && toTitleCase(tenantData.city)}
+                    </span>
                   </p>
                 </div>
               )}

@@ -255,25 +255,31 @@
   font-weight: 700;
 }
 
+.cart-buttons-row {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  max-width: 450px;
+}
+
 .checkout-button, .confirm-button {
   background-color: var(--cor-primaria);
   color: white;
   border: none;
-  padding: 14px 25px; /* Ajustado */
-  border-radius: 50px; /* Estilo "pill" para um CTA forte */
+  padding: 12px 20px;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 1rem; /* Reduzido */
+  font-size: 0.95rem;
   font-weight: 600;
   transition: all 0.2s ease;
-  width: 100%;
-  max-width: 450px;
-  box-shadow: 0 4px 12px rgba(26, 155, 155, 0.2);
+  flex: 1;
+  box-shadow: 0 2px 8px rgba(26, 155, 155, 0.15);
 }
 
 .checkout-button:hover, .confirm-button:hover {
   background-color: var(--cor-primaria-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(26, 155, 155, 0.25);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(26, 155, 155, 0.2);
 }
 
 /* --- MEDIA QUERIES (DESKTOP) --- */
@@ -309,7 +315,11 @@
   }
 
   .checkout-button, .confirm-button {
-    font-size: 1.1rem; /* Reduzido */
-    padding: 16px 30px;
+    font-size: 1rem;
+    padding: 14px 24px;
+  }
+  
+  .cart-buttons-row {
+    max-width: 450px;
   }
 }

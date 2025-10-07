@@ -69,6 +69,10 @@ const Cart = ({
     }
   };
 
+  const handleAddMoreItens = () => {
+    navigate(`${basePath}`);
+  };
+
   return (
     <>
       <div className="cart">
@@ -85,7 +89,12 @@ const Cart = ({
             <Lottie
               animationData={EmptyAnimation}
               loop={true}
-              style={{ width: 300, height: 300, marginBottom: "10px", margin: "0 auto" }}
+              style={{
+                width: 300,
+                height: 300,
+                marginBottom: "10px",
+                margin: "0 auto",
+              }}
             />
             <button
               type="button"
@@ -176,7 +185,7 @@ const Cart = ({
                           </span>
                         )}
                       </div>
-                      
+
                       <div className="quantity-control">
                         <button
                           className="decrement-button"
@@ -209,9 +218,14 @@ const Cart = ({
               R$ {formatarNumero(calculateTotal())}
             </p>
           </div>
-          <button className="checkout-button" onClick={handleProceedToCheckout}>
-            Prosseguir para finalização
-          </button>
+          <div className="cart-buttons-row">
+            <button className="checkout-button" onClick={handleAddMoreItens}>
+              Adicionar mais itens
+            </button>
+            <button className="checkout-button" onClick={handleProceedToCheckout}>
+              Prosseguir para finalização
+            </button>
+          </div>
         </div>
       )}
     </>
