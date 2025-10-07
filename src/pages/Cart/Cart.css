@@ -23,11 +23,10 @@
   border: 1px solid var(--cor-borda);
   border-radius: 8px; /* Mais sutil */
   box-shadow: none; /* Layout limpo, sem sombra principal */
-  margin: 20px auto;
+  margin: 65px auto;
   max-width: 500px;
   width: calc(100% - 30px);
   box-sizing: border-box;
-  padding: 65px 30px;
   padding-bottom: 100px; /* Espaço para o footer fixo */
   position: relative;
   z-index: 1;
