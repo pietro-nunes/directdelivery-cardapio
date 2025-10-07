@@ -29,7 +29,7 @@ body:has(.modal-overlay-mobile) {
 .modal-overlay-mobile {
   position: fixed;
   inset: 0;                 /* cobre toda a viewport */
-  z-index: 9999;            /* sobe acima de tudo */
+  z-index: 5555;            /* sobe acima de tudo */
   background-color: rgba(0,0,0,0.6);
   display: flex;
   justify-content: center;
