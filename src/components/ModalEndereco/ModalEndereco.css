@@ -1,31 +1,37 @@
-/* --- Estilos Gerais do Modal --- */
+/* 1) Travar o scroll do fundo enquanto o modal existe no DOM (CSS :has) */
+html:has(.end__modal-overlay),
+body:has(.end__modal-overlay) {
+  overflow: hidden; /* impede scroll de fundo */
+  height: 100%; /* evita bounce */
+  overscroll-behavior: none; /* trava overscroll/bounce */
+  touch-action: none; /* iOS: ignora gestos na página de trás */
+}
+
+/* 2) O overlay precisa realmente cobrir tudo */
 .end__modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.6);
+  inset: 0; /* top/right/bottom/left: 0 */
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
-  align-items: flex-end;
-  z-index: 1000;
+  align-items: flex-end; /* mobile: vem de baixo */
+  /* não deixe o overlay rolar: é a "tampa" */
   overflow: hidden;
 }
 
+/* 3) Conteúdo do modal: use *dvh* (corrige o 100vh bug no iOS) */
 .end__modal-content {
-  display: flex;
-  flex-direction: column;
-  background: hsl(var(--background));
-  box-shadow: var(--shadow-strong);
   width: 100%;
-  height: 100vh;
-  max-height: 100vh;
-  padding: 30px 20px 20px;
+  height: 100dvh; /* em vez de 100vh */
+  max-height: 100dvh;
+  overflow-y: auto; /* scroll só dentro do modal */
+  -webkit-overflow-scrolling: touch; /* rolagem suave no iOS */
+  padding: calc(16px + env(safe-area-inset-top)) 20px
+    calc(20px + env(safe-area-inset-bottom));
   box-sizing: border-box;
+  background: hsl(var(--background));
   animation: slide-in 0.3s ease forwards;
-  overflow-y: auto;
-  gap: 25px;
 }
 
 .modal-title {
@@ -237,11 +243,10 @@
   .end__modal-content {
     width: 550px;
     height: auto;
-    max-height: 90vh;
+    max-height: min(90dvh, 720px);
     border-radius: calc(var(--radius) + 8px);
-    padding: 40px;
-    animation: fade-in 0.3s ease forwards;
-    gap: 30px;
+    padding: 32px 32px calc(32px + env(safe-area-inset-bottom));
+    animation: fade-in 0.25s ease forwards;
   }
   @keyframes fade-in {
     from {
@@ -265,4 +270,13 @@
   .add-new-address-button {
     flex-grow: 0;
   }
+}
+
+/* Desabilita só os irmãos do overlay, não os ancestrais */
+body:has(.end__modal-overlay) #root > * {
+  pointer-events: none;
+}
+body:has(.end__modal-overlay) .end__modal-overlay,
+body:has(.end__modal-overlay) .end__modal-overlay * {
+  pointer-events: auto; /* reabilita no modal */
 }
