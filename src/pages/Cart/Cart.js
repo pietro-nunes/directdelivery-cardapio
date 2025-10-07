@@ -76,7 +76,6 @@ const Cart = ({
   return (
     <>
       <div className="cart">
-        <h2 className="cart-title">Seu Carrinho</h2>
         {cartItems.length === 0 ? (
           <div
             style={{
