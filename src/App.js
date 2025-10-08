@@ -10,21 +10,29 @@ import Cookies from "js-cookie"; // Importando a biblioteca para manipulação d
 const App = () => {
   const [tenantData, setTenantData] = useState(null); // Dados do tenant
   const [cartItems, setCartItems] = useState([]); // Estado do carrinho
-  const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    const token = Cookies.get("token"); // Obtendo o token do cookie
-    return !!token;
-  });
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isRestaurantOpen, setIsRestaurantOpen] = useState(false); // Estado global
   const [lastOrder, setLastOrder] = useState({}); // Estado global
   const [paymentData, setPaymentData] = useState({}); // Estado global
 
+  // 2) Quando o tenant carregar, verifica o cookie do token
+  useEffect(() => {
+    if (tenantData?.slug) {
+      const token = Cookies.get(`token-${tenantData.slug}`);
+      setIsLoggedIn(!!token);
+    }
+  }, [tenantData?.slug]);
+
   const handleLogin = (token) => {
-    Cookies.set("token", token, { expires: 5 / 24, secure: true }); // Definindo o cookie com expiração de 3 horas
+    Cookies.set(`token-${tenantData.slug}`, token, {
+      expires: 5 / 24,
+      secure: true,
+    }); // Definindo o cookie com expiração de 3 horas
     setIsLoggedIn(true);
   };
 
   const handleLogout = () => {
-    Cookies.remove("token"); // Removendo o cookie ao fazer logout
+    Cookies.remove(`token-${tenantData.slug}`); // Removendo o cookie ao fazer logout
     setIsLoggedIn(false);
   };
 

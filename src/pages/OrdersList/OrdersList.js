@@ -25,7 +25,7 @@ const OrdersList = ({ tenantData }) => {
   };
 
   const getCustomerId = () => {
-    const token = Cookies.get("token");
+    const token = Cookies.get(`token-${tenantData.slug}`);
     if (token) {
       const parsedToken = JSON.parse(token);
       return parsedToken.id;

@@ -50,7 +50,7 @@ const Checkout = ({
 
   useEffect(() => {
     try {
-      const clienteLocalStorage = JSON.parse(Cookies.get("token"));
+      const clienteLocalStorage = JSON.parse(Cookies.get(`token-${tenantData.slug}`));
       setCliente(clienteLocalStorage);
     } catch (e) {
       console.error("Erro ao carregar token do cliente:", e);

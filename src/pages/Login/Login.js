@@ -6,7 +6,7 @@ import { useFetchWithLoading } from "../../contexts/fetchWithLoading";
 import config from "../../config";
 import { formatCPF, isValidCPF, onlyDigits } from "../../utils/functions";
 
-const Login = ({ onLogin, basePath }) => {
+const Login = ({ onLogin, basePath, tenantData }) => {
   const [username, setUsername] = useState("");
   const [number, setNumber] = useState("");
   const [cpf, setCPF] = useState("");
@@ -61,7 +61,7 @@ const Login = ({ onLogin, basePath }) => {
 
     try {
       const response = await fetchWithLoading(
-        `${config.baseURL}/customers/phone/${cleanedNumber}`
+        `${config.baseURL}/customers/${tenantData.id}/phone/${cleanedNumber}`
       );
       const data = await response.json();
       setClientExists(true);
@@ -85,7 +85,7 @@ const Login = ({ onLogin, basePath }) => {
 
     try {
       const response = await fetchWithLoading(
-        `${config.baseURL}/customers/phone/${cleanedNumber}`
+        `${config.baseURL}/customers/${tenantData.id}/phone/${cleanedNumber}`
       );
 
       if (response.headers.get("Content-Length") === "0") {
@@ -100,6 +100,7 @@ const Login = ({ onLogin, basePath }) => {
               name: username,
               phone: cleanedNumber,
               cpf: onlyDigits(cpf),
+              tenantId: tenantData.id,
             }),
           }
         );
@@ -127,6 +128,7 @@ const Login = ({ onLogin, basePath }) => {
                 name: username,
                 phone: cleanedNumber,
                 cpf: onlyDigits(cpf),
+                tenantId: tenantData.id,
               }),
             }
           );
