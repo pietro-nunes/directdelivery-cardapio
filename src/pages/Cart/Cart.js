@@ -218,10 +218,13 @@ const Cart = ({
             </p>
           </div>
           <div className="cart-buttons-row">
-            <button className="checkout-button" onClick={handleAddMoreItens}>
+            <button className="secondary-button" onClick={handleAddMoreItens}>
               Adicionar mais itens
             </button>
-            <button className="checkout-button" onClick={handleProceedToCheckout}>
+            <button
+              className="checkout-button"
+              onClick={handleProceedToCheckout}
+            >
               Prosseguir para finalização
             </button>
           </div>

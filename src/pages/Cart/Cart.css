@@ -55,8 +55,12 @@
   padding: 0 8px;
 }
 
-.cart-items::-webkit-scrollbar { display: none; }
-.cart-items { scrollbar-width: none; }
+.cart-items::-webkit-scrollbar {
+  display: none;
+}
+.cart-items {
+  scrollbar-width: none;
+}
 
 /* --- ITEM INDIVIDUAL --- */
 .cart-item {
@@ -71,7 +75,9 @@
   transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.cart-item:last-child { margin-bottom: 0; }
+.cart-item:last-child {
+  margin-bottom: 0;
+}
 
 .cart-item:hover {
   transform: translateY(-2px);
@@ -130,7 +136,8 @@
   color: #495057;
 }
 
-.cart-item-list li, .cart-item-obs {
+.cart-item-list li,
+.cart-item-obs {
   font-size: 0.8rem; /* Reduzido */
   margin-bottom: 3px;
   line-height: 1.4;
@@ -193,8 +200,12 @@
   transition: all 0.15s ease;
 }
 
-.increment-button { border-radius: 0 6px 6px 0; }
-.decrement-button { border-radius: 6px 0 0 6px; }
+.increment-button {
+  border-radius: 0 6px 6px 0;
+}
+.decrement-button {
+  border-radius: 6px 0 0 6px;
+}
 
 .increment-button:hover,
 .decrement-button:hover {
@@ -261,7 +272,8 @@
   max-width: 450px;
 }
 
-.checkout-button, .confirm-button {
+.checkout-button,
+.confirm-button {
   background-color: var(--cor-primaria);
   color: white;
   border: none;
@@ -275,10 +287,31 @@
   box-shadow: 0 2px 8px rgba(26, 155, 155, 0.15);
 }
 
-.checkout-button:hover, .confirm-button:hover {
+.checkout-button:hover,
+.confirm-button:hover {
   background-color: var(--cor-primaria-hover);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(26, 155, 155, 0.2);
+}
+
+.secondary-button {
+  background-color: #44282b; /* cor solicitada */
+  color: #ffffff; /* texto branco para contraste */
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  flex: 1;
+  box-shadow: 0 2px 8px rgba(68, 40, 43, 0.2);
+}
+
+.secondary-button:hover {
+  background-color: #2e1b1d; /* tom mais escuro para hover */
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(68, 40, 43, 0.3);
 }
 
 /* --- MEDIA QUERIES (DESKTOP) --- */
@@ -313,11 +346,12 @@
     font-size: 1.7rem; /* Reduzido */
   }
 
-  .checkout-button, .confirm-button {
+  .checkout-button,
+  .confirm-button {
     font-size: 1rem;
     padding: 14px 24px;
   }
-  
+
   .cart-buttons-row {
     max-width: 450px;
   }

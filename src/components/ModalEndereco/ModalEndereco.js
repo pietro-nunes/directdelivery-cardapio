@@ -32,6 +32,17 @@ const ModalEndereco = ({
   );
   const cepMask = [/\d/, /\d/, /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/];
 
+  // obter cidade selecionada
+  const selectedCity = tenantData?.cities?.find((c) => c.name === form.cidade);
+
+  // filtrar bairros da cidade
+  const neighborhoodsByCity = selectedCity
+    ? (tenantData?.neighborhoods || []).filter(
+        (n) =>
+          String(n.cityId) === String(selectedCity.id) && n.isActive !== false
+      )
+    : [];
+
   useEffect(() => {
     if (isVisible) {
       if (enderecos.length > 0) {
@@ -242,6 +253,7 @@ const ModalEndereco = ({
                     )
                 )}
               </select>
+
               <label className="input-label">CEP:</label>
               <MaskedInput
                 mask={cepMask}
@@ -250,6 +262,7 @@ const ModalEndereco = ({
                 placeholder="CEP (XXXXX-XXX)"
                 className="masked-input"
               />
+
               <label className="input-label">Bairro:</label>
               <select
                 value={form.bairro}
@@ -260,7 +273,7 @@ const ModalEndereco = ({
                 <option value="" disabled hidden>
                   Selecione um bairro
                 </option>
-                {tenantData?.neighborhoods?.map((n) => (
+                {neighborhoodsByCity.map((n) => (
                   <option key={n.id} value={n.name}>
                     {n.name} - R$ {formatarNumero(n.deliveryFee)}
                   </option>
