@@ -1,13 +1,15 @@
-// Home.jsx
 import "./Home.css";
 import React, { useEffect, useState, useRef } from "react";
 import ProductCard from "../../components/ProductCard/ProductCard";
 import Categories from "../../components/Categories/Categories";
 import RestaurantInfo from "../../components/RestaurantInfo/RestaurantInfo";
-import BestSellerProductCard from "../../components/BestSellerProductCard/BestSellerProductCard"; // IMPORTANTE: Nova importação
+import BestSellerProductCard from "../../components/BestSellerProductCard/BestSellerProductCard";
+import SearchBar from "../../components/SearchBar/SearchBar";
+import SearchResults from "../../components/SearchResults/SearchResults";
 import { useFetchWithLoading } from "../../contexts/fetchWithLoading";
 import config from "../../config";
 import { toTitleCase } from "../../utils/functions";
+import { searchProducts, getAllProducts } from "../../utils/searchUtils";
 import ProductModalMobile from "../../components/ProductModalMobile/ProductModalMobile";
 
 const Home = ({ addToCart, tenantData, setIsRestaurantOpen }) => {
@@ -15,6 +17,7 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen }) => {
   const [categories, setCategories] = useState([]);
   const [bestSellers, setBestSellers] = useState([]);
   const [isCategoriesSticky, setIsCategoriesSticky] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const { fetchWithLoading } = useFetchWithLoading();
   const [selectedProduct, setSelectedProduct] = useState(null);
 
@@ -93,6 +96,10 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen }) => {
     }
   };
 
+  // Lógica de busca
+  const allProducts = getAllProducts(categories);
+  const searchedProducts = searchProducts(allProducts, searchTerm);
+
   return (
     <div className="home">
       {tenantData && (
@@ -119,11 +126,10 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen }) => {
         <p className="section-subtitle">Os que mais fazem sucesso por aqui!</p>
         <div className="best-sellers-carousel">
           {bestSellers.map((product) => (
-            <BestSellerProductCard // AGORA USANDO O NOVO COMPONENTE
+            <BestSellerProductCard
               key={product.id}
               product={product}
               onClick={() => setSelectedProduct(product)}
-              // A prop isBestSeller não é mais necessária aqui, pois é inerente ao componente
             />
           ))}
         </div>
@@ -140,10 +146,10 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen }) => {
 
       <p className="explore-menu-text">Explore nosso cardápio completo:</p>
 
+      
       <div
-        className={`categories-wrapper ${
-          isCategoriesSticky ? "categories-sticky" : ""
-        }`}
+        className={`categories-wrapper ${isCategoriesSticky ? "categories-sticky" : ""
+          }`}
       >
         <Categories
           categories={categories}
@@ -151,6 +157,29 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen }) => {
           onSelectCategory={scrollToCategory}
         />
       </div>
+
+
+      
+      {/* Barra de Busca */}
+      <SearchBar
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        resultsCount={searchedProducts.length}
+      />
+
+      {/* Resultados da Busca */}
+      {searchTerm && (
+        <SearchResults products={searchedProducts}>
+          {(product) => (
+            <ProductCard
+              product={product}
+              addToCart={addToCart}
+              tenantFlavorCalcType={tenantData.flavorCalcType}
+            />
+          )}
+        </SearchResults>
+      )}
+
 
       {categories.map(
         (category) =>
@@ -163,7 +192,7 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen }) => {
               <h3 className="category-title">{toTitleCase(category.name)}</h3>
               <div className="product-list">
                 {category.products.map((product) => (
-                  <ProductCard // Mantém o ProductCard para as demais categorias
+                  <ProductCard
                     key={product.id}
                     product={product}
                     addToCart={addToCart}

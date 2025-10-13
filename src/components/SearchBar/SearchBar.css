@@ -1,0 +1,95 @@
+/* ---- Guardas anti-estouro ---- */
+:root { --search-max: 600px; }
+
+/* Container nunca passa da largura da viewport */
+.search-bar-container {
+  padding-inline: 12px;              /* espaço lateral seguro */
+  margin-top: 20px;
+  overflow: hidden;                   /* corta qualquer bleed das animações */
+}
+
+/* Wrapper centrado e “clampado” */
+.search-bar-wrapper {
+  position: relative;
+  inline-size: min(100%, var(--search-max));
+  margin-inline: auto;
+  overflow: hidden;                   /* evita bleed do botão em hover */
+}
+
+/* Input 100% sem estourar (border-box) e com paddings p/ ícone/botão */
+.search-input {
+  box-sizing: border-box;
+  inline-size: 100%;
+  padding-block: 0.875rem;
+  padding-inline: 44px 40px;          /* 44px p/ ícone, 40px p/ botão */
+  font-size: 1rem;                    /* >=16px evita zoom no iOS */
+  border: 2px solid hsl(var(--border));
+  border-radius: var(--radius);
+  background: hsl(var(--card));
+  color: hsl(var(--foreground));
+  transition: var(--transition-smooth);
+  box-shadow: var(--shadow-soft);
+}
+
+/* Ícone posicionado dentro do padding */
+.search-icon {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 12px;
+  transform: translateY(-50%);
+  color: hsl(var(--muted-foreground));
+  pointer-events: none;
+  transition: var(--transition-smooth);
+}
+
+/* Botão “X” fica dentro do wrapper, sem empurrar largura */
+.search-clear-btn {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-end: 8px;
+  transform: translateY(-50%);
+  background: hsl(var(--muted));
+  border: none;
+  border-radius: 50%;
+  inline-size: 28px;
+  block-size: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  color: hsl(var(--muted-foreground));
+  touch-action: manipulation;
+}
+
+/* Evita “pulo”/overflow por causa do scale no mobile */
+@media (hover: hover) and (pointer: fine) {
+  .search-clear-btn:hover { transform: translateY(-50%) scale(1.08); }
+}
+.search-clear-btn:active { transform: translateY(-50%) scale(0.96); }
+
+/* Foco: muda a cor do ícone mesmo ele vindo antes no DOM */
+.search-bar-wrapper:focus-within .search-icon {
+  color: hsl(var(--primary));
+}
+
+/* Texto auxiliar */
+.search-results-text {
+  text-align: center;
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  color: hsl(var(--muted-foreground));
+}
+
+/* --- Responsivo --- */
+@media (max-width: 480px) {
+  .search-input {
+    padding-inline: 42px 38px; /* levemente mais compacto no very-narrow */
+    font-size: 0.95rem;
+  }
+  .search-icon { inset-inline-start: 10px; }
+  .search-clear-btn {
+    inset-inline-end: 6px;
+    inline-size: 28px; block-size: 28px;
+  }
+}
