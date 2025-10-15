@@ -114,6 +114,7 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen }) => {
               closingTime2: tenantData.closingTime2,
               openingDays: tenantData.openingDays,
               address: `${tenantData.address}, ${tenantData.number}, ${tenantData.neighborhood} - ${tenantData.city}`,
+              lastPooling: tenantData.lastPooling,
             }}
             setIsRestaurantOpen={setIsRestaurantOpen}
           />
@@ -146,10 +147,10 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen }) => {
 
       <p className="explore-menu-text">Explore nosso cardápio completo:</p>
 
-      
       <div
-        className={`categories-wrapper ${isCategoriesSticky ? "categories-sticky" : ""
-          }`}
+        className={`categories-wrapper ${
+          isCategoriesSticky ? "categories-sticky" : ""
+        }`}
       >
         <Categories
           categories={categories}
@@ -158,8 +159,6 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen }) => {
         />
       </div>
 
-
-      
       {/* Barra de Busca */}
       <SearchBar
         searchTerm={searchTerm}
@@ -179,7 +178,6 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen }) => {
           )}
         </SearchResults>
       )}
-
 
       {categories.map(
         (category) =>
