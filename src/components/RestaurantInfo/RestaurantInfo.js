@@ -13,8 +13,21 @@ const isLastPoolingOk = (lastPooling, maxAgeMin = HEARTBEAT_MAX_AGE_MIN) => {
   if (typeof lastPooling === "string" && lastPooling.startsWith("0000-00-00"))
     return false;
 
-  const lp = new Date(lastPooling);
-  console.log(lp);
+  const parseAsLocal = (s) => {
+    const txt = s.trim().endsWith("Z") ? s.trim().slice(0, -1) : s.trim();
+    const m = txt.match(
+      /^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?$/
+    );
+    if (!m) return new Date(s); // fallback nativo
+    const [, Y, M, D, h, mi, se = "0", ms = "0"] = m;
+    return new Date(+Y, +M - 1, +D, +h, +mi, +se, +ms); // ← local, sem conversão de fuso
+  };
+
+  const lp =
+    typeof lastPooling === "string"
+      ? parseAsLocal(lastPooling)
+      : new Date(lastPooling);
+      
   if (isNaN(lp.getTime())) return false;
 
   const ageMs = Date.now() - lp.getTime();
@@ -105,9 +118,8 @@ const RestaurantInfo = ({ restaurantInfo, setIsRestaurantOpen }) => {
   );
 
   const logoSrc =
-    (restaurantInfo?.logo
-      ? `${config.baseURL}${restaurantInfo.logo}`
-      : null) || "https://via.placeholder.com/150?text=Logo+Restaurante";
+    (restaurantInfo?.logo ? `${config.baseURL}${restaurantInfo.logo}` : null) ||
+    "https://via.placeholder.com/150?text=Logo+Restaurante";
 
   return (
     <div className="restaurant-info">
