@@ -5,11 +5,11 @@ import { FiClock } from "react-icons/fi";
 import { MdLocationPin } from "react-icons/md";
 import { toTitleCase } from "../../utils/functions";
 
-const HEARTBEAT_MAX_AGE_MIN = 0.66; // tolerância do lastPooling (em minutos)
+const HEARTBEAT_MAX_AGE_MIN = 1.5; // tolerância do lastPooling (em minutos)
 
 // ✅ Verifica se o heartbeat (lastPooling) é recente
 const isLastPoolingOk = (lastPooling, maxAgeMin = HEARTBEAT_MAX_AGE_MIN) => {
-  // console.log(lastPooling);
+  console.log(lastPooling);
   if (!lastPooling) return false;
   if (typeof lastPooling === "string" && lastPooling.startsWith("0000-00-00"))
     return false;
