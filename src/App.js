@@ -89,7 +89,7 @@ const App = () => {
     <LoadingProvider>
       <Router>
         <ToastContainer />
-        <LoadingAnimation />
+        {/* <LoadingAnimation /> */}
         <Routes>
           {/* modo cardápio digital (como já existe) */}
           <Route

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Routes, Route, Navigate, useParams } from "react-router-dom";
 import Home from "./pages/Home/Home";
 import Cart from "./pages/Cart/Cart";
@@ -30,10 +30,11 @@ const TenantRoutes = ({
   setPaymentData,
 }) => {
   const { slug, tableNumber } = useParams();
-  const [isLoadingTenant, setIsLoadingTenant] = useState(true); // Estado de carregamento
-  const [hasError, setHasError] = useState(false); // Flag para erro de carregamento
+  const [isLoadingTenant, setIsLoadingTenant] = useState(true);
+  const [hasError, setHasError] = useState(false);
   const isTableMode = !!tableNumber;
   const basePath = isTableMode ? `/${slug}/mesa/${tableNumber}` : `/${slug}`;
+
   // -------------------------------
   // 1) LER carrinho (tenant + mesa)
   // -------------------------------
@@ -68,62 +69,104 @@ const TenantRoutes = ({
     }
   }, [cartItems, tenantData?.slug, isTableMode, tableNumber]);
 
-  // Função para buscar os dados do tenant
+  // --------------------------------
+  // 3) Buscar dados do tenant (carga inicial)
+  // --------------------------------
   const fetchTenantData = async (slug) => {
     try {
-      // console.log(`[INFO] Buscando tenant para o slug: ${slug}`);
       const response = await fetch(`${config.baseURL}/tenants/${slug}`, {
         method: "GET",
       });
       if (!response.ok) {
-        console.error(`[ERROR] API retornou status ${response.status}`);
+        // console.error(`[ERROR] API retornou status ${response.status}`);
         throw new Error(`Erro ao buscar tenant: ${response.status}`);
       }
       const tenant = await response.json();
-      // console.log("[SUCCESS] Tenant encontrado:", tenant);
       setTenantData(tenant);
-      setHasError(false); // Resetar o estado de erro
+      setHasError(false);
     } catch (error) {
-      console.error("[ERROR] Erro ao buscar tenant:", error.message);
-      setTenantData(null); // Resetar tenantData
+      // console.error("[ERROR] Erro ao buscar tenant:", error.message);
+      setTenantData(null);
       setHasError(true);
     } finally {
-      setIsLoadingTenant(false); // Finalizar o carregamento
+      setIsLoadingTenant(false);
     }
   };
 
-  // Efeito para buscar o tenant quando o slug muda
+  // Variante silenciosa para polling (não altera loading/erro)
+  const fetchTenantDataSilent = async (slug) => {
+    try {
+      const response = await fetch(`${config.baseURL}/tenants/${slug}`, {
+        method: "GET",
+      });
+      if (!response.ok) return;
+      const tenant = await response.json();
+      setTenantData(tenant);
+    } catch {
+      // silencioso
+    }
+  };
+
+  // Carga inicial quando o slug muda
   useEffect(() => {
     if (!slug) {
-      console.error("[ERROR] Slug não encontrado na URL.");
       setHasError(true);
       setIsLoadingTenant(false);
       return;
     }
-    setIsLoadingTenant(true); // Inicia o carregamento
+    setIsLoadingTenant(true);
     fetchTenantData(slug);
   }, [slug]);
 
-  // Enquanto o tenant está carregando
-  if (isLoadingTenant) {
-    // console.log("[INFO] Carregando dados do tenant...");
-    return null;
-  }
+  // --------------------------------
+  // 4) Polling de heartbeat/tenant (40s)
+  // --------------------------------
+  const hbIntervalRef = useRef(null);
+  useEffect(() => {
+    if (!slug) return;
 
-  // Se houve erro ao carregar os dados
-  if (hasError) {
-    console.error("[ERROR] Tenant não encontrado. Redirecionando para '/'...");
-    return <Navigate to="/" />;
-  }
+    const tick = () => fetchTenantDataSilent(slug);
 
-  // Renderizar as rotas se o tenant foi carregado com sucesso
-  if (!tenantData) {
-    console.error("[ERROR] Tenant não carregado ou inválido.");
-    return <Navigate to="/" />;
-  }
+    // 1º tick imediato
+    tick();
 
-  // console.log("[SUCCESS] Tenant carregado com sucesso:", tenantData);
+    // inicia intervalo
+    if (hbIntervalRef.current) clearInterval(hbIntervalRef.current);
+    hbIntervalRef.current = setInterval(tick, 40_000);
 
+    // pausa/retoma com visibilidade da aba
+    const onVis = () => {
+      if (document.hidden) {
+        if (hbIntervalRef.current) {
+          clearInterval(hbIntervalRef.current);
+          hbIntervalRef.current = null;
+        }
+      } else {
+        tick();
+        hbIntervalRef.current = setInterval(tick, 40_000);
+      }
+    };
+    document.addEventListener("visibilitychange", onVis);
+
+    // cleanup
+    return () => {
+      if (hbIntervalRef.current) clearInterval(hbIntervalRef.current);
+      document.removeEventListener("visibilitychange", onVis);
+    };
+  }, [slug]);
+
+  // --------------------------------
+  // 5) Guards de carregamento/erro
+  // --------------------------------
+  if (isLoadingTenant) return null;
+
+  if (hasError) return <Navigate to="/" />;
+
+  if (!tenantData) return <Navigate to="/" />;
+
+  // --------------------------------
+  // 6) Rotas
+  // --------------------------------
   return (
     <SafeArea>
       <Header
