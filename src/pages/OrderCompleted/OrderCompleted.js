@@ -15,6 +15,8 @@ const OrderCompleted = ({
 }) => {
   const navigate = useNavigate();
 
+  console.log(orderDetails);
+
   const formatWhatsAppMessage = (orderDetails) => {
     const {
       id,
@@ -31,7 +33,7 @@ const OrderCompleted = ({
     // 1) Normaliza itens
     const normalizedItems = (Array.isArray(itens) ? itens : []).map((it) => {
       return {
-        quantity: it.quantity ?? it.quantidade ?? 1,
+        quantity: it.count,
         productName: it.name ?? it.productName ?? "Item",
         price: Number(it.price ?? 0),
         isActive: it.isActive ?? true,

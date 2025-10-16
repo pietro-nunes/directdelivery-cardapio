@@ -11,6 +11,7 @@ const Login = ({ onLogin, basePath, tenantData }) => {
   const [number, setNumber] = useState("");
   const [cpf, setCPF] = useState("");
   const [error, setError] = useState("");
+  const [cpfError, setCpfError] = useState(""); // << novo estado
   const [clientExists, setClientExists] = useState(false);
   const navigate = useNavigate();
   const { fetchWithLoading } = useFetchWithLoading();
@@ -51,8 +52,17 @@ const Login = ({ onLogin, basePath, tenantData }) => {
     /\d/,
   ];
 
-  const cleanPhoneNumber = (phone) => {
-    return phone.replace(/\D/g, "");
+  const cleanPhoneNumber = (phone) => phone.replace(/\D/g, "");
+
+  const validateCpfField = (value) => {
+    // remove a máscara para validar corretamente
+    const digits = onlyDigits(value);
+    if (digits.length === 11 && !isValidCPF(value)) {
+      setCpfError("CPF inválido. Verifique os números e tente novamente.");
+    } else {
+      // enquanto digita (ou se apagar), some com o erro
+      setCpfError("");
+    }
   };
 
   const checkClientExists = async () => {
@@ -67,19 +77,30 @@ const Login = ({ onLogin, basePath, tenantData }) => {
       setClientExists(true);
       setUsername(data.name);
       setCPF(formatCPF(data.cpf));
-    } catch (error) {
+      setCpfError(""); // limpamos o erro caso venha CPF válido da API
+    } catch {
       setClientExists(false);
       setUsername("");
       setCPF("");
+      setCpfError("");
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+
     const cleanedNumber = cleanPhoneNumber(number);
 
+    // validações de preenchimento
     if (!username || username.trim().length < 3 || !cleanedNumber) {
       setError("Por favor, preencha todos os campos corretamente.");
+      return;
+    }
+
+    // validação específica do CPF
+    if (!isValidCPF(cpf)) {
+      setCpfError("CPF inválido. Verifique os números e tente novamente.");
       return;
     }
 
@@ -93,9 +114,7 @@ const Login = ({ onLogin, basePath, tenantData }) => {
           `${config.baseURL}/customers`,
           {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               name: username,
               phone: cleanedNumber,
@@ -121,9 +140,7 @@ const Login = ({ onLogin, basePath, tenantData }) => {
             `${config.baseURL}/customers/${data.id}`,
             {
               method: "PATCH",
-              headers: {
-                "Content-Type": "application/json",
-              },
+              headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 name: username,
                 phone: cleanedNumber,
@@ -134,10 +151,11 @@ const Login = ({ onLogin, basePath, tenantData }) => {
           );
 
           if (putResponse.ok) {
-            const data = await putResponse.json();
-            const tokenData = JSON.stringify(data);
+            const updated = await putResponse.json();
+            const tokenData = JSON.stringify(updated);
             onLogin(tokenData);
             navigate(`${basePath}/checkout`);
+            return;
           } else {
             throw new Error("Erro ao atualizar o cliente.");
           }
@@ -147,8 +165,8 @@ const Login = ({ onLogin, basePath, tenantData }) => {
         onLogin(tokenData);
         navigate(`${basePath}/checkout`);
       }
-    } catch (error) {
-      console.error("Erro na consulta à API:", error);
+    } catch (err) {
+      console.error("Erro na consulta à API:", err);
       setError("Erro ao se conectar com o servidor. Tente novamente.");
     }
   };
@@ -171,6 +189,7 @@ const Login = ({ onLogin, basePath, tenantData }) => {
               className="masked-input"
             />
           </div>
+
           <div className="input-group">
             <label>Nome e sobrenome:</label>
             <input
@@ -181,17 +200,25 @@ const Login = ({ onLogin, basePath, tenantData }) => {
               required
             />
           </div>
+
           <div className="input-group">
             <label>CPF:</label>
             <MaskedInput
               mask={cpfMask}
               value={cpf}
-              onChange={(e) => setCPF(e.target.value)}
+              onChange={(e) => {
+                setCPF(e.target.value);
+                validateCpfField(e.target.value);
+              }}
+              onBlur={(e) => validateCpfField(e.target.value)}
               placeholder="XX.XXX.XXX-XX"
-              className="masked-input"
+              className={`masked-input ${cpfError ? "input-error" : ""}`}
             />
+            {cpfError && <p className="error">{cpfError}</p>}
           </div>
+
           {error && <p className="error">{error}</p>}
+
           <button
             type="submit"
             className={`login-button ${isButtonDisabled ? "disabled" : ""}`}
@@ -200,7 +227,8 @@ const Login = ({ onLogin, basePath, tenantData }) => {
             Avançar
           </button>
         </form>
-        {isButtonDisabled && (
+
+        {isButtonDisabled && !cpfError && (
           <p className="info-message">
             Para concluir o pedido, pedimos que se identifique
           </p>

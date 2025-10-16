@@ -144,6 +144,16 @@
   border-radius: calc(var(--radius) - 4px);
 }
 
+.input-error {
+  border-color: #d33;
+}
+.error {
+  color: #d33;
+  font-size: 0.9rem;
+  margin-top: 6px;
+}
+
+
 /* Responsividade */
 @media (max-width: 480px) {
   .login-container {
