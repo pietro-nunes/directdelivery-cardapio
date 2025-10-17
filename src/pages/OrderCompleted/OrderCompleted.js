@@ -15,33 +15,50 @@ const OrderCompleted = ({
 }) => {
   const navigate = useNavigate();
 
-  console.log(orderDetails);
-
   const formatWhatsAppMessage = (orderDetails) => {
     const {
       id,
       createdAt,
       total,
+      items,
       itens,
+      address,
       endereco,
-      retirada,
+      withdraw,
       nomeFormaPagamento,
+      paymentMethod,
+      change,
       troco,
+      observation,
       observacaoPedido,
     } = orderDetails ?? {};
 
-    // 1) Normaliza itens
-    const normalizedItems = (Array.isArray(itens) ? itens : []).map((it) => {
-      return {
-        quantity: it.count,
-        productName: it.name ?? it.productName ?? "Item",
-        price: Number(it.price ?? 0),
-        isActive: it.isActive ?? true,
-      };
-    });
+    // helper: parse "4.00" | "4,00" | 4 -> Number
+    const toNumber = (v) => {
+      if (v == null || v === "") return null;
+      if (typeof v === "number") return v;
+      if (typeof v === "string") {
+        const n = parseFloat(v.replace(",", "."));
+        return Number.isFinite(n) ? n : null;
+      }
+      return null;
+    };
 
-    // 2) Normaliza endereço (string "{}" ou objeto)
-    let addr = endereco ?? null;
+    // 1) Itens normalizados
+    const rawItems = Array.isArray(items)
+      ? items
+      : Array.isArray(itens)
+      ? itens
+      : [];
+    const normalizedItems = rawItems.map((it) => ({
+      quantity: it.quantity ?? it.count ?? 1,
+      productName: it.productName ?? it.name ?? "Item",
+      price: Number(it.productPrice ?? it.price ?? it.totalPrice ?? 0),
+      isActive: it.isActive ?? true,
+    }));
+
+    // 2) Endereço normalizado
+    let addr = address ?? endereco ?? null;
     if (typeof addr === "string") {
       try {
         addr = JSON.parse(addr);
@@ -56,9 +73,19 @@ const OrderCompleted = ({
         (v) => v !== undefined && v !== null && String(v).trim() !== ""
       );
 
-    // 3) Monta mensagem
-    let message = `*Novo Pedido Realizado!*\n\n`;
-    if (id !== undefined) message += `📌 *Número do Pedido:* ${id}\n`;
+    // >>> NOVO: captura delivery fee em possíveis lugares
+    const deliveryFeeVal =
+      toNumber(addr?.deliveryFee ?? addr?.delivery_fee ?? addr?.taxaEntrega) ??
+      toNumber(addr?.neighborhood?.deliveryFee) ??
+      toNumber(addr?.city?.deliveryFee);
+
+    // 3) Observação
+    const obs = observation ?? observacaoPedido;
+
+    // 4) Mensagem
+    let message = `*Novo Pedido #${id ?? "—"} Realizado!*\n\n`;
+    // (se quiser manter a linha separada, descomente)
+    // if (id !== undefined) message += `📌 *Número do Pedido:* ${id}\n`;
     message += `📅 *Data:* ${
       createdAt
         ? new Date(createdAt).toLocaleString()
@@ -72,17 +99,19 @@ const OrderCompleted = ({
       )}\n`;
     });
 
-    // 4) Endereço ou retirada
-    if (retirada === true) {
+    // 5) Entrega x Retirada
+    if (withdraw === true) {
       message += `\n🛍️ *Retirada no balcão.*\n`;
     } else if (hasAddress) {
-      const apelido = addr.apelido ?? "";
-      const enderecoStr = addr.endereco ?? "";
-      const numero = addr.numero ?? "";
-      const complemento = addr.complemento ?? "";
-      const bairro = addr.bairro ?? "";
-      const cidade = addr.cidade ?? "";
-      const cep = addr.cep ?? "";
+      const apelido =
+        addr.apelido ?? addr.apelidoEndereco ?? addr.nickname ?? "";
+      const enderecoStr = addr.endereco ?? addr.address ?? "";
+      const numero = addr.numero ?? addr.number ?? "";
+      const complemento = addr.complemento ?? addr.complement ?? "";
+      const bairro =
+        addr.bairro ?? addr.neighborhood?.name ?? addr.neighborhood ?? "";
+      const cidade = addr.cidade ?? addr.city?.name ?? addr.city ?? "";
+      const cep = addr.cep ?? addr.zipcode ?? addr.zip ?? "";
 
       message += `\n📍 *Endereço de Entrega:*\n`;
       if (apelido) message += `${apelido}: `;
@@ -92,23 +121,35 @@ const OrderCompleted = ({
       message += `${bairro}${bairro && (cidade || cep) ? " - " : ""}${cidade}${
         cep ? `, CEP: ${cep}` : ""
       }\n`;
-      if (addr.pontoReferencia) {
-        message += `Ponto de Referência: ${addr.pontoReferencia}\n`;
+      if (addr.pontoReferencia ?? addr.ptReferencia ?? addr.referencePoint) {
+        message += `Ponto de Referência: ${
+          addr.pontoReferencia ?? addr.ptReferencia ?? addr.referencePoint
+        }\n`;
+      }
+
+      // >>> NOVO: mostra a taxa de entrega, se houver
+      if (deliveryFeeVal != null) {
+        message += `🚚 *Taxa de Entrega:* R$ ${formatarNumero(
+          deliveryFeeVal
+        )}\n`;
       }
     }
 
-    // 5) Observação do pedido
-    if (observacaoPedido) {
-      message += `\n📝 *Observações do Pedido:* ${observacaoPedido}\n`;
+    // 6) Observações
+    if (obs) {
+      message += `\n📝 *Observações do Pedido:* ${obs}\n`;
     }
 
-    // 6) Forma de pagamento (vem direto do JSON)
-    message += `\n💳 *Forma de Pagamento:* ${nomeFormaPagamento ?? ""}`;
-    if (troco != null && troco !== "") {
-      message += ` (Troco para R$ ${formatarNumero(troco)})`;
+    // 7) Pagamento
+    const trocoVal = change ?? troco;
+    message += `\n💳 *Forma de Pagamento:* ${
+      nomeFormaPagamento ?? `#${paymentMethod ?? "—"}`
+    }`;
+    if (trocoVal != null && trocoVal !== "") {
+      message += ` (Troco para R$ ${formatarNumero(trocoVal)})`;
     }
 
-    // 7) Total
+    // 8) Total
     if (total != null) {
       message += `\n🛒 *Total do Pedido:* R$ ${formatarNumero(total)}\n`;
     }

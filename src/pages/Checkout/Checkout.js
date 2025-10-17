@@ -50,7 +50,9 @@ const Checkout = ({
 
   useEffect(() => {
     try {
-      const clienteLocalStorage = JSON.parse(Cookies.get(`token-${tenantData.slug}`));
+      const clienteLocalStorage = JSON.parse(
+        Cookies.get(`token-${tenantData.slug}`)
+      );
       setCliente(clienteLocalStorage);
     } catch (e) {
       console.error("Erro ao carregar token do cliente:", e);
@@ -159,7 +161,7 @@ const Checkout = ({
         tenantId: tenantData.id,
         itens: cartItems.map((item) => ({
           ...item,
-          totalPrice: item.totalPrice * item.count,
+          totalPrice: item.totalPrice,
         })),
         total,
         retirada: isTableMode ? true : tipoEntrega === "retirada",
@@ -183,9 +185,13 @@ const Checkout = ({
 
       if (postResponse.ok) {
         const dataPedido = await postResponse.json();
+
         localStorage.removeItem("carrinho-" + tenantData.slug);
         setCartItems([]);
-        setLastOrder(pedido);
+        setLastOrder({
+          ...dataPedido, 
+          nomeFormaPagamento: pedido?.nomeFormaPagamento, 
+        });
 
         if (formaPagamentoSelecionada.onlinePayment) {
           const onlinePaymentResponse = await fetchWithLoading(
@@ -409,7 +415,9 @@ const Checkout = ({
                 {tenantData.neighborhood &&
                   tenantData.neighborhood !== "0" &&
                   `${toTitleCase(tenantData.neighborhood)} - `}
-                {tenantData.city && tenantData.city !== "0" && toTitleCase(tenantData.city)}
+                {tenantData.city &&
+                  tenantData.city !== "0" &&
+                  toTitleCase(tenantData.city)}
               </span>
             </div>
           )}

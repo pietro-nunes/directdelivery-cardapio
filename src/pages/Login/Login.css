@@ -153,6 +153,27 @@
   margin-top: 6px;
 }
 
+.back-button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  background: hsl(var(--muted));
+  color: hsl(var(--muted-foreground));
+  border: 1px solid hsl(var(--border));
+  border-radius: calc(var(--radius) - 2px);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.back-button:hover {
+  background: hsl(var(--card));
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-medium);
+}
+
+
 
 /* Responsividade */
 @media (max-width: 480px) {

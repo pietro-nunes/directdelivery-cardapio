@@ -226,6 +226,14 @@ const Login = ({ onLogin, basePath, tenantData }) => {
           >
             Avançar
           </button>
+          <button
+            type="button"
+            className="back-button"
+            onClick={() => navigate(`${basePath}`)}
+            aria-label="Voltar ao cardápio"
+          >
+            Voltar ao cardápio
+          </button>
         </form>
 
         {isButtonDisabled && !cpfError && (
