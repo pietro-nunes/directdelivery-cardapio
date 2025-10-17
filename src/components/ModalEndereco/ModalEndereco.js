@@ -90,6 +90,7 @@ const ModalEndereco = ({
       ptReferencia: end.referencePoint || "",
       apelidoEndereco: end.nickname || "",
       id: end.id,
+      tipoEndereco: 'casa',
     });
 
     const n = tenantData?.neighborhoods?.find(
