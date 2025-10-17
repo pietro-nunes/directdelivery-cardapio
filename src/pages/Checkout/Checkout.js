@@ -21,6 +21,7 @@ const Checkout = ({
   cartItems,
   setCartItems,
   onLogout,
+  onLogin,
   tenantData,
   basePath,
   setLastOrder,
@@ -186,12 +187,20 @@ const Checkout = ({
       if (postResponse.ok) {
         const dataPedido = await postResponse.json();
 
+        const response = await fetchWithLoading(
+          `${config.baseURL}/customers/${tenantData.id}/phone/${cliente.phone}`
+        );
+
+        const clienteAtt = await response.json();
+        const tokenData = JSON.stringify(clienteAtt);
+
         localStorage.removeItem("carrinho-" + tenantData.slug);
         setCartItems([]);
         setLastOrder({
-          ...dataPedido, 
-          nomeFormaPagamento: pedido?.nomeFormaPagamento, 
+          ...dataPedido,
+          nomeFormaPagamento: pedido?.nomeFormaPagamento,
         });
+        onLogin(tokenData);
 
         if (formaPagamentoSelecionada.onlinePayment) {
           const onlinePaymentResponse = await fetchWithLoading(

@@ -246,6 +246,7 @@ const TenantRoutes = ({
                 setCartItems={setCartItems}
                 tenantData={tenantData}
                 onLogout={handleLogout}
+                onLogin={handleLogin}
                 setLastOrder={setLastOrder}
                 tableNumber={tableNumber}
                 isTableMode={isTableMode}

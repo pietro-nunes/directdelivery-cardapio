@@ -4,6 +4,7 @@ import "./ModalEndereco.css";
 import MaskedInput from "react-text-mask";
 import { formatarNumero } from "../../utils/functions";
 
+
 const ModalEndereco = ({
   isVisible,
   onClose,
@@ -12,6 +13,7 @@ const ModalEndereco = ({
   tenantData,
   enderecos = [],
 }) => {
+  const CEP_REGEX = /^\d{5}-\d{3}$/;
   const [form, setForm] = useState({
     endereco: "",
     numero: "",
@@ -87,7 +89,7 @@ const ModalEndereco = ({
       cep: end.zipcode || "",
       ptReferencia: end.referencePoint || "",
       apelidoEndereco: end.nickname || "",
-      tipoEndereco: "casa",
+      id: end.id,
     });
 
     const n = tenantData?.neighborhoods?.find(
@@ -199,7 +201,7 @@ const ModalEndereco = ({
         {!showAddressList && (
           <form className="formModal" onSubmit={handleSubmit}>
             <div className="form-fields">
-              <label className="input-label">Apelido:</label>
+              <label className="input-label">Apelido do Endereço:</label>
               <input
                 type="text"
                 maxLength={40}
@@ -253,16 +255,28 @@ const ModalEndereco = ({
                     )
                 )}
               </select>
-
               <label className="input-label">CEP:</label>
               <MaskedInput
-                mask={cepMask}
+                mask={cepMask} // [/\d/, /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/]
                 value={form.cep}
                 onChange={(e) => setForm({ ...form, cep: e.target.value })}
+                onBlur={(e) => {
+                  const v = e.target.value.trim();
+                  if (!CEP_REGEX.test(v)) {
+                    e.target.setCustomValidity(
+                      "Preencha o CEP completo (#####-###)."
+                    );
+                  } else {
+                    e.target.setCustomValidity("");
+                  }
+                }}
+                onInput={(e) => e.target.setCustomValidity("")} // limpa erro enquanto digita
                 placeholder="CEP (XXXXX-XXX)"
                 className="masked-input"
+                required
+                inputMode="numeric"
+                pattern="\d{5}-\d{3}" // força o formato no HTML5
               />
-
               <label className="input-label">Bairro:</label>
               <select
                 value={form.bairro}

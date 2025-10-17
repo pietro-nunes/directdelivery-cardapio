@@ -325,7 +325,7 @@ const ProductModalMobile = ({
             {additionals.length > 0 && (
               <div className="option-section-card">
                 <h4 className="options-header">
-                  Quer turbinar seu prato com adicionais?
+                  Quer turbinar seu item com adicionais?
                   <div className="options-badges">
                     <span className="badge badge-info">Opcional</span>
                   </div>
