@@ -1,11 +1,24 @@
 import React, { useEffect } from "react";
 import "./RestaurantInfo.css";
 import config from "../../config";
-import { FiClock } from "react-icons/fi";
-import { MdLocationPin } from "react-icons/md";
+import { FiMoon, FiSun } from "react-icons/fi";
 import { toTitleCase } from "../../utils/functions";
 
 const HEARTBEAT_MAX_AGE_MIN = 1.5; // tolerância do lastPooling (em minutos)
+
+// helpers
+const isZeroTime = (t) => {
+  if (!t && t !== 0) return false;
+  const s = String(t).trim();
+  // normaliza: pega só HH:MM
+  const m = s.match(/^(\d{1,2}):(\d{2})/);
+  if (!m) return false;
+  const hh = m[1].padStart(2, "0");
+  const mm = m[2];
+  return hh === "00" && mm === "00";
+};
+
+const isDisabledShift = (open, close) => isZeroTime(open) && isZeroTime(close);
 
 // ✅ Verifica se o heartbeat (lastPooling) é recente
 const isLastPoolingOk = (lastPooling, maxAgeMin = HEARTBEAT_MAX_AGE_MIN) => {
@@ -27,7 +40,7 @@ const isLastPoolingOk = (lastPooling, maxAgeMin = HEARTBEAT_MAX_AGE_MIN) => {
     typeof lastPooling === "string"
       ? parseAsLocal(lastPooling)
       : new Date(lastPooling);
-      
+
   if (isNaN(lp.getTime())) return false;
 
   const ageMs = Date.now() - lp.getTime();
@@ -138,20 +151,30 @@ const RestaurantInfo = ({ restaurantInfo, setIsRestaurantOpen }) => {
       </p>
 
       {/* Turno do Dia */}
-      <p className="info">
-        <FiClock size={14} /> <strong>Dia:</strong>{" "}
-        {formatTime(restaurantInfo.openingTime)} –{" "}
-        {formatTime(restaurantInfo.closingTime)}
-      </p>
-
-      {/* Turno da Noite (só se houver) */}
-      {restaurantInfo.openingTime2 && restaurantInfo.closingTime2 && (
+      {!isDisabledShift(
+        restaurantInfo.openingTime,
+        restaurantInfo.closingTime
+      ) && (
         <p className="info">
-          <FiClock size={14} /> <strong>Noite:</strong>{" "}
-          {formatTime(restaurantInfo.openingTime2)} –{" "}
-          {formatTime(restaurantInfo.closingTime2)}
+          <FiSun size={14} /> <strong>Dia:</strong>{" "}
+          {formatTime(restaurantInfo.openingTime)} –{" "}
+          {formatTime(restaurantInfo.closingTime)}
         </p>
       )}
+
+      {/* Turno da Noite (só se houver e não for 00:00–00:00) */}
+      {restaurantInfo.openingTime2 &&
+        restaurantInfo.closingTime2 &&
+        !isDisabledShift(
+          restaurantInfo.openingTime2,
+          restaurantInfo.closingTime2
+        ) && (
+          <p className="info">
+            <FiMoon size={14} /> <strong>Noite:</strong>{" "}
+            {formatTime(restaurantInfo.openingTime2)} –{" "}
+            {formatTime(restaurantInfo.closingTime2)}
+          </p>
+        )}
     </div>
   );
 };

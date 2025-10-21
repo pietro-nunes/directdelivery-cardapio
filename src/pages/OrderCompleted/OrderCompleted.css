@@ -1,7 +1,7 @@
 /* Container principal da tela de Pedido Finalizado */
 .order-completed {
   text-align: center;
-  padding: 40px 20px; /* Mais padding superior/inferior, mantendo lateral */
+  padding: 40px 20px ; /* Mais padding superior/inferior, mantendo lateral */
   display: flex;
   align-items: center; /* Centraliza horizontalmente */
   justify-content: center; /* Centraliza verticalmente (se houver espaço) */

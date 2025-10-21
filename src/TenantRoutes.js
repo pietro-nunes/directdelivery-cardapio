@@ -266,6 +266,7 @@ const TenantRoutes = ({
               <Login
                 basePath={basePath}
                 onLogin={handleLogin}
+                isTableMode={isTableMode}
                 isLoggedIn={isLoggedIn}
                 tenantData={tenantData}
               />
