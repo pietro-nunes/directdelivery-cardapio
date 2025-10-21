@@ -337,48 +337,28 @@ const Checkout = ({
   const handleQrScan = (decodedText) => {
     try {
       const text = String(decodedText).trim();
-      const bytes = Crypto.AES.decrypt(text, salt);
+      const bytes = CryptoJS.AES.decrypt(text, salt);
       const decrypted = bytes.toString(CryptoJS.enc.Utf8);
-      alert(decrypted);
-    //   if (!match) {
-    //     toast.warn("Não encontrei a comanda.", {
-    //       theme: "colored",
-    //       transition: Bounce,
-    //     });
-    //     return;
-    //   }
 
-    //   const numeroTenant = parseInt(match[1], 10);
-    //   const numeroComanda = parseInt(match[2], 10);
+      if (!decrypted) {
+        toast.warn("Comanda não localizada!", {
+          theme: "colored",
+          transition: Bounce,
+        });
+        return;
+      }
 
-    //   if (!Number.isInteger(numeroTenant) || !Number.isInteger(numeroComanda)) {
-    //     toast.warn("Não encontrei a comanda.", {
-    //       theme: "colored",
-    //       transition: Bounce,
-    //     });
-    //     return;
-    //   }
-
-    //   // (Opcional) valida se o QR pertence ao tenant atual:
-    //   if (tenantData?.id && Number(tenantData.id) !== numeroTenant) {
-    //     toast.warn("Não encontrei a comanda.", {
-    //       theme: "colored",
-    //       transition: Bounce,
-    //     });
-    //     return;
-    //   }
-
-    //   // Guarda só o número da comanda e finaliza
-    //   scannedTabIdRef.current = numeroComanda;
-    //   handleFinalizarPedido();
-    // } catch (e) {
-    //   console.error("Falha ao interpretar QR:", e);
-    //   toast.error("Erro ao interpretar QR Code.", {
-    //     theme: "colored",
-    //     transition: Bounce,
-    //   });
+      // Guarda só o número da comanda e finaliza
+      scannedTabIdRef.current = decrypted;
+      handleFinalizarPedido();
+    } catch (e) {
+      console.error("Falha ao interpretar QR:", e);
+      toast.error("Erro ao interpretar QR Code.", {
+        theme: "colored",
+        transition: Bounce,
+      });
     } finally {
-      // setQrOpen(false); // fecha o leitor em qualquer caso
+      setQrOpen(false); // fecha o leitor em qualquer caso
     }
   };
 
