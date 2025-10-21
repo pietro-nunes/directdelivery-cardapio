@@ -339,7 +339,7 @@ const Checkout = ({
       const text = String(decodedText).trim();
       const bytes = Crypto.AES.decrypt(text, salt);
       const decrypted = bytes.toString(CryptoJS.enc.Utf8);
-      toast.warn(decrypted);
+      alert(decrypted);
     //   if (!match) {
     //     toast.warn("Não encontrei a comanda.", {
     //       theme: "colored",
