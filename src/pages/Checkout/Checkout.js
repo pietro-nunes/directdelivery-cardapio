@@ -16,6 +16,7 @@ import {
 import { RiMoneyDollarCircleLine } from "react-icons/ri";
 import Cookies from "js-cookie";
 import { formatarNumero, toTitleCase } from "../../utils/functions";
+import Textarea from "../../components/TextArea/TextArea";
 
 const Checkout = ({
   cartItems,
@@ -29,6 +30,7 @@ const Checkout = ({
   setPaymentData,
   tableNumber,
 }) => {
+  const QR_PATTERN = /^directdelivery-(\d+)-(\d+)$/i;
   const navigate = useNavigate();
   const [enderecos, setEnderecos] = useState([]);
   const [taxaEntrega, setTaxaEntrega] = useState(0);
@@ -331,21 +333,39 @@ const Checkout = ({
 
   const handleQrScan = (decodedText) => {
     try {
-      const match = String(decodedText).match(/\d+/);
-      const numero = match ? parseInt(match[0], 10) : null;
+      const text = String(decodedText).trim();
+      const match = text.match(QR_PATTERN);
 
-      if (!numero) {
-        toast.warn("QR lido, mas não encontrei número da comanda.", {
+      if (!match) {
+        toast.warn("Não encontrei a comanda.", {
           theme: "colored",
           transition: Bounce,
         });
         return;
       }
 
-      scannedTabIdRef.current = numero; // guarda para o envio
-      setQrOpen(false);
+      const numeroTenant = parseInt(match[1], 10);
+      const numeroComanda = parseInt(match[2], 10);
 
-      // Envia na sequência, já com o tabId lido
+      if (!Number.isInteger(numeroTenant) || !Number.isInteger(numeroComanda)) {
+        toast.warn("Não encontrei a comanda.", {
+          theme: "colored",
+          transition: Bounce,
+        });
+        return;
+      }
+
+      // (Opcional) valida se o QR pertence ao tenant atual:
+      if (tenantData?.id && Number(tenantData.id) !== numeroTenant) {
+        toast.warn("Não encontrei a comanda.", {
+          theme: "colored",
+          transition: Bounce,
+        });
+        return;
+      }
+
+      // Guarda só o número da comanda e finaliza
+      scannedTabIdRef.current = numeroComanda;
       handleFinalizarPedido();
     } catch (e) {
       console.error("Falha ao interpretar QR:", e);
@@ -354,7 +374,7 @@ const Checkout = ({
         transition: Bounce,
       });
     } finally {
-      setQrOpen(false);
+      setQrOpen(false); // fecha o leitor em qualquer caso
     }
   };
 
@@ -537,12 +557,13 @@ const Checkout = ({
       {/* Observações */}
       <section className="checkout-section">
         <h2>Observações do pedido:</h2>
-        <textarea
-          className="observations-textarea"
-          placeholder="Ex.: Apertar campainha, não buzinar, etc."
-          maxLength={150}
+        <Textarea
+          id="obs-entrega"
+          name="deliveryObservations"
           value={observation}
-          onChange={(e) => setObservation(e.target.value)}
+          onChange={setObservation} // recebe string direto do componente
+          max={80} // limite desejado
+          placeholder="Ex.: Apertar campainha, não buzinar, etc."
         />
       </section>
       {/* Modais */}

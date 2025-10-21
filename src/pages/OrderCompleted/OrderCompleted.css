@@ -1,12 +1,14 @@
 /* Container principal da tela de Pedido Finalizado */
 .order-completed {
   text-align: center;
-  padding: 25px 20px; /* Mais padding superior/inferior, mantendo lateral */
+  padding: 40px 20px; /* Mais padding superior/inferior, mantendo lateral */
   display: flex;
   align-items: center; /* Centraliza horizontalmente */
   justify-content: center; /* Centraliza verticalmente (se houver espaço) */
   flex-direction: column;
-  min-height: calc(100dvh - 60px); /* Garante que ocupe a altura da viewport (ajuste 60px se tiver header/footer fixo) */
+  min-height: calc(
+    100dvh - 60px
+  ); /* Garante que ocupe a altura da viewport (ajuste 60px se tiver header/footer fixo) */
   box-sizing: border-box; /* Inclui padding na altura/largura */
   background-color: #f8f8f8; /* Um fundo suave para a página */
 }
@@ -20,8 +22,9 @@
 }
 
 /* Lottie Animation */
-.order-completed .lottie-react-container { /* Adicionar se o Lottie não estiver centralizando bem */
-    margin-bottom: 20px; /* Espaço abaixo da animação */
+.order-completed .lottie-react-container {
+  /* Adicionar se o Lottie não estiver centralizando bem */
+  margin-bottom: 20px; /* Espaço abaixo da animação */
 }
 
 /* Resumo do Pedido */
@@ -62,7 +65,7 @@
 
 /* Botão Primário (WhatsApp) */
 .btn-primary {
-  background-color: #25D366; /* Verde WhatsApp */
+  background-color: #25d366; /* Verde WhatsApp */
   color: white;
   border: none;
   padding: 12px 25px; /* Padding maior */
@@ -70,7 +73,8 @@
   font-size: 1.05rem; /* Tamanho da fonte maior */
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease,
+    box-shadow 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -83,7 +87,7 @@
 }
 
 .btn-primary:hover {
-  background-color: #1DA851; /* Verde mais escuro no hover */
+  background-color: #1da851; /* Verde mais escuro no hover */
   transform: translateY(-2px); /* Efeito de "levantar" */
   box-shadow: 0 6px 15px rgba(37, 211, 102, 0.3);
 }
@@ -99,7 +103,8 @@
   font-size: 1.05rem; /* Tamanho da fonte maior */
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease,
+    box-shadow 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -117,7 +122,9 @@
 @media (min-width: 768px) {
   .order-completed {
     padding: 40px 20px; /* Mais padding em desktop */
-    min-height: calc(100dvh - 80px); /* Ajuste para possível header/footer maior em desktop */
+    min-height: calc(
+      100dvh - 80px
+    ); /* Ajuste para possível header/footer maior em desktop */
   }
 
   .order-completed h2 {

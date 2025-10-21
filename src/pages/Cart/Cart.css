@@ -136,12 +136,24 @@
   color: #495057;
 }
 
-.cart-item-list li,
-.cart-item-obs {
+.cart-item-list li {
   font-size: 0.8rem; /* Reduzido */
   margin-bottom: 3px;
   line-height: 1.4;
+} 
+
+.cart-item-obs{
+  font-size:0.8rem;
+  line-height:1.35;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2; /* ou 3 */
+  overflow:hidden;
+  white-space:normal;
+  overflow-wrap:anywhere;
+  word-break:break-word;
 }
+
 
 .removed-compositions-list li {
   text-decoration: line-through;

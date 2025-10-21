@@ -10,6 +10,7 @@ import {
   FiPlus,
 } from "react-icons/fi";
 import config from "../../config";
+import Textarea from "../TextArea/TextArea";
 
 const ProductModalMobile = ({
   product = {},
@@ -367,12 +368,13 @@ const ProductModalMobile = ({
                   <span className="badge badge-info">Opcional</span>
                 </div>
               </h4>
-              <textarea
-                className="observations-textarea"
-                placeholder="Ex.: Sem cebola, sem ovo, etc."
-                maxLength={150}
+              <Textarea
+                id="obs"
+                name="observations"
                 value={observation}
-                onChange={(e) => setObservation(e.target.value)}
+                onChange={setObservation}
+                max={80} 
+                placeholder="Ex.: Sem cebola, sem ovo, etc."
               />
             </div>
           </div>

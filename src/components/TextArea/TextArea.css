@@ -1,0 +1,15 @@
+.limited-textarea {
+  display: grid;
+  gap: 6px;
+}
+.observations-textarea {
+  min-height: 84px;
+  resize: vertical;
+}
+.obs-counter {
+  font-size: 12px;
+  opacity: 0.85;
+}
+.obs-counter.near-limit {
+  color: #b45309; /* âmbar/alerta suave */
+}
