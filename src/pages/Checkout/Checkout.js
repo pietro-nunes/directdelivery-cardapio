@@ -17,6 +17,7 @@ import { RiMoneyDollarCircleLine } from "react-icons/ri";
 import Cookies from "js-cookie";
 import { formatarNumero, toTitleCase } from "../../utils/functions";
 import Textarea from "../../components/TextArea/TextArea";
+import CryptoJS from "crypto-js";
 
 const Checkout = ({
   cartItems,
@@ -30,7 +31,7 @@ const Checkout = ({
   setPaymentData,
   tableNumber,
 }) => {
-  const QR_PATTERN = /^directdelivery-(\d+)-(\d+)$/i;
+  const salt = "directdeliveryacertsoft1865sala804";
   const navigate = useNavigate();
   const [enderecos, setEnderecos] = useState([]);
   const [taxaEntrega, setTaxaEntrega] = useState(0);
@@ -336,47 +337,48 @@ const Checkout = ({
   const handleQrScan = (decodedText) => {
     try {
       const text = String(decodedText).trim();
-      const match = text.match(QR_PATTERN);
+      const bytes = Crypto.AES.decrypt(text, salt);
+      const decrypted = bytes.toString(CryptoJS.enc.Utf8);
+      toast.warn(decrypted);
+    //   if (!match) {
+    //     toast.warn("Não encontrei a comanda.", {
+    //       theme: "colored",
+    //       transition: Bounce,
+    //     });
+    //     return;
+    //   }
 
-      if (!match) {
-        toast.warn("Não encontrei a comanda.", {
-          theme: "colored",
-          transition: Bounce,
-        });
-        return;
-      }
+    //   const numeroTenant = parseInt(match[1], 10);
+    //   const numeroComanda = parseInt(match[2], 10);
 
-      const numeroTenant = parseInt(match[1], 10);
-      const numeroComanda = parseInt(match[2], 10);
+    //   if (!Number.isInteger(numeroTenant) || !Number.isInteger(numeroComanda)) {
+    //     toast.warn("Não encontrei a comanda.", {
+    //       theme: "colored",
+    //       transition: Bounce,
+    //     });
+    //     return;
+    //   }
 
-      if (!Number.isInteger(numeroTenant) || !Number.isInteger(numeroComanda)) {
-        toast.warn("Não encontrei a comanda.", {
-          theme: "colored",
-          transition: Bounce,
-        });
-        return;
-      }
+    //   // (Opcional) valida se o QR pertence ao tenant atual:
+    //   if (tenantData?.id && Number(tenantData.id) !== numeroTenant) {
+    //     toast.warn("Não encontrei a comanda.", {
+    //       theme: "colored",
+    //       transition: Bounce,
+    //     });
+    //     return;
+    //   }
 
-      // (Opcional) valida se o QR pertence ao tenant atual:
-      if (tenantData?.id && Number(tenantData.id) !== numeroTenant) {
-        toast.warn("Não encontrei a comanda.", {
-          theme: "colored",
-          transition: Bounce,
-        });
-        return;
-      }
-
-      // Guarda só o número da comanda e finaliza
-      scannedTabIdRef.current = numeroComanda;
-      handleFinalizarPedido();
-    } catch (e) {
-      console.error("Falha ao interpretar QR:", e);
-      toast.error("Erro ao interpretar QR Code.", {
-        theme: "colored",
-        transition: Bounce,
-      });
+    //   // Guarda só o número da comanda e finaliza
+    //   scannedTabIdRef.current = numeroComanda;
+    //   handleFinalizarPedido();
+    // } catch (e) {
+    //   console.error("Falha ao interpretar QR:", e);
+    //   toast.error("Erro ao interpretar QR Code.", {
+    //     theme: "colored",
+    //     transition: Bounce,
+    //   });
     } finally {
-      setQrOpen(false); // fecha o leitor em qualquer caso
+      // setQrOpen(false); // fecha o leitor em qualquer caso
     }
   };
 
