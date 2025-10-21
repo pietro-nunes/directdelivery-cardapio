@@ -48,6 +48,7 @@ const Checkout = ({
   const [qrOpen, setQrOpen] = useState(false);
   const [scannedComanda, setScannedComanda] = useState(null);
   const submitAfterScanRef = useRef(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const isSubmittingRef = useRef(false);
   const scannedTabIdRef = useRef(null); // número da comanda lido no QR
 
@@ -110,22 +111,24 @@ const Checkout = ({
   const total = calcularTotal();
 
   const handleFinalizarPedido = async () => {
-    // 🔴 Exige QR sempre em modo mesa
+    // Em mesa: exigir QR antes, não liga loading aqui
     if (isTableMode && !scannedTabIdRef.current) {
       setQrOpen(true);
-      return; // NÃO prossegue; envio só após leitura do QR
+      return;
     }
 
     if (isSubmittingRef.current) return;
     isSubmittingRef.current = true;
 
     try {
+      // ✅ liga loading na UI
+      setIsSubmitting(true);
+
       if (!tipoEntrega && !isTableMode) {
         toast.warn("Por favor, selecione o tipo de entrega.", {
           theme: "colored",
           transition: Bounce,
         });
-        isSubmittingRef.current = false;
         return;
       }
 
@@ -134,7 +137,6 @@ const Checkout = ({
           theme: "colored",
           transition: Bounce,
         });
-        isSubmittingRef.current = false;
         return;
       }
 
@@ -143,7 +145,6 @@ const Checkout = ({
           theme: "colored",
           transition: Bounce,
         });
-        isSubmittingRef.current = false;
         return;
       }
 
@@ -155,7 +156,6 @@ const Checkout = ({
           "Por favor, selecione ou adicione um endereço de entrega válido.",
           { theme: "colored", transition: Bounce }
         );
-        isSubmittingRef.current = false;
         return;
       }
 
@@ -176,8 +176,8 @@ const Checkout = ({
         observacaoPedido: observation,
         nomeFormaPagamento: formaPagamentoSelecionada.name,
         pagamentoOnline: formaPagamentoSelecionada.onlinePayment,
-        tabId: isTableMode ? Number(scannedTabIdRef.current) : null, // ✅ sempre do QR
-        tableNumber: isTableMode ? Number(tableNumber) : null, // ignorado em mesa
+        tabId: isTableMode ? Number(scannedTabIdRef.current) : null,
+        tableNumber: isTableMode ? Number(tableNumber) : null,
       };
 
       const postResponse = await fetchWithLoading(`${config.baseURL}/orders`, {
@@ -234,6 +234,8 @@ const Checkout = ({
         transition: Bounce,
       });
     } finally {
+      // ✅ desliga loading e libera novo clique
+      setIsSubmitting(false);
       isSubmittingRef.current = false;
     }
   };
@@ -616,8 +618,20 @@ const Checkout = ({
             </div>
           )}
         </div>
-        <button onClick={handleFinalizarPedido} className="finalizar-button">
-          Finalizar Pedido
+        <button
+          onClick={handleFinalizarPedido}
+          className={`finalizar-button ${isSubmitting ? "is-loading" : ""}`}
+          disabled={isSubmitting}
+          aria-busy={isSubmitting}
+          aria-disabled={isSubmitting}
+        >
+          {isSubmitting ? (
+            <>
+              <span className="spinner" aria-hidden="true" /> Enviando...
+            </>
+          ) : (
+            "Finalizar Pedido"
+          )}
         </button>
       </div>
     </div>
