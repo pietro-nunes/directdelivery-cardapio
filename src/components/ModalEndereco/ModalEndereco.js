@@ -4,7 +4,6 @@ import "./ModalEndereco.css";
 import MaskedInput from "react-text-mask";
 import { formatarNumero } from "../../utils/functions";
 
-
 const ModalEndereco = ({
   isVisible,
   onClose,
@@ -90,7 +89,7 @@ const ModalEndereco = ({
       ptReferencia: end.referencePoint || "",
       apelidoEndereco: end.nickname || "",
       id: end.id,
-      tipoEndereco: 'casa',
+      tipoEndereco: "casa",
     });
 
     const n = tenantData?.neighborhoods?.find(
@@ -221,12 +220,13 @@ const ModalEndereco = ({
                 required
               />
               <label className="input-label">Número:</label>
-              <input
-                type="number"
-                name="numero"
-                max="99999"
-                value={form.numero}
-                onChange={handleChange}
+              <MaskedInput
+                mask={[/\d/, /\d/, /\d/, /\d/, /\d/]}
+                value={form.numero ?? ""}
+                onChange={(e) => setForm({ ...form, numero: e.target.value })}
+                inputMode="numeric"
+                placeholder="Número (#####)"
+                guide={false}
                 required
               />
               <label className="input-label">Complemento:</label>
