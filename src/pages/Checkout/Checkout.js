@@ -63,7 +63,7 @@ const Checkout = ({
       console.error("Erro ao carregar token do cliente:", e);
       onLogout();
     }
-  }, [onLogout]);
+  }, [onLogout, tenantData.slug]);
 
   useEffect(() => {
     enderecosRef.current = enderecos;
@@ -112,7 +112,7 @@ const Checkout = ({
   const total = calcularTotal();
 
   const handleFinalizarPedido = async () => {
-    // Em mesa: exigir QR antes, não liga loading aqui
+    // Em mesa: exigir QR antes
     if (isTableMode && !scannedTabIdRef.current) {
       setQrOpen(true);
       return;
@@ -122,7 +122,6 @@ const Checkout = ({
     isSubmittingRef.current = true;
 
     try {
-      // ✅ liga loading na UI
       setIsSubmitting(true);
 
       if (!tipoEntrega && !isTableMode) {
@@ -235,7 +234,6 @@ const Checkout = ({
         transition: Bounce,
       });
     } finally {
-      // ✅ desliga loading e libera novo clique
       setIsSubmitting(false);
       isSubmittingRef.current = false;
     }
@@ -368,83 +366,113 @@ const Checkout = ({
       <section className="checkout-section">
         <div className="section-header">
           <h2>Seu pedido será para:</h2>
-          <button onClick={handleLogout} className="change-button">
-            Trocar
-          </button>
         </div>
-        <div className="card customer-card">
+        <div className="card customer-card selected">
           {cliente ? (
-            <>
-              <p>
-                <strong>{cliente.name}</strong>
-              </p>
-              <p>{formatarTelefone(cliente.phone)}</p>
-            </>
+            <div
+              className="card-header-row"
+              style={{
+                justifyContent: "space-between",
+                width: "100%",
+              }}
+            >
+              <div>
+                <p>
+                  <strong>{cliente.name}</strong>
+                </p>
+                <p>{formatarTelefone(cliente.phone)}</p>
+              </div>
+              <div>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleLogout();
+                  }}
+                  className="change-button"
+                >
+                  Trocar
+                </button>
+              </div>
+            </div>
           ) : (
             <p>Carregando informações do cliente...</p>
           )}
         </div>
       </section>
+
       {/* Tipo de Entrega */}
       {isTableMode === false && (
         <section className="checkout-section">
           <h2>Escolha o tipo da entrega:</h2>
+
           <div className="delivery-card-list">
+            {/* ENTREGA */}
             <div
               className={`card delivery-card ${
                 tipoEntrega === "entrega" ? "selected" : ""
               }`}
               onClick={handleEntregaClick}
             >
-              <MdLocalShipping size={24} className="card-icon" />
-              <div className="card-content">
-                <strong>Entrega</strong>
-                <p>Receber no seu endereço</p>
+              <div className="card-header-row">
+                <MdLocalShipping size={24} className="card-icon" />
+                <div className="card-content">
+                  <strong>Entrega</strong>
+                  <p>Receber no seu endereço</p>
+                </div>
               </div>
+
+              {/* Footer com endereço DENTRO do card */}
+              {tipoEntrega === "entrega" && enderecos.length > 0 && (
+                <div className="card-footer">
+                  <span className="footer-line">
+                    <MdLocationPin size={20} />
+                    {enderecos[0].neighborhood.name}, {enderecos[0].address},{" "}
+                    {enderecos[0].number} - {enderecos[0].city.name}
+                  </span>
+                </div>
+              )}
             </div>
+
+            {/* RETIRADA */}
             <div
               className={`card delivery-card ${
                 tipoEntrega === "retirada" ? "selected" : ""
               }`}
               onClick={handleRetiradaClick}
             >
-              <MdStore size={24} className="card-icon" />
-              <div className="card-content">
-                <strong>Retirada no local</strong>
-                <p>Buscar direto no balcão</p>
+              <div className="card-header-row">
+                <MdStore size={24} className="card-icon" />
+                <div className="card-content">
+                  <strong>Retirada no local</strong>
+                  <p>Buscar direto no balcão</p>
+                </div>
               </div>
+
+              {tipoEntrega === "retirada" && (
+                <div className="card-footer">
+                  <span className="footer-line">
+                    <MdLocationPin size={20} />
+                    {tenantData.address &&
+                      tenantData.address !== "0" &&
+                      `${toTitleCase(tenantData.address)}, `}
+                    {tenantData.number &&
+                      tenantData.number !== "0" &&
+                      `${tenantData.number}, `}
+                    {tenantData.neighborhood &&
+                      tenantData.neighborhood !== "0" &&
+                      `${toTitleCase(tenantData.neighborhood)} - `}
+                    {tenantData.city &&
+                      tenantData.city !== "0" &&
+                      toTitleCase(tenantData.city)}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
-          {tipoEntrega === "retirada" && (
-            <div className="delivery-details">
-              <span>
-                <MdLocationPin size={14} />
-                {tenantData.address &&
-                  tenantData.address !== "0" &&
-                  `${toTitleCase(tenantData.address)}, `}
-                {tenantData.number &&
-                  tenantData.number !== "0" &&
-                  `${tenantData.number}, `}
-                {tenantData.neighborhood &&
-                  tenantData.neighborhood !== "0" &&
-                  `${toTitleCase(tenantData.neighborhood)} - `}
-                {tenantData.city &&
-                  tenantData.city !== "0" &&
-                  toTitleCase(tenantData.city)}
-              </span>
-            </div>
-          )}
-          {tipoEntrega === "entrega" && enderecos.length > 0 && (
-            <div className="delivery-details">
-              <span>
-                <MdLocationPin size={14} /> {enderecos[0].neighborhood.name},{" "}
-                {enderecos[0].address}, {enderecos[0].number} -{" "}
-                {enderecos[0].city.name}
-              </span>
-            </div>
-          )}
         </section>
       )}
+
       {/* Mesa */}
       {isTableMode === true && (
         <section className="checkout-section">
@@ -454,24 +482,25 @@ const Checkout = ({
             style={{ cursor: "default" }}
             aria-live="polite"
           >
-            <MdTableBar size={24} className="card-icon" />
-            <div className="card-content">
-              <strong>Entrega na mesa</strong>
-              <p>
-                Seu pedido será entregue na mesa{" "}
-                <strong>Nº {tableNumber}</strong>.
-              </p>
+            <div className="card-header-row">
+              <MdTableBar size={24} className="card-icon" />
+              <div className="card-content">
+                <strong>Entrega na mesa</strong>
+                <p>
+                  Seu pedido será entregue na mesa <strong>Nº {tableNumber}</strong>.
+                </p>
+              </div>
             </div>
           </div>
         </section>
       )}
+
       {/* Forma de Pagamento */}
       {isTableMode === false && (
         <section className="checkout-section">
           <h2>Escolha a forma de pagamento:</h2>
 
           {/* PAGUE ONLINE */}
-
           {tenantData?.paymentTypes?.some(
             (f) => f.isActive && f.onlinePayment
           ) && (
@@ -490,13 +519,15 @@ const Checkout = ({
                       }`}
                       onClick={() => handleFormaPagamentoClick(forma)}
                     >
-                      <RiMoneyDollarCircleLine
-                        size={24}
-                        className="card-icon"
-                      />
-                      <div className="card-content">
-                        <strong>{toTitleCase(forma.name)}</strong>
-                        {forma.need_change && <p>Precisa de troco?</p>}
+                      <div className="card-header-row">
+                        <RiMoneyDollarCircleLine
+                          size={24}
+                          className="card-icon"
+                        />
+                        <div className="card-content">
+                          <strong>{toTitleCase(forma.name)}</strong>
+                          {forma.need_change && <p>Precisa de troco?</p>}
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -523,13 +554,15 @@ const Checkout = ({
                       }`}
                       onClick={() => handleFormaPagamentoClick(forma)}
                     >
-                      <RiMoneyDollarCircleLine
-                        size={24}
-                        className="card-icon"
-                      />
-                      <div className="card-content">
-                        <strong>{toTitleCase(forma.name)}</strong>
-                        {forma.need_change && <p>Precisa de troco?</p>}
+                      <div className="card-header-row">
+                        <RiMoneyDollarCircleLine
+                          size={24}
+                          className="card-icon"
+                        />
+                        <div className="card-content">
+                          <strong>{toTitleCase(forma.name)}</strong>
+                          {forma.need_change && <p>Precisa de troco?</p>}
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -538,6 +571,7 @@ const Checkout = ({
           )}
         </section>
       )}
+
       {/* Observações */}
       <section className="checkout-section">
         <h2>Observações do pedido:</h2>
@@ -545,11 +579,12 @@ const Checkout = ({
           id="obs-entrega"
           name="deliveryObservations"
           value={observation}
-          onChange={setObservation} // recebe string direto do componente
-          max={80} // limite desejado
+          onChange={setObservation}
+          max={80}
           placeholder="Ex.: Apertar campainha, não buzinar, etc."
         />
       </section>
+
       {/* Modais */}
       <ModalTroco
         isVisible={modalTrocoVisible}
@@ -568,12 +603,14 @@ const Checkout = ({
         tenantData={tenantData}
         enderecos={cliente?.addresses || []}
       />
+
       {/* Modal QR para ler comanda/mesa */}
       <ModalQRCode
         isOpen={qrOpen}
         onClose={() => setQrOpen(false)}
         onScan={handleQrScan}
       />
+
       {/* Resumo e Finalizar */}
       <div className="finish-order-info">
         <div className="total-box">
@@ -601,6 +638,7 @@ const Checkout = ({
           )}
         </div>
         <button
+          type="button"
           onClick={handleFinalizarPedido}
           className={`finalizar-button ${isSubmitting ? "is-loading" : ""}`}
           disabled={isSubmitting}

@@ -201,7 +201,7 @@ const ModalEndereco = ({
         {!showAddressList && (
           <form className="formModal" onSubmit={handleSubmit}>
             <div className="form-fields">
-              <label className="input-label">Apelido do Endereço:</label>
+              <label className="input-label">Apelido do Endereço (Ex: Casa, Trabalho):</label>
               <input
                 type="text"
                 maxLength={40}

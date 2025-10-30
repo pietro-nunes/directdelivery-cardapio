@@ -184,6 +184,9 @@ const OrderCompleted = ({
       />
       <div className="order-summary">
         <p>
+          <strong>Nº do Pedido: </strong> #{orderDetails.id}
+        </p>
+        <p>
           <strong>Data:</strong> {new Date().toLocaleString()}
         </p>
         <p>
