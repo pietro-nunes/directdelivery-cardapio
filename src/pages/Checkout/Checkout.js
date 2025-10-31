@@ -487,7 +487,8 @@ const Checkout = ({
               <div className="card-content">
                 <strong>Entrega na mesa</strong>
                 <p>
-                  Seu pedido será entregue na mesa <strong>Nº {tableNumber}</strong>.
+                  Seu pedido será entregue na mesa{" "}
+                  <strong>Nº {tableNumber}</strong>.
                 </p>
               </div>
             </div>

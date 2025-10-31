@@ -19,7 +19,13 @@ const Cart = ({
   const handleIncrement = (uniqueKey) => {
     setCartItems((prevItems) =>
       prevItems.map((item) =>
-        item.uniqueKey === uniqueKey ? { ...item, count: item.count + 1 } : item
+        item.uniqueKey === uniqueKey
+          ? {
+              ...item,
+              count: item.count + 1,
+              totalPrice: item.unitPrice * (item.count + 1),
+            }
+          : item
       )
     );
   };
@@ -32,7 +38,11 @@ const Cart = ({
       if (itemToRemove.count > 1) {
         return prevItems.map((item) =>
           item.uniqueKey === uniqueKey
-            ? { ...item, count: item.count - 1 }
+            ? {
+                ...item,
+                count: item.count - 1,
+                totalPrice: item.unitPrice * (item.count - 1),
+              }
             : item
         );
       } else {
