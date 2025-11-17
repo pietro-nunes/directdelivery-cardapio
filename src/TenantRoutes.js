@@ -198,6 +198,7 @@ const TenantRoutes = ({
               tenantData={tenantData}
               addToCart={addToCart}
               setIsRestaurantOpen={setIsRestaurantOpen}
+              isTableMode={isTableMode}
             />
           }
         />

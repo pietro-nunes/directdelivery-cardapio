@@ -12,7 +12,7 @@ import { toTitleCase } from "../../utils/functions";
 import { searchProducts, getAllProducts } from "../../utils/searchUtils";
 import ProductModalMobile from "../../components/ProductModalMobile/ProductModalMobile";
 
-const Home = ({ addToCart, tenantData, setIsRestaurantOpen }) => {
+const Home = ({ addToCart, tenantData, setIsRestaurantOpen, isTableMode}) => {
   const [selectedCategory, setSelectedCategory] = useState();
   const [categories, setCategories] = useState([]);
   const [bestSellers, setBestSellers] = useState([]);
@@ -117,6 +117,7 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen }) => {
               lastPooling: tenantData.lastPooling,
             }}
             setIsRestaurantOpen={setIsRestaurantOpen}
+            isTableMode={isTableMode}
           />
         </div>
       )}

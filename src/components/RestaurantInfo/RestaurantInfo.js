@@ -59,7 +59,11 @@ const normalizeOpeningDays = (openingDays) => {
   return [];
 };
 
-const RestaurantInfo = ({ restaurantInfo, setIsRestaurantOpen }) => {
+const RestaurantInfo = ({
+  restaurantInfo,
+  setIsRestaurantOpen,
+  isTableMode,
+}) => {
   const isRestaurantOpen = (
     openingTime1,
     closingTime1,
@@ -71,6 +75,11 @@ const RestaurantInfo = ({ restaurantInfo, setIsRestaurantOpen }) => {
     // 1) Se o servidor perdeu conexão, fecha a loja
     if (!isLastPoolingOk(lastPooling, HEARTBEAT_MAX_AGE_MIN)) {
       return false;
+    }
+
+    // 2) 🔥 SE FOR TABLE MODE: considera aberto se o pooling está OK
+    if (isTableMode) {
+      return true;
     }
 
     const now = new Date();
@@ -150,31 +159,36 @@ const RestaurantInfo = ({ restaurantInfo, setIsRestaurantOpen }) => {
         {isOpen ? "Estamos abertos 😁" : "Estamos fechados 😔"}
       </p>
 
-      {/* Turno do Dia */}
-      {!isDisabledShift(
-        restaurantInfo.openingTime,
-        restaurantInfo.closingTime
-      ) && (
-        <p className="info">
-          <FiSun size={14} /> <strong>Dia:</strong>{" "}
-          {formatTime(restaurantInfo.openingTime)} –{" "}
-          {formatTime(restaurantInfo.closingTime)}
-        </p>
-      )}
+      {/* Turnos — só mostra se NÃO estiver em modo mesa */}
+      {!isTableMode && (
+        <>
+          {/* Turno do Dia */}
+          {!isDisabledShift(
+            restaurantInfo.openingTime,
+            restaurantInfo.closingTime
+          ) && (
+            <p className="info">
+              <FiSun size={14} /> <strong>Turno 1:</strong>{" "}
+              {formatTime(restaurantInfo.openingTime)} –{" "}
+              {formatTime(restaurantInfo.closingTime)}
+            </p>
+          )}
 
-      {/* Turno da Noite (só se houver e não for 00:00–00:00) */}
-      {restaurantInfo.openingTime2 &&
-        restaurantInfo.closingTime2 &&
-        !isDisabledShift(
-          restaurantInfo.openingTime2,
-          restaurantInfo.closingTime2
-        ) && (
-          <p className="info">
-            <FiMoon size={14} /> <strong>Noite:</strong>{" "}
-            {formatTime(restaurantInfo.openingTime2)} –{" "}
-            {formatTime(restaurantInfo.closingTime2)}
-          </p>
-        )}
+          {/* Turno da Noite */}
+          {restaurantInfo.openingTime2 &&
+            restaurantInfo.closingTime2 &&
+            !isDisabledShift(
+              restaurantInfo.openingTime2,
+              restaurantInfo.closingTime2
+            ) && (
+              <p className="info">
+                <FiMoon size={14} /> <strong>Turno 2:</strong>{" "}
+                {formatTime(restaurantInfo.openingTime2)} –{" "}
+                {formatTime(restaurantInfo.closingTime2)}
+              </p>
+            )}
+        </>
+      )}
     </div>
   );
 };
