@@ -37,6 +37,32 @@ const ProductModalMobile = ({
     product.relations?.filter((relation) => relation.type === "composition") ||
     [];
 
+  // Função para calcular o preço exibido (estático)
+  const getStaticPriceDisplay = () => {
+    const productPrice = Number(product.price || 0);
+    
+    // Se o preço do produto for zero, calcula min/max apenas das relations do tipo "flavor"
+    if (productPrice === 0 && product.relations && product.relations.length > 0) {
+      const flavorPrices = product.relations
+        .filter(rel => rel.type === "flavor")
+        .map(rel => Number(rel.price || 0))
+        .filter(p => p > 0);
+      
+      if (flavorPrices.length > 0) {
+        const minPrice = Math.min(...flavorPrices);
+        const maxPrice = Math.max(...flavorPrices);
+        
+        if (minPrice === maxPrice) {
+          return `por R$ ${formatarNumero(minPrice)}`;
+        } else {
+          return `A partir de R$ ${formatarNumero(minPrice)} (até R$ ${formatarNumero(maxPrice)})`;
+        }
+      }
+    }
+    
+    return `R$ ${formatarNumero(productPrice)}`;
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       if (mainContentRef.current) {
@@ -223,7 +249,7 @@ const ProductModalMobile = ({
               </h3>
             )}
             <p className="modal-product-price-mobile">
-              R$ {formatarNumero(product.price)}
+              {getStaticPriceDisplay()}
             </p>
             <p className="modal-product-description-mobile">
               {toTitleCase(product.description) || ""}

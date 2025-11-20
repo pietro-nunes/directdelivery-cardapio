@@ -14,7 +14,6 @@ const OrderCompleted = ({
   basePath,
 }) => {
   const navigate = useNavigate();
-
   const formatWhatsAppMessage = (orderDetails) => {
     const {
       id,
@@ -48,13 +47,14 @@ const OrderCompleted = ({
     const rawItems = Array.isArray(items)
       ? items
       : Array.isArray(itens)
-      ? itens
-      : [];
+        ? itens
+        : [];
     const normalizedItems = rawItems.map((it) => ({
       quantity: it.quantity ?? it.count ?? 1,
       productName: it.productName ?? it.name ?? "Item",
-      price: Number(it.productPrice ?? it.price ?? it.totalPrice ?? 0),
+      price: Number(it.totalPrice ?? it.productPrice ?? it.price ?? 0),
       isActive: it.isActive ?? true,
+      relations: Array.isArray(it.relations) ? it.relations : [],
     }));
 
     // 2) Endereço normalizado
@@ -86,17 +86,42 @@ const OrderCompleted = ({
     let message = `*Novo Pedido #${id ?? "—"} Realizado!*\n\n`;
     // (se quiser manter a linha separada, descomente)
     // if (id !== undefined) message += `📌 *Número do Pedido:* ${id}\n`;
-    message += `📅 *Data:* ${
-      createdAt
+    message += `📅 *Data:* ${createdAt
         ? new Date(createdAt).toLocaleString()
         : new Date().toLocaleString()
-    }\n\n`;
+      }\n\n`;
 
     message += `🍽️ *Itens do Pedido:*\n`;
     normalizedItems.forEach((item) => {
       message += `- ${item.quantity}x ${item.productName} - R$ ${formatarNumero(
         item.price
       )}\n`;
+
+      // Adiciona as relações (composition, additional, flavor)
+      if (item.relations && item.relations.length > 0) {
+        item.relations.forEach((rel) => {
+          const relProduct = rel.relatedProduct;
+          if (relProduct && relProduct.name) {
+            const relType = rel.type || "";
+            const relQuantity = rel.quantity || 1;
+            const relPrice = Number(rel.price || 0);
+            const isRemoved = rel.removed === true;
+
+            if (relType === "composition") {
+              // Compositions são sempre removidas (Sem)
+              message += `    → Sem ${relProduct.name}\n`;
+            } else if (relType === "additional") {
+              message += `    → Adicional: ${relQuantity}x ${relProduct.name}`;
+              if (relPrice > 0) {
+                message += ` (+R$ ${formatarNumero(relPrice)})`;
+              }
+              message += `\n`;
+            } else if (relType === "flavor") {
+              message += `    → Sabor: ${relProduct.name}\n`;
+            }
+          }
+        });
+      }
     });
 
     // 5) Entrega x Retirada
@@ -115,16 +140,13 @@ const OrderCompleted = ({
 
       message += `\n📍 *Endereço de Entrega:*\n`;
       if (apelido) message += `${apelido}: `;
-      message += `${enderecoStr}${numero ? `, ${numero}` : ""}${
-        complemento ? ` - ${complemento}` : ""
-      }\n`;
-      message += `${bairro}${bairro && (cidade || cep) ? " - " : ""}${cidade}${
-        cep ? `, CEP: ${cep}` : ""
-      }\n`;
-      if (addr.pontoReferencia ?? addr.ptReferencia ?? addr.referencePoint) {
-        message += `Ponto de Referência: ${
-          addr.pontoReferencia ?? addr.ptReferencia ?? addr.referencePoint
+      message += `${enderecoStr}${numero ? `, ${numero}` : ""}${complemento ? ` - ${complemento}` : ""
         }\n`;
+      message += `${bairro}${bairro && (cidade || cep) ? " - " : ""}${cidade}${cep ? `, CEP: ${cep}` : ""
+        }\n`;
+      if (addr.pontoReferencia ?? addr.ptReferencia ?? addr.referencePoint) {
+        message += `Ponto de Referência: ${addr.pontoReferencia ?? addr.ptReferencia ?? addr.referencePoint
+          }\n`;
       }
 
       // >>> NOVO: mostra a taxa de entrega, se houver
@@ -142,9 +164,8 @@ const OrderCompleted = ({
 
     // 7) Pagamento
     const trocoVal = change ?? troco;
-    message += `\n💳 *Forma de Pagamento:* ${
-      nomeFormaPagamento ?? `#${paymentMethod ?? "—"}`
-    }`;
+    message += `\n💳 *Forma de Pagamento:* ${nomeFormaPagamento ?? `#${paymentMethod ?? "—"}`
+      }`;
     if (trocoVal != null && trocoVal !== "") {
       message += ` (Troco para R$ ${formatarNumero(trocoVal)})`;
     }
@@ -162,12 +183,10 @@ const OrderCompleted = ({
 
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   const shareUrl = isMobile
-    ? `https://api.whatsapp.com/send?phone=55${
-        tenantData.phone
-      }&text=${encodeURIComponent(message)}`
-    : `https://web.whatsapp.com/send?phone=55${
-        tenantData.phone
-      }&text=${encodeURIComponent(message)}`;
+    ? `https://api.whatsapp.com/send?phone=55${tenantData.phone
+    }&text=${encodeURIComponent(message)}`
+    : `https://web.whatsapp.com/send?phone=55${tenantData.phone
+    }&text=${encodeURIComponent(message)}`;
 
   const handleShare = () => {
     // Abre a URL em uma nova aba
