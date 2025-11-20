@@ -107,23 +107,26 @@ const ProductModalMobile = ({
 
     let calculatedFlavorPrice = 0;
     if (selectedFlavors.length > 0) {
-      const sumOfSelectedFlavorRelationsPrice = selectedFlavors
+      const selectedFlavorPrices = selectedFlavors
         .map((id) => flavors.find((r) => r.id === id))
-        .reduce((sum, r) => sum + parseFloat(r?.price || 0), 0);
+        .map((r) => parseFloat(r?.price || 0));
+      
+      const sumOfSelectedFlavorRelationsPrice = selectedFlavorPrices
+        .reduce((sum, price) => sum + price, 0);
 
       if (tenantFlavorCalcType === "average" && selectedFlavors.length > 0) {
         calculatedFlavorPrice = parseFloat(
-          (sumOfSelectedFlavorRelationsPrice / selectedFlavors.length).toFixed(
-            2
-          )
+          (sumOfSelectedFlavorRelationsPrice / selectedFlavors.length).toFixed(2)
         );
+      } else if (tenantFlavorCalcType === "largest") {
+        calculatedFlavorPrice = Math.max(...selectedFlavorPrices);
       } else {
         calculatedFlavorPrice = sumOfSelectedFlavorRelationsPrice;
       }
     }
     return basePrice + additionalPrice + calculatedFlavorPrice;
   };
-
+  
   const calculateTotalPrice = () => {
     return calculateItemPrice() * quantity;
   };
