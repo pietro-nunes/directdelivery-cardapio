@@ -36,6 +36,12 @@
   height: 100%;
 }
 
+.header-content > img {
+ width: 170px;
+ height: 170px;
+}
+
+
 .logo {
   font-size: 24px;
   font-weight: 800;
@@ -113,12 +119,7 @@
 @media (max-width: 768px) {
   .header {
     padding: 10px 15px;
-    height: 50px;
-  }
-  
-  .logo {
-    font-size: 20px;
-    gap: 6px;
+    height: 60px;
   }
   
   .buttons-header-wrap {

@@ -31,6 +31,7 @@ const Checkout = ({
   setPaymentData,
   tableNumber,
 }) => {
+  // console.log(tenantData);
   const salt = "directdeliveryacertsoft1865sala804";
   const navigate = useNavigate();
   const [enderecos, setEnderecos] = useState([]);
@@ -407,34 +408,35 @@ const Checkout = ({
           <h2>Escolha o tipo da entrega:</h2>
 
           <div className="delivery-card-list">
-            {/* ENTREGA */}
-            <div
-              className={`card delivery-card ${
-                tipoEntrega === "entrega" ? "selected" : ""
-              }`}
-              onClick={handleEntregaClick}
-            >
-              <div className="card-header-row">
-                <MdLocalShipping size={24} className="card-icon" />
-                <div className="card-content">
-                  <strong>Entrega</strong>
-                  <p>Receber no seu endereço</p>
+            {/* ENTREGA – só mostra se NÃO for só retirada */}
+            {tenantData.onlyWithdraw === false && (
+              <div
+                className={`card delivery-card ${
+                  tipoEntrega === "entrega" ? "selected" : ""
+                }`}
+                onClick={handleEntregaClick}
+              >
+                <div className="card-header-row">
+                  <MdLocalShipping size={24} className="card-icon" />
+                  <div className="card-content">
+                    <strong>Entrega</strong>
+                    <p>Receber no seu endereço</p>
+                  </div>
                 </div>
+
+                {tipoEntrega === "entrega" && enderecos.length > 0 && (
+                  <div className="card-footer">
+                    <span className="footer-line">
+                      <MdLocationPin size={20} />
+                      {enderecos[0].neighborhood.name}, {enderecos[0].address},{" "}
+                      {enderecos[0].number} - {enderecos[0].city.name}
+                    </span>
+                  </div>
+                )}
               </div>
+            )}
 
-              {/* Footer com endereço DENTRO do card */}
-              {tipoEntrega === "entrega" && enderecos.length > 0 && (
-                <div className="card-footer">
-                  <span className="footer-line">
-                    <MdLocationPin size={20} />
-                    {enderecos[0].neighborhood.name}, {enderecos[0].address},{" "}
-                    {enderecos[0].number} - {enderecos[0].city.name}
-                  </span>
-                </div>
-              )}
-            </div>
-
-            {/* RETIRADA */}
+            {/* RETIRADA – sempre mostra */}
             <div
               className={`card delivery-card ${
                 tipoEntrega === "retirada" ? "selected" : ""
