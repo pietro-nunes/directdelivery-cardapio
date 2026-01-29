@@ -184,7 +184,7 @@ const TenantRoutes = ({
 
       <FabButtonWhats
         tenantData={tenantData}
-        message={"Olá! Gostaria que me enviasse o cardápio."}
+        message={"Olá!! Gostaria que me enviasse o cardápio."}
         isTableMode={isTableMode}
       />
 
