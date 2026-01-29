@@ -648,7 +648,7 @@ const Checkout = ({
         />
       </section>
 
-      {/* Modais */}
+      {/* Modais Troco*/}
       <ModalTroco
         isVisible={modalTrocoVisible}
         onClose={() => setModalTrocoVisible(false)}
