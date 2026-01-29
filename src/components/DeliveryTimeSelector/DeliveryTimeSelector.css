@@ -1,0 +1,190 @@
+.delivery-time-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.delivery-time-selector h2 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: hsl(var(--foreground));
+  margin: 0 0 5px;
+  letter-spacing: -0.3px;
+}
+
+.time-option-card {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  border: 2px solid hsl(var(--border));
+  border-radius: calc(var(--radius) - 2px);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  background: hsl(var(--card));
+  box-shadow: var(--shadow-soft);
+  position: relative;
+  overflow: hidden;
+  gap: 16px;
+}
+
+.time-option-card::before {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--gradient-primary);
+  opacity: 0;
+  transition: var(--transition-smooth);
+  z-index: 0;
+}
+
+.time-option-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-medium);
+  border-color: hsl(var(--primary) / 0.3);
+}
+
+.time-option-card:hover::before {
+  opacity: 0.03;
+}
+
+.time-option-card.selected {
+  border-color: hsl(var(--primary));
+  background: hsl(var(--primary) / 0.05);
+  box-shadow: var(--shadow-glow);
+}
+
+.time-option-card.selected::before {
+  opacity: 0.05;
+}
+
+.time-option-card .card-header-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 1;
+}
+
+.time-option-card .card-icon {
+  color: hsl(var(--muted-foreground));
+  transition: var(--transition-smooth);
+  flex-shrink: 0;
+}
+
+.time-option-card.selected .card-icon {
+  color: hsl(var(--primary));
+}
+
+.time-option-card .card-content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  z-index: 1;
+}
+
+.time-option-card .card-content strong {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: hsl(var(--foreground));
+  display: block;
+  margin-bottom: 4px;
+}
+
+.time-option-card .card-content p {
+  font-size: 0.9rem;
+  color: hsl(var(--muted-foreground));
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Grid de horários */
+.time-slots-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 10px;
+  margin-top: 8px;
+  z-index: 1;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.time-slot-pill {
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 2px solid hsl(var(--border));
+  background: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  color: hsl(var(--foreground));
+  text-align: center;
+  white-space: nowrap;
+}
+
+.time-slot-pill:hover:not(.active) {
+  border-color: hsl(var(--primary));
+  box-shadow: var(--shadow-soft);
+  transform: translateY(-2px);
+}
+
+.time-slot-pill.active {
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  border-color: hsl(var(--primary));
+  box-shadow: 0 0 0 3px hsl(var(--primary) / 0.25);
+  transform: translateY(-2px);
+}
+
+.helper-text {
+  font-size: 0.9rem;
+  color: hsl(var(--warning));
+  margin: 0;
+  padding: 10px 12px;
+  background: hsl(var(--warning) / 0.1);
+  border-radius: calc(var(--radius) - 4px);
+  border: 1px solid hsl(var(--warning) / 0.3);
+  font-weight: 500;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .delivery-time-selector h2 {
+    font-size: 1.2rem;
+  }
+
+  .time-option-card {
+    padding: 16px;
+  }
+
+  .time-option-card .card-content strong {
+    font-size: 1rem;
+  }
+
+  .time-option-card .card-content p {
+    font-size: 0.85rem;
+  }
+
+  .time-slots-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .time-slot-pill {
+    font-size: 0.85rem;
+    padding: 10px 14px;
+  }
+}

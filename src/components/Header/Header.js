@@ -21,7 +21,7 @@ const Header = ({ isLoggedIn, basePath, isTableMode }) => {
     <header className="header">
       <div className="header-content">
         {/* Substitua o onClick existente pela nova função handleLogoClick */}
-        <img onClick={handleLogoClick} src={"/images/logo.png"} alt="teste"/>
+        <img onClick={handleLogoClick} src={"/images/logo.png"} alt="Logo"/>
        
         <div className="buttons-header-wrap">
           {isLoggedIn && !isTableMode && (

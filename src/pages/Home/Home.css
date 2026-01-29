@@ -261,3 +261,165 @@
     font-size: 28px;
   }
 }
+
+.inactivity-alert-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  animation: alertFadeIn 0.3s ease-in;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.inactivity-alert-modal {
+  background: hsl(var(--background));
+  border-radius: 20px;
+  padding: 36px 28px;
+  max-width: 420px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  animation: alertSlideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border: 2px solid hsl(var(--border) / 0.3);
+}
+
+.inactivity-alert-icon {
+  font-size: 72px;
+  margin-bottom: 20px;
+  animation: alertBounce 0.8s ease-in-out;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+}
+
+.inactivity-alert-modal h3 {
+  color: #dc2626;
+  font-size: 24px;
+  font-weight: 800;
+  margin: 0 0 14px 0;
+  letter-spacing: -0.3px;
+}
+
+.inactivity-alert-modal p {
+  color: hsl(var(--muted-foreground));
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 10px 0;
+}
+
+.alert-reminder {
+  font-weight: 700;
+  color: hsl(var(--foreground));
+  margin-top: 18px !important;
+  font-size: 17px;
+}
+
+.alert-close-btn {
+  background: var(--gradient-primary);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 16px 40px;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 28px;
+  transition: var(--transition-smooth);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  letter-spacing: 0.3px;
+}
+
+.alert-close-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+}
+
+.alert-close-btn:active {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.5);
+}
+
+/* Animações do Alerta */
+@keyframes alertFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes alertSlideUp {
+  from {
+    transform: translateY(40px) scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes alertBounce {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  25% {
+    transform: translateY(-15px) scale(1.05);
+  }
+  50% {
+    transform: translateY(0) scale(0.95);
+  }
+  75% {
+    transform: translateY(-8px) scale(1.02);
+  }
+}
+
+/* Responsividade do Alerta */
+@media (max-width: 480px) {
+  .inactivity-alert-modal {
+    padding: 28px 22px;
+    border-radius: 16px;
+  }
+
+  .inactivity-alert-icon {
+    font-size: 60px;
+  }
+
+  .inactivity-alert-modal h3 {
+    font-size: 21px;
+  }
+
+  .inactivity-alert-modal p {
+    font-size: 15px;
+  }
+
+  .alert-reminder {
+    font-size: 16px;
+  }
+
+  .alert-close-btn {
+    padding: 14px 32px;
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 769px) {
+  .inactivity-alert-modal {
+    max-width: 480px;
+    padding: 40px 32px;
+  }
+
+  .inactivity-alert-icon {
+    font-size: 80px;
+  }
+
+  .inactivity-alert-modal h3 {
+    font-size: 26px;
+  }
+}

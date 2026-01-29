@@ -47,8 +47,8 @@ const App = () => {
         // Ordena o array pelo ID do produto relacionado para garantir consistência
         return JSON.stringify(
           [...optionsArray].sort(
-            (a, b) => a.relatedProduct.id - b.relatedProduct.id
-          )
+            (a, b) => a.relatedProduct.id - b.relatedProduct.id,
+          ),
         );
       };
 
@@ -61,15 +61,19 @@ const App = () => {
     `.replace(/\s/g, ""); // Remove espaços e quebras de linha
 
       const existingItem = prevItems.find(
-        (item) => item.uniqueKey === productKey
+        (item) => item.uniqueKey === productKey,
       );
 
       if (existingItem) {
-        // Se o item já existe, somamos a nova quantidade
+        const newCount = existingItem.count + product.quantity;
         return prevItems.map((item) =>
           item.uniqueKey === productKey
-            ? { ...item, count: item.count + product.quantity } // Usamos a 'quantity'
-            : item
+            ? {
+                ...item,
+                count: newCount,
+                totalPrice: item.unitPrice * newCount, // ← ADICIONE ESTA LINHA
+              }
+            : item,
         );
       }
 

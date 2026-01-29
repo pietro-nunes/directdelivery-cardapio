@@ -195,6 +195,7 @@ const TenantRoutes = ({
           path="/"
           element={
             <Home
+              cart={cartItems} 
               tenantData={tenantData}
               addToCart={addToCart}
               setIsRestaurantOpen={setIsRestaurantOpen}

@@ -409,3 +409,77 @@ body {
 .payment-card:nth-child(2) { animation-delay: 0.1s; }
 .payment-card:nth-child(3) { animation-delay: 0.2s; }
 .payment-card:nth-child(4) { animation-delay: 0.3s; }
+
+.eat-here-options {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border-radius: calc(var(--radius) - 4px);
+  background: hsl(var(--primary) / 0.06);   /* fundo levemente colorido */
+  border: 1px solid hsl(var(--primary) / 0.6);
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.eat-here-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+  font-weight: 800;                       /* bem destacado */
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: hsl(var(--primary));             /* cor principal para chamar atenção */
+}
+
+.eat-here-icon {
+  flex-shrink: 0;
+}
+
+.eat-here-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.pill-option {
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: 2px solid hsl(var(--border));
+  background: #ffffff; /* padrão: branco */
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  color: hsl(var(--foreground));
+  min-width: 150px;
+  text-align: center;
+}
+
+/* Hover quando não está ativo */
+.pill-option:hover:not(.active) {
+  border-color: hsl(var(--primary));
+  box-shadow: var(--shadow-soft);
+  transform: translateY(-1px);
+}
+
+/* ATIVO -> fundo colorido */
+.pill-option.active {
+  background: hsl(var(--primary));                        /* fundo colorido */
+  color: hsl(var(--primary-foreground));                  /* texto branco */
+  border-color: hsl(var(--primary));
+  box-shadow: 0 0 0 3px hsl(var(--primary) / 0.25);
+  transform: translateY(-1px);
+}
+
+/* Mobile: botões empilhados ocupando toda a largura do bloco */
+@media (max-width: 480px) {
+ .eat-here-buttons {
+    flex-direction: column;
+  }
+
+  .pill-option {
+    width: 100%;
+  }
+}

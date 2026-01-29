@@ -17,6 +17,9 @@ const Cart = ({
   const navigate = useNavigate();
 
   const handleIncrement = (uniqueKey) => {
+    console.log('antes');
+    console.log(cartItems);
+
     setCartItems((prevItems) =>
       prevItems.map((item) =>
         item.uniqueKey === uniqueKey
@@ -28,9 +31,14 @@ const Cart = ({
           : item
       )
     );
+    console.log('depois');
+    console.log(cartItems);
   };
 
   const handleDecrement = (uniqueKey) => {
+
+      console.log('antes');
+    console.log(cartItems);
     setCartItems((prevItems) => {
       const itemToRemove = prevItems.find(
         (item) => item.uniqueKey === uniqueKey
@@ -49,6 +57,9 @@ const Cart = ({
         return prevItems.filter((item) => item.uniqueKey !== uniqueKey);
       }
     });
+
+      console.log('depois');
+    console.log(cartItems);
   };
 
   const calculateTotal = () => {

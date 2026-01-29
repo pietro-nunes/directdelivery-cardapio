@@ -12,7 +12,7 @@ import { toTitleCase } from "../../utils/functions";
 import { searchProducts, getAllProducts } from "../../utils/searchUtils";
 import ProductModalMobile from "../../components/ProductModalMobile/ProductModalMobile";
 
-const Home = ({ addToCart, tenantData, setIsRestaurantOpen, isTableMode}) => {
+const Home = ({ addToCart, tenantData, setIsRestaurantOpen, isTableMode, cart }) => {
   const [selectedCategory, setSelectedCategory] = useState();
   const [categories, setCategories] = useState([]);
   const [bestSellers, setBestSellers] = useState([]);
@@ -20,8 +20,62 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen, isTableMode}) => {
   const [searchTerm, setSearchTerm] = useState("");
   const { fetchWithLoading } = useFetchWithLoading();
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [showInactivityAlert, setShowInactivityAlert] = useState(false);
 
   const restaurantInfoRef = useRef(null);
+  const inactivityTimerRef = useRef(null);
+  const alertShownRef = useRef(false);
+
+  // Função para resetar o timer de inatividade
+  const resetInactivityTimer = () => {
+    // Limpa o timer existente
+    if (inactivityTimerRef.current) {
+      clearTimeout(inactivityTimerRef.current);
+    }
+
+    // Reseta o flag do alerta quando há atividade
+    alertShownRef.current = false;
+
+    // Só inicia o timer se houver itens no carrinho
+    if (cart && cart.length > 0) {
+      inactivityTimerRef.current = setTimeout(() => {
+        // Só mostra o alerta se ainda não foi mostrado
+        if (!alertShownRef.current) {
+          setShowInactivityAlert(true);
+          alertShownRef.current = true;
+        }
+      }, 20000); // 10 segundos
+    }
+  };
+
+  // Effect para monitorar atividade do usuário
+  useEffect(() => {
+    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
+
+    // Adiciona os listeners para todos os eventos
+    events.forEach(event => {
+      document.addEventListener(event, resetInactivityTimer);
+    });
+
+    // Inicia o timer na montagem do componente
+    resetInactivityTimer();
+
+    // Cleanup
+    return () => {
+      events.forEach(event => {
+        document.removeEventListener(event, resetInactivityTimer);
+      });
+      if (inactivityTimerRef.current) {
+        clearTimeout(inactivityTimerRef.current);
+      }
+    };
+  }, [cart]); // Reexecuta quando o carrinho muda
+
+  // Função para fechar o alerta
+  const closeInactivityAlert = () => {
+    setShowInactivityAlert(false);
+    resetInactivityTimer();
+  };
 
   // Função para buscar as categorias com produtos
   const fetchCategories = async () => {
@@ -102,6 +156,21 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen, isTableMode}) => {
 
   return (
     <div className="home">
+      {/* Alerta de Inatividade */}
+      {showInactivityAlert && (
+        <div className="inactivity-alert-overlay" onClick={closeInactivityAlert}>
+          <div className="inactivity-alert-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="inactivity-alert-icon">⚠️</div>
+            <h3>Seu pedido ainda não foi enviado!</h3>
+            <p>Você tem itens no carrinho que ainda não foram finalizados.</p>
+            <p className="alert-reminder">Não esqueça de concluir seu pedido! 😊</p>
+            <button className="alert-close-btn" onClick={closeInactivityAlert}>
+              Entendi
+            </button>
+          </div>
+        </div>
+      )}
+
       {tenantData && (
         <div ref={restaurantInfoRef} className="restaurant-info-section">
           <RestaurantInfo

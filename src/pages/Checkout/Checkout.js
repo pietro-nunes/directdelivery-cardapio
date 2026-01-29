@@ -18,6 +18,7 @@ import Cookies from "js-cookie";
 import { formatarNumero, toTitleCase } from "../../utils/functions";
 import Textarea from "../../components/TextArea/TextArea";
 import CryptoJS from "crypto-js";
+import DeliveryTimeSelector from "../../components/DeliveryTimeSelector/DeliveryTimeSelector";
 
 const Checkout = ({
   cartItems,
@@ -38,7 +39,7 @@ const Checkout = ({
   const [taxaEntrega, setTaxaEntrega] = useState(0);
   const enderecosRef = useRef(enderecos);
   const [formaPagamentoSelecionada, setFormaPagamentoSelecionada] = useState(
-    {}
+    {},
   );
   const [troco, setTroco] = useState("");
   const [modalTrocoVisible, setModalTrocoVisible] = useState(false);
@@ -53,11 +54,13 @@ const Checkout = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isSubmittingRef = useRef(false);
   const scannedTabIdRef = useRef(null); // número da comanda lido no QR
+  const [eatHere, setEatHere] = useState(null); // null = não escolhido ainda
+  const [scheduledTime, setScheduledTime] = useState(null);
 
   useEffect(() => {
     try {
       const clienteLocalStorage = JSON.parse(
-        Cookies.get(`token-${tenantData.slug}`)
+        Cookies.get(`token-${tenantData.slug}`),
       );
       setCliente(clienteLocalStorage);
     } catch (e) {
@@ -101,7 +104,7 @@ const Checkout = ({
     if (!Array.isArray(cartItems) || cartItems.length === 0) return 0;
     return cartItems.reduce(
       (total, item) => total + item.unitPrice * item.count,
-      0
+      0,
     );
   };
 
@@ -155,8 +158,16 @@ const Checkout = ({
       ) {
         toast.warn(
           "Por favor, selecione ou adicione um endereço de entrega válido.",
-          { theme: "colored", transition: Bounce }
+          { theme: "colored", transition: Bounce },
         );
+        return;
+      }
+
+      if (tipoEntrega === "retirada" && !isTableMode && eatHere === null) {
+        toast.warn("Informe se vai comer na loja ou levar para viagem.", {
+          theme: "colored",
+          transition: Bounce,
+        });
         return;
       }
 
@@ -165,7 +176,7 @@ const Checkout = ({
         tenantId: tenantData.id,
         itens: cartItems.map((item) => ({
           ...item,
-          totalPrice: item.totalPrice,
+          totalPrice: item.unitPrice * item.count,
         })),
         total,
         retirada: isTableMode ? true : tipoEntrega === "retirada",
@@ -179,6 +190,10 @@ const Checkout = ({
         pagamentoOnline: formaPagamentoSelecionada.onlinePayment,
         tabId: isTableMode ? Number(scannedTabIdRef.current) : null,
         tableNumber: isTableMode ? Number(tableNumber) : null,
+        eatHere: tipoEntrega === "retirada" ? !!eatHere : null,
+        scheduledDeliveryTime: scheduledTime
+          ? scheduledTime.toISOString()
+          : null,
       };
 
       const postResponse = await fetchWithLoading(`${config.baseURL}/orders`, {
@@ -191,7 +206,7 @@ const Checkout = ({
         const dataPedido = await postResponse.json();
 
         const response = await fetchWithLoading(
-          `${config.baseURL}/customers/${tenantData.id}/phone/${cliente.phone}`
+          `${config.baseURL}/customers/${tenantData.id}/phone/${cliente.phone}`,
         );
 
         const clienteAtt = await response.json();
@@ -208,7 +223,7 @@ const Checkout = ({
         if (formaPagamentoSelecionada.onlinePayment) {
           const onlinePaymentResponse = await fetchWithLoading(
             `${config.baseURL}/orders/canvi/pix/${dataPedido.tenantId}/${dataPedido.id}`,
-            { method: "POST", headers: { "Content-Type": "application/json" } }
+            { method: "POST", headers: { "Content-Type": "application/json" } },
           );
           const json = await onlinePaymentResponse.json();
           setPaymentData(json);
@@ -225,7 +240,7 @@ const Checkout = ({
           {
             theme: "colored",
             transition: Bounce,
-          }
+          },
         );
       }
     } catch (error) {
@@ -263,16 +278,16 @@ const Checkout = ({
           {
             theme: "colored",
             transition: Bounce,
-          }
+          },
         );
         return;
       }
 
       const bairroCompleto = tenantData?.neighborhoods?.find(
-        (n) => n.id === endereco.bairroId
+        (n) => n.id === endereco.bairroId,
       );
       const cidadeCompleta = tenantData?.cities?.find(
-        (c) => c.id === endereco.cidadeId
+        (c) => c.id === endereco.cidadeId,
       );
 
       const novoEndereco = {
@@ -297,7 +312,7 @@ const Checkout = ({
       setTipoEntrega("entrega");
       setTaxaEntrega(parseFloat(endereco.deliveryFee) || 0);
     },
-    [tenantData]
+    [tenantData],
   );
 
   const handleEntregaClick = () => {
@@ -308,12 +323,14 @@ const Checkout = ({
     }
     setTipoEntrega("entrega");
     setModalEnderecoVisible(true);
+    setEatHere(null);
   };
 
   const handleRetiradaClick = () => {
     setTipoEntrega("retirada");
     setTaxaEntrega(0);
     setEnderecos([]);
+    setEatHere(null);
   };
 
   const handleModalEnderecoClose = () => {
@@ -468,10 +485,53 @@ const Checkout = ({
                       tenantData.city !== "0" &&
                       toTitleCase(tenantData.city)}
                   </span>
+
+                  <div className="eat-here-options">
+                    <span className="eat-here-label">Como será o consumo?</span>
+
+                    <div className="eat-here-buttons">
+                      <button
+                        type="button"
+                        className={`pill-option ${
+                          eatHere === true ? "active" : ""
+                        }`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setEatHere(true);
+                        }}
+                      >
+                        Comer na loja
+                      </button>
+                      <button
+                        type="button"
+                        className={`pill-option ${
+                          eatHere === false ? "active" : ""
+                        }`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setEatHere(false);
+                        }}
+                      >
+                        Levar para viagem
+                      </button>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
           </div>
+        </section>
+      )}
+
+      {/* Seleção de Horário - Apenas para entrega/retirada e se NÃO usar integração */}
+      {!isTableMode && tipoEntrega && !tenantData.useIntegration && (
+        <section className="checkout-section">
+          <DeliveryTimeSelector
+            selectedTime={scheduledTime}
+            onTimeSelect={setScheduledTime}
+            tenantData={tenantData}
+            tipoEntrega={tipoEntrega}
+          />
         </section>
       )}
 
@@ -505,7 +565,7 @@ const Checkout = ({
 
           {/* PAGUE ONLINE */}
           {tenantData?.paymentTypes?.some(
-            (f) => f.isActive && f.onlinePayment
+            (f) => f.isActive && f.onlinePayment,
           ) && (
             <>
               <h3>Pague online</h3>
@@ -540,7 +600,7 @@ const Checkout = ({
 
           {/* PAGUE NA ENTREGA */}
           {tenantData?.paymentTypes?.some(
-            (f) => f.isActive && !f.onlinePayment
+            (f) => f.isActive && !f.onlinePayment,
           ) && (
             <>
               <h3>Pague na entrega</h3>
