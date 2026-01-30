@@ -190,7 +190,7 @@ const Checkout = ({
         pagamentoOnline: formaPagamentoSelecionada.onlinePayment,
         tabId: isTableMode ? Number(scannedTabIdRef.current) : null,
         tableNumber: isTableMode ? Number(tableNumber) : null,
-        eatHere: tipoEntrega === "retirada" ? !!eatHere : null,
+        eatHere: tipoEntrega === "retirada" ? Boolean(eatHere) : false,
         scheduledDeliveryTime: scheduledTime
           ? scheduledTime.toISOString()
           : null,
