@@ -13,11 +13,12 @@ const OrdersList = ({ tenantData }) => {
   const [copiedMap, setCopiedMap] = useState({});
   const { fetchWithLoading } = useFetchWithLoading();
 
-  const statusSteps = ["accepted", "preparing", "enroute", "delivered"];
+  const statusSteps = ["accepted", "preparing", "waiting", "enroute", "delivered"];
   const statusTranslations = {
     created: "Criado",
     accepted: "Aceito",
     preparing: "Em preparo",
+    waiting: "Esperando Motoboy",
     enroute: "Em rota",
     delivered: "Entregue",
     ready: "Pronto para Retirada",
@@ -126,6 +127,11 @@ const OrdersList = ({ tenantData }) => {
             <div key={order.id} className="order-card">
               <h3>Pedido #{order.id}</h3>
               <p>Data: {formatDateUTC(order.createdAt)}</p>
+              {order.scheduledDeliveryTime && (
+                <p className="scheduled-delivery-time">
+                  <strong>🕒 Horário Agendado:</strong> {formatDateUTC(order.scheduledDeliveryTime)}
+                </p>
+              )}
 
               {/* Endereço de entrega */}
               {order.address && (
@@ -141,10 +147,10 @@ const OrdersList = ({ tenantData }) => {
                 </div>
               )}
 
-              {/* Local de retirada */}
+              {/* Local de retirada ou comer no local */}
               {!order.address && (
                 <div className="order-address-section">
-                  <h4>Retirada no Local:</h4>
+                  <h4>{order.eatHere ? "Comer no Local:" : "Retirada no Local:"}</h4>
                   <p>
                     <span>
                       <MdLocationPin size={14} />

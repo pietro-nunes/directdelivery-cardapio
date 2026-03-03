@@ -35,6 +35,19 @@ const Checkout = ({
   // console.log(tenantData);
   const salt = "directdeliveryacertsoft1865sala804";
   const navigate = useNavigate();
+  
+  // Função para converter Date para ISO string mantendo horário local
+  const formatScheduledTimeToLocalISO = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    
+    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+  };
+  
   const [enderecos, setEnderecos] = useState([]);
   const [taxaEntrega, setTaxaEntrega] = useState(0);
   const enderecosRef = useRef(enderecos);
@@ -192,7 +205,7 @@ const Checkout = ({
         tableNumber: isTableMode ? Number(tableNumber) : null,
         eatHere: tipoEntrega === "retirada" ? Boolean(eatHere) : false,
         scheduledDeliveryTime: scheduledTime
-          ? scheduledTime.toISOString()
+          ? formatScheduledTimeToLocalISO(scheduledTime)
           : null,
       };
 

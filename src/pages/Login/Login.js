@@ -16,8 +16,8 @@ const Login = ({ onLogin, basePath, tenantData, isTableMode }) => {
   const navigate = useNavigate();
   const { fetchWithLoading } = useFetchWithLoading();
 
-  // Se for mesa (table mode), não exigimos CPF
-  const needsCpf = !isTableMode;
+  // Verifica se o CPF é obrigatório baseado no tenantData
+  const needsCpf = tenantData?.cpfMandatory === true;
 
   const phoneMask = [
     "(",
@@ -233,7 +233,7 @@ const Login = ({ onLogin, basePath, tenantData, isTableMode }) => {
             />
           </div>
 
-          {/* CPF/CNPJ só aparece quando não estiver em modo mesa */}
+          {/* CPF só aparece quando cpfMandatory estiver true no tenantData */}
           {needsCpf && (
             <div className="input-group">
               <label>CPF:</label>
