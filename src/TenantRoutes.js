@@ -7,7 +7,7 @@ import Checkout from "./pages/Checkout/Checkout";
 import FabButton from "./components/FabButton/FabButton";
 import Login from "./pages/Login/Login";
 import config from "./config";
-import FabButtonWhats from "./components/FabButtonWhats/FabButtonWhats";
+
 import OrdersList from "./pages/OrdersList/OrdersList";
 import OrderCompleted from "./pages/OrderCompleted/OrderCompleted";
 import PixPayment from "./pages/PixPayment/PixPayment";
@@ -179,12 +179,6 @@ const TenantRoutes = ({
         tenantData={tenantData}
         isLoggedIn={isLoggedIn}
         basePath={basePath}
-        isTableMode={isTableMode}
-      />
-
-      <FabButtonWhats
-        tenantData={tenantData}
-        message={"Olá!! Gostaria que me enviasse o cardápio."}
         isTableMode={isTableMode}
       />
 

@@ -11,6 +11,7 @@ import config from "../../config";
 import { toTitleCase } from "../../utils/functions";
 import { searchProducts, getAllProducts } from "../../utils/searchUtils";
 import ProductModalMobile from "../../components/ProductModalMobile/ProductModalMobile";
+import WhatsAppContact from "../../components/WhatsAppContact/WhatsAppContact";
 
 const Home = ({ addToCart, tenantData, setIsRestaurantOpen, isTableMode, cart }) => {
   const [selectedCategory, setSelectedCategory] = useState();
@@ -177,11 +178,7 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen, isTableMode, cart })
             restaurantInfo={{
               logo: tenantData.logo,
               name: tenantData.legalName,
-              openingTime: tenantData.openingTime,
-              closingTime: tenantData.closingTime,
-              openingTime2: tenantData.openingTime2,
-              closingTime2: tenantData.closingTime2,
-              openingDays: tenantData.openingDays,
+              turns: tenantData.turns,
               address: `${tenantData.address}, ${tenantData.number}, ${tenantData.neighborhood} - ${tenantData.city}`,
               lastPooling: tenantData.lastPooling,
             }}
@@ -189,6 +186,13 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen, isTableMode, cart })
             isTableMode={isTableMode}
           />
         </div>
+      )}
+
+      {tenantData && (
+        <WhatsAppContact
+          tenantData={tenantData}
+          message={"Olá!! Gostaria que me enviasse o cardápio."}
+        />
       )}
 
       {/* Seção de Mais Vendidos */}

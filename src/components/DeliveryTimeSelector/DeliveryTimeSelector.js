@@ -15,9 +15,9 @@ const DeliveryTimeSelector = ({
     generateTimeSlots();
   }, [tipoEntrega, tenantData.deliveryTime, tenantData.openingTime, tenantData.closingTime, tenantData.openingTime2, tenantData.closingTime2, tenantData.openingDays]);
 
-  // ============================================
+  // ===========================================
   // HELPERS - Mesma lógica do RestaurantInfo.js
-  // ============================================
+  // ===========================================
   
   const isZeroTime = (t) => {
     if (!t && t !== 0) return false;
@@ -80,6 +80,20 @@ const DeliveryTimeSelector = ({
     const inShift2 = isTimeInShift(timeInMinutes, tenantData.openingTime2, tenantData.closingTime2);
 
     return inShift1 || inShift2;
+  };
+
+  // Verifica se o serviço de entrega está disponível (com backward compatibility)
+  const isDeliveryAvailable = () => {
+    // New field takes precedence, fallback to old logic
+    if (tenantData?.deliveryEnabled !== undefined) {
+      return tenantData.deliveryEnabled === true;
+    }
+    // Backward compatibility: if onlyWithdraw is true, delivery is NOT available
+    if (tenantData?.onlyWithdraw !== undefined) {
+      return !tenantData.onlyWithdraw;
+    }
+    // Default: assume delivery is available
+    return true;
   };
 
   // Obtém os horários de abertura e fechamento do dia atual
@@ -184,8 +198,8 @@ const DeliveryTimeSelector = ({
         // 3. 🔥 NOVO: Ainda for hoje (não passou para amanhã)
         const now = new Date();
         const isStillToday = slot.getDate() === now.getDate() &&
-                            slot.getMonth() === now.getMonth() &&
-                            slot.getFullYear() === now.getFullYear();
+                              slot.getMonth() === now.getMonth() &&
+                              slot.getFullYear() === now.getFullYear();
 
         if (slot > minTime && isRestaurantOpenAt(slot) && isStillToday) {
           slotsArray.push(slot);
@@ -221,61 +235,65 @@ const DeliveryTimeSelector = ({
     <div className="delivery-time-selector">
       <h2>Quando deseja receber?</h2>
 
-      {/* Opção: Agora (o mais rápido possível) */}
-      <div
-        className={`time-option-card ${selectedOption === "now" ? "selected" : ""}`}
-        onClick={() => handleOptionChange("now")}
-      >
-        <div className="card-header-row">
-          <MdWatchLater size={24} className="card-icon" />
-          <div className="card-content">
-            <strong>O mais rápido possível</strong>
-            {estimatedTime && <p>Estimativa: {estimatedTime}</p>}
+      {/* Opção: Agora (o mais rápido possível) - só aparece se deliveryEnabled */}
+      {isDeliveryAvailable() && (
+        <div 
+          className={`time-option-card ${selectedOption === "now" ? "selected" : ""}`}
+          onClick={() => handleOptionChange("now")}
+        >
+          <div className="card-header-row">
+            <MdWatchLater size={24} className="card-icon" />
+            <div className="card-content">
+              <strong>O mais rápido possível</strong>
+              {estimatedTime && <p>Estimativa: {estimatedTime}</p>}
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
-      {/* Opção: Agendar horário */}
-      <div
-        className={`time-option-card ${selectedOption === "scheduled" ? "selected" : ""}`}
-        onClick={() => handleOptionChange("scheduled")}
-      >
-        <div className="card-header-row">
-          <MdSchedule size={24} className="card-icon" />
-          <div className="card-content">
-            <strong>Agendar para hoje</strong>
-            <p>Escolha o horário de entrega</p>
+      {/* Opção: Agendar horário - só aparece se deliveryEnabled */}
+      {isDeliveryAvailable() && (
+        <div 
+          className={`time-option-card ${selectedOption === "scheduled" ? "selected" : ""}`}
+          onClick={() => handleOptionChange("scheduled")}
+        >
+          <div className="card-header-row">
+            <MdSchedule size={24} className="card-icon" />
+            <div className="card-content">
+              <strong>Agendar para hoje</strong>
+              <p>Escolha o horário de entrega</p>
+            </div>
           </div>
+
+          {/* Lista de horários (aparece quando "scheduled" está selecionado) */}
+          {selectedOption === "scheduled" && (
+            <div className="time-slots-grid">
+              {availableSlots.length > 0 ? (
+                availableSlots.map((slot, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    className={`time-slot-pill ${
+                      selectedTime?.getTime() === slot.getTime() ? "active" : ""
+                    }`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleTimeSlotClick(slot);
+                    }}
+                  >
+                    {formatTimeSlot(slot)}
+                  </button>
+                ))
+              ) : (
+                <p className="no-slots-message">
+                  Não há horários disponíveis para agendamento hoje.
+                </p>
+              )}
+            </div>
+          )}
         </div>
-
-        {/* Lista de horários (aparece quando "scheduled" está selecionado) */}
-        {selectedOption === "scheduled" && (
-          <div className="time-slots-grid">
-            {availableSlots.length > 0 ? (
-              availableSlots.map((slot, index) => (
-                <button
-                  key={index}
-                  type="button"
-                  className={`time-slot-pill ${
-                    selectedTime?.getTime() === slot.getTime() ? "active" : ""
-                  }`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleTimeSlotClick(slot);
-                  }}
-                >
-                  {formatTimeSlot(slot)}
-                </button>
-              ))
-            ) : (
-              <p className="no-slots-message">
-                Não há horários disponíveis para agendamento hoje.
-              </p>
-            )}
-          </div>
-        )}
-      </div>
-
+      )}
+      
       {selectedOption === "scheduled" && !selectedTime && availableSlots.length > 0 && (
         <p className="helper-text">⚠️ Selecione um horário acima</p>
       )}

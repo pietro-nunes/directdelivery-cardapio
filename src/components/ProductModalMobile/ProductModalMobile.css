@@ -138,7 +138,7 @@ body:has(.modal-overlay-mobile) {
 
 .modal-product-price-mobile {
   font-size: 1.2rem;
-  color: #1a9b9b;
+  color: hsl(var(--primary));
   text-align: center;
   font-weight: 700;
   margin: 4px 0 12px 0;
@@ -197,8 +197,8 @@ body:has(.modal-overlay-mobile) {
 
 /* Variação de cor para o badge de informação (NOVO) */
 .badge-info {
-  background-color: #e0f2f1; /* Verde claro */
-  color: #00796b; /* Verde escuro */
+  background-color: hsl(var(--primary) / 0.1); /* Cor primária clara */
+  color: hsl(var(--primary)); /* Cor primária */
 }
 
 /* Variação de cor para o badge de obrigatório (NOVO) */
@@ -229,7 +229,7 @@ body:has(.modal-overlay-mobile) {
 }
 
 .custom-checkbox-card:hover {
-  border-color: #1a9b9b;
+  border-color: hsl(var(--primary));
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
   transform: translateY(-1px);
 }
@@ -264,7 +264,7 @@ input[type="checkbox"] {
 .option-price {
   font-size: 0.85rem;
   font-weight: 700;
-  color: #1a9b9b;
+  color: hsl(var(--primary));
   margin-left: 12px;
   white-space: nowrap;
 }
@@ -284,8 +284,8 @@ input[type="checkbox"] {
 }
 
 input[type="checkbox"]:checked + .checkbox-content + .checkbox-indicator {
-  background: #1a9b9b;
-  border-color: #1a9b9b;
+  background: hsl(var(--primary));
+  border-color: hsl(var(--primary));
 }
 
 input[type="checkbox"]:checked + .checkbox-content + .checkbox-indicator::after {
@@ -414,9 +414,9 @@ input[type="checkbox"]:checked + .checkbox-content + .checkbox-indicator::after 
 
 /* Botão de Adicionar ao Carrinho */
 .add-to-cart-button-mobile {
-  flex-grow: 1;
+  flex-grow:1;
   padding: 13px 22px;
-  background: linear-gradient(to right, #1a9b9b, #22c5c5);
+  background: linear-gradient(135deg, hsl(var(--cta)), hsl(var(--cta-glow)));
   color: white;
   border: none;
   border-radius: 25px;
@@ -425,7 +425,7 @@ input[type="checkbox"]:checked + .checkbox-content + .checkbox-indicator::after 
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 6px 15px rgba(26, 155, 155, 0.4), 0 2px 4px rgba(26, 155, 155, 0.2);
+  box-shadow: 0 6px 15px hsl(var(--cta) / 0.4), 0 2px 4px hsl(var(--cta) / 0.2);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -433,9 +433,9 @@ input[type="checkbox"]:checked + .checkbox-content + .checkbox-indicator::after 
 }
 
 .add-to-cart-button-mobile:hover {
-  background: linear-gradient(to right, #148f8f, #1aa4a4);
+  background: linear-gradient(135deg, hsl(var(--cta)), hsl(var(--cta-glow)));
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(26, 155, 155, 0.5), 0 4px 8px rgba(26, 155, 155, 0.3);
+  box-shadow: 0 8px 20px hsl(var(--cta) / 0.5), 0 4px 8px hsl(var(--cta) / 0.3);
 }
 
 .add-to-cart-price {

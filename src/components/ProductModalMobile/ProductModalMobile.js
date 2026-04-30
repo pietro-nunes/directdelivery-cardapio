@@ -340,7 +340,7 @@ const ProductModalMobile = ({
                           onClick={() => removeComposition(relation.id)}
                         >
                           {isRemoved ? (
-                            <FiRotateCw size={18} color="#1a9b9b" />
+                            <FiRotateCw size={18} color="hsl(var(--primary))" />
                           ) : (
                             <FiTrash2 size={18} color="#d9534f" />
                           )}

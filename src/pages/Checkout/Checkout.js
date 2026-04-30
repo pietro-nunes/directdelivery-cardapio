@@ -35,6 +35,11 @@ const Checkout = ({
   // console.log(tenantData);
   const salt = "directdeliveryacertsoft1865sala804";
   const navigate = useNavigate();
+
+  // Backward compatibility for service type fields
+  const deliveryEnabled = tenantData.deliveryEnabled ?? !tenantData.onlyWithdraw;
+  const pickupEnabled = tenantData.pickupEnabled ?? tenantData.onlyWithdraw ?? false;
+  const eatHereEnabled = tenantData.eatHereEnabled ?? false;
   
   // Função para converter Date para ISO string mantendo horário local
   const formatScheduledTimeToLocalISO = (date) => {
@@ -438,8 +443,8 @@ const Checkout = ({
           <h2>Escolha o tipo da entrega:</h2>
 
           <div className="delivery-card-list">
-            {/* ENTREGA – só mostra se NÃO for só retirada */}
-            {tenantData.onlyWithdraw === false && (
+            {/* ENTREGA – só mostra se deliveryEnabled */}
+            {deliveryEnabled && (
               <div
                 className={`card delivery-card ${
                   tipoEntrega === "entrega" ? "selected" : ""
@@ -466,72 +471,76 @@ const Checkout = ({
               </div>
             )}
 
-            {/* RETIRADA – sempre mostra */}
-            <div
-              className={`card delivery-card ${
-                tipoEntrega === "retirada" ? "selected" : ""
-              }`}
-              onClick={handleRetiradaClick}
-            >
-              <div className="card-header-row">
-                <MdStore size={24} className="card-icon" />
-                <div className="card-content">
-                  <strong>Retirada no local</strong>
-                  <p>Buscar direto no balcão</p>
-                </div>
-              </div>
-
-              {tipoEntrega === "retirada" && (
-                <div className="card-footer">
-                  <span className="footer-line">
-                    <MdLocationPin size={20} />
-                    {tenantData.address &&
-                      tenantData.address !== "0" &&
-                      `${toTitleCase(tenantData.address)}, `}
-                    {tenantData.number &&
-                      tenantData.number !== "0" &&
-                      `${tenantData.number}, `}
-                    {tenantData.neighborhood &&
-                      tenantData.neighborhood !== "0" &&
-                      `${toTitleCase(tenantData.neighborhood)} - `}
-                    {tenantData.city &&
-                      tenantData.city !== "0" &&
-                      toTitleCase(tenantData.city)}
-                  </span>
-
-                  <div className="eat-here-options">
-                    <span className="eat-here-label">Como será o consumo?</span>
-
-                    <div className="eat-here-buttons">
-                      <button
-                        type="button"
-                        className={`pill-option ${
-                          eatHere === true ? "active" : ""
-                        }`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setEatHere(true);
-                        }}
-                      >
-                        Comer na loja
-                      </button>
-                      <button
-                        type="button"
-                        className={`pill-option ${
-                          eatHere === false ? "active" : ""
-                        }`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setEatHere(false);
-                        }}
-                      >
-                        Levar para viagem
-                      </button>
-                    </div>
+            {/* RETIRADA – só mostra se pickupEnabled */}
+            {pickupEnabled && (
+              <div
+                className={`card delivery-card ${
+                  tipoEntrega === "retirada" ? "selected" : ""
+                }`}
+                onClick={handleRetiradaClick}
+              >
+                <div className="card-header-row">
+                  <MdStore size={24} className="card-icon" />
+                  <div className="card-content">
+                    <strong>Retirada no local</strong>
+                    <p>Buscar direto no balcão</p>
                   </div>
                 </div>
-              )}
-            </div>
+
+                {tipoEntrega === "retirada" && (
+                  <div className="card-footer">
+                    <span className="footer-line">
+                      <MdLocationPin size={20} />
+                      {tenantData.address &&
+                        tenantData.address !== "0" &&
+                        `${toTitleCase(tenantData.address)}, `}
+                      {tenantData.number &&
+                        tenantData.number !== "0" &&
+                        `${tenantData.number}, `}
+                      {tenantData.neighborhood &&
+                        tenantData.neighborhood !== "0" &&
+                        `${toTitleCase(tenantData.neighborhood)} - `}
+                      {tenantData.city &&
+                        tenantData.city !== "0" &&
+                        toTitleCase(tenantData.city)}
+                    </span>
+
+                    {eatHereEnabled && (
+                      <div className="eat-here-options">
+                        <span className="eat-here-label">Como será o consumo?</span>
+
+                        <div className="eat-here-buttons">
+                          <button
+                            type="button"
+                            className={`pill-option ${
+                              eatHere === true ? "active" : ""
+                            }`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setEatHere(true);
+                            }}
+                          >
+                            Comer na loja
+                          </button>
+                          <button
+                            type="button"
+                            className={`pill-option ${
+                              eatHere === false ? "active" : ""
+                            }`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setEatHere(false);
+                            }}
+                          >
+                            Levar para viagem
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </section>
       )}

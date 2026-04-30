@@ -7,14 +7,16 @@
 
 /* -- Reset Básico e Variáveis de Cor (Opcional, mas recomendado) -- */
 :root {
-  --cor-primaria: #1a9b9b;
-  --cor-primaria-hover: #148f8f;
+  --cor-primaria: #4288c2;
+  --cor-primaria-hover: #3672a6;
   --cor-fundo-carrinho: #f8f9fa;
   --cor-fundo-item: #ffffff;
   --cor-texto-principal: #212529;
   --cor-texto-secundario: #6c757d;
   --cor-borda: #dee2e6;
   --sombra-suave: 0 4px 12px rgba(0, 0, 0, 0.05);
+  --cor-cta: #E85D2F;
+  --cor-cta-hover: #d14a1f;
 }
 
 /* --- GERAL DO CARRINHO --- */
@@ -286,17 +288,24 @@
 
 .checkout-button,
 .confirm-button {
-  background-color: var(--cor-primaria);
+  background-color: var(--cor-cta);
   color: white;
   border: none;
   padding: 12px 20px;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 0.95rem;
+  font-size:0.95rem;
   font-weight: 600;
   transition: all 0.2s ease;
   flex: 1;
-  box-shadow: 0 2px 8px rgba(26, 155, 155, 0.15);
+  box-shadow: 0 2px 8px rgba(232, 93, 47, 0.15);
+}
+
+.checkout-button:hover,
+.confirm-button:hover {
+  background-color: var(--cor-cta-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(232, 93, 47, 0.2);
 }
 
 .checkout-button:hover,
@@ -307,8 +316,8 @@
 }
 
 .secondary-button {
-  background-color: #44282b; /* cor solicitada */
-  color: #ffffff; /* texto branco para contraste */
+  background-color: var(--cor-primaria);
+  color: #ffffff;
   border: none;
   padding: 12px 20px;
   border-radius: 8px;
@@ -317,13 +326,13 @@
   font-weight: 600;
   transition: all 0.2s ease;
   flex: 1;
-  box-shadow: 0 2px 8px rgba(68, 40, 43, 0.2);
+  box-shadow: 0 2px 8px rgba(66, 136, 194, 0.2);
 }
 
 .secondary-button:hover {
-  background-color: #2e1b1d; /* tom mais escuro para hover */
+  background-color: var(--cor-primaria-hover);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(68, 40, 43, 0.3);
+  box-shadow: 0 4px 12px rgba(66, 136, 194, 0.3);
 }
 
 /* --- MEDIA QUERIES (DESKTOP) --- */

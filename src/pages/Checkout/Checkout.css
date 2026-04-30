@@ -197,10 +197,10 @@ body {
 }
 
 .change-button:hover {
-  background: var(--gradient-primary);
-  color: hsl(var(--primary-foreground));
+  background: linear-gradient(135deg, hsl(var(--cta)), hsl(var(--cta-glow)));
+  color: white;
   transform: translateY(-2px);
-  box-shadow: var(--shadow-soft);
+  box-shadow: 0 0 24px hsl(var(--cta-glow) / 0.2);
 }
 
 /* Mantido para compatibilidade (não mais usado como box separado) */
@@ -314,15 +314,15 @@ body {
 .finalizar-button {
   width: 100%;
   padding: 16px;
-  background: var(--gradient-primary);
-  color: hsl(var(--primary-foreground));
+  background: linear-gradient(135deg, hsl(var(--cta)), hsl(var(--cta-glow)));
+  color: white;
   border: none;
   border-radius: calc(var(--radius) - 2px);
   font-size: 1.1rem;
   font-weight: 800;
   cursor: pointer;
   transition: var(--transition-bounce);
-  box-shadow: var(--shadow-glow);
+  box-shadow: 0 0 24px hsl(var(--cta-glow) / 0.2);
   letter-spacing: 0.3px;
   position: relative;
   overflow: hidden;

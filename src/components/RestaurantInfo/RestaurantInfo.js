@@ -1,26 +1,11 @@
 import React, { useEffect } from "react";
 import "./RestaurantInfo.css";
 import config from "../../config";
-import { FiMoon, FiSun } from "react-icons/fi";
+import { FiClock, FiMapPin } from "react-icons/fi";
 import { toTitleCase } from "../../utils/functions";
 
-const HEARTBEAT_MAX_AGE_MIN = 1.5; // tolerância do lastPooling (em minutos)
+const HEARTBEAT_MAX_AGE_MIN = 1.5;
 
-// helpers
-const isZeroTime = (t) => {
-  if (!t && t !== 0) return false;
-  const s = String(t).trim();
-  // normaliza: pega só HH:MM
-  const m = s.match(/^(\d{1,2}):(\d{2})/);
-  if (!m) return false;
-  const hh = m[1].padStart(2, "0");
-  const mm = m[2];
-  return hh === "00" && mm === "00";
-};
-
-const isDisabledShift = (open, close) => isZeroTime(open) && isZeroTime(close);
-
-// ✅ Verifica se o heartbeat (lastPooling) é recente
 const isLastPoolingOk = (lastPooling, maxAgeMin = HEARTBEAT_MAX_AGE_MIN) => {
   if (!lastPooling) return false;
   if (typeof lastPooling === "string" && lastPooling.startsWith("0000-00-00"))
@@ -29,11 +14,13 @@ const isLastPoolingOk = (lastPooling, maxAgeMin = HEARTBEAT_MAX_AGE_MIN) => {
   const parseAsLocal = (s) => {
     const txt = s.trim().endsWith("Z") ? s.trim().slice(0, -1) : s.trim();
     const m = txt.match(
-      /^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?$/
+      /^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})(:\d{2})?(\.\d{1,3})?$/
     );
-    if (!m) return new Date(s); // fallback nativo
-    const [, Y, M, D, h, mi, se = "0", ms = "0"] = m;
-    return new Date(+Y, +M - 1, +D, +h, +mi, +se, +ms); // ← local, sem conversão de fuso
+    if (!m) return new Date(s);
+    const [, Y, M, D, h, mi, sec, msRaw] = m;
+    const se = (sec || ":00").slice(1);
+    const ms = msRaw ? Math.floor(+msRaw.slice(1) * 1000) : 0;
+    return new Date(+Y, +M - 1, +D, +h, +mi, +se, ms);
   };
 
   const lp =
@@ -47,16 +34,92 @@ const isLastPoolingOk = (lastPooling, maxAgeMin = HEARTBEAT_MAX_AGE_MIN) => {
   return ageMs <= maxAgeMin * 60 * 1000;
 };
 
-// ✅ Normaliza openingDays (pode vir como array ou CSV)
-const normalizeOpeningDays = (openingDays) => {
-  if (Array.isArray(openingDays)) return openingDays;
-  if (typeof openingDays === "string") {
-    return openingDays
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean);
+// Converte "HH:MM:SS" em minutos totais
+const timeToMinutes = (timeStr) => {
+  if (!timeStr) return null;
+  const [h = 0, m = 0] = timeStr.split(":").map(Number);
+  return h * 60 + m;
+};
+
+// Verifica se o horário atual está dentro de um intervalo (suporta virada de meia-noite)
+const isInTimeRange = (startTime, endTime, currentMinutes) => {
+  const start = timeToMinutes(startTime);
+  const end = timeToMinutes(endTime);
+  if (start === null || end === null) return false;
+
+  if (end < start) {
+    return currentMinutes >= start || currentMinutes < end;
   }
-  return [];
+  return currentMinutes >= start && currentMinutes < end;
+};
+
+// Verifica se algum turno ativo cobre o dia e hora atual
+export const getActiveTurn = (turns, currentDay, currentMinutes) => {
+  if (!Array.isArray(turns)) {
+    return null;
+  }
+
+  for (const turn of turns) {
+    if (!turn.isActive) continue;
+    if (!Array.isArray(turn.days)) continue;
+
+    for (const day of turn.days) {
+      if (day.dayOfWeek !== currentDay) continue;
+      if (isInTimeRange(day.startTime, day.endTime, currentMinutes)) {
+        return turn;
+      }
+    }
+  }
+  return null;
+};
+
+const formatTime = (timeStr) => {
+  if (!timeStr || typeof timeStr !== "string") return "--:--";
+  return timeStr.slice(0, 5);
+};
+
+// 1=domingo, 7=sábado
+const DAY_NAMES = ["", "Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+
+// Mapeia dias da semana aos horários de todos os turnos ativos
+const buildDayScheduleMap = (turns) => {
+  const dayMap = {};
+  for (let i = 1; i <= 7; i++) dayMap[i] = [];
+  
+  (turns || [])
+    .filter(t => t.isActive)
+    .forEach(turn => {
+      (turn.days || []).forEach(day => {
+        dayMap[day.dayOfWeek].push({
+          start: day.startTime,
+          end: day.endTime
+        });
+      });
+    });
+  
+  return dayMap;
+};
+
+// Agrupa dias consecutivos com horários idênticos
+const groupConsecutiveDays = (dayMap) => {
+  const groups = [];
+  let currentGroup = null;
+  
+  for (let day = 1; day <= 7; day++) {
+    const schedules = dayMap[day];
+    const isSameAsPrev = currentGroup && 
+      JSON.stringify(currentGroup.schedules) === JSON.stringify(schedules);
+      
+    if (isSameAsPrev) {
+      currentGroup.endDay = day;
+    } else {
+      if (currentGroup) groups.push(currentGroup);
+      currentGroup = { startDay: day, endDay: day, schedules };
+    }
+  }
+  
+  if (currentGroup) groups.push(currentGroup);
+  return groups.filter(g => g.schedules.length > 0);
 };
 
 const RestaurantInfo = ({
@@ -64,131 +127,121 @@ const RestaurantInfo = ({
   setIsRestaurantOpen,
   isTableMode,
 }) => {
-  const isRestaurantOpen = (
-    openingTime1,
-    closingTime1,
-    openingTime2,
-    closingTime2,
-    openingDays,
-    lastPooling
-  ) => {
-    // 1) Se o servidor perdeu conexão, fecha a loja
-    if (!isLastPoolingOk(lastPooling, HEARTBEAT_MAX_AGE_MIN)) {
+  const isRestaurantOpen = () => {
+    // 1) Primeiro: checa o heartbeat — se offline, fecha tudo
+    if (!isLastPoolingOk(restaurantInfo.lastPooling, HEARTBEAT_MAX_AGE_MIN)) {
       return false;
     }
 
-    // 2) 🔥 SE FOR TABLE MODE: considera aberto se o pooling está OK
+    // 2) Table mode: se pooling ok, está aberto
     if (isTableMode) {
       return true;
     }
 
+    // 3) Verifica se algum turno ativo cobre o momento atual
     const now = new Date();
-    const currentDay = now.getDay() === 0 ? 1 : now.getDay() + 1; // 1..7
-    const currentTime = now.getHours() * 60 + now.getMinutes();
+    const currentDay = now.getDay() === 0 ? 1 : now.getDay() + 1; // 1=domingo, 7=sábado
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
-    const daysArr = normalizeOpeningDays(openingDays);
-    if (!daysArr.includes(currentDay.toString())) {
-      return false;
-    }
-
-    // Helper que protege contra valores undefined ou vazios
-    const isInInterval = (open, close) => {
-      if (!open || !close) return false;
-      const [oh = 0, om = 0] = open.split(":").map(Number).slice(0, 2);
-      const [ch = 0, cm = 0] = close.split(":").map(Number).slice(0, 2);
-      const openMin = oh * 60 + om;
-      const closeMin = ch * 60 + cm;
-
-      // intervalo virando o dia (ex.: 22:00 -> 02:00)
-      if (closeMin < openMin) {
-        return currentTime >= openMin || currentTime < closeMin;
-      } else {
-        return currentTime >= openMin && currentTime < closeMin;
-      }
-    };
-
-    const openNow1 = isInInterval(openingTime1, closingTime1);
-    const openNow2 = isInInterval(openingTime2, closingTime2);
-
-    return openNow1 || openNow2;
+    const activeTurn = getActiveTurn(restaurantInfo.turns, currentDay, currentMinutes);
+    return activeTurn !== null;
   };
 
-  const formatTime = (timeString) => {
-    if (!timeString || typeof timeString !== "string") return "--:--";
-    return timeString.slice(0, 5);
-  };
+  const isOpen = isRestaurantOpen();
 
   useEffect(() => {
-    const isOpen = isRestaurantOpen(
-      restaurantInfo.openingTime,
-      restaurantInfo.closingTime,
-      restaurantInfo.openingTime2,
-      restaurantInfo.closingTime2,
-      restaurantInfo.openingDays,
-      restaurantInfo.lastPooling // 👈 considera o heartbeat
-    );
-    setIsRestaurantOpen(isOpen); // Atualiza o estado global
-  }, [restaurantInfo, setIsRestaurantOpen]);
-
-  const isOpen = isRestaurantOpen(
-    restaurantInfo.openingTime,
-    restaurantInfo.closingTime,
-    restaurantInfo.openingTime2,
-    restaurantInfo.closingTime2,
-    restaurantInfo.openingDays,
-    restaurantInfo.lastPooling // 👈 considera o heartbeat
-  );
+    setIsRestaurantOpen(isOpen);
+  }, [restaurantInfo, isOpen, setIsRestaurantOpen]);
 
   const logoSrc =
     (restaurantInfo?.logo ? `${config.baseURL}${restaurantInfo.logo}` : null) ||
     "https://via.placeholder.com/150?text=Logo+Restaurante";
 
+  const activeTurns = Array.isArray(restaurantInfo.turns)
+    ? restaurantInfo.turns.filter((t) => t.isActive)
+    : [];
+
+  // Backward compatibility: if new fields don't exist, use old logic
+  const deliveryEnabled = restaurantInfo.deliveryEnabled ?? !restaurantInfo.onlyWithdraw;
+  const pickupEnabled = restaurantInfo.pickupEnabled ?? restaurantInfo.onlyWithdraw ?? false;
+  const eatHereEnabled = restaurantInfo.eatHereEnabled ?? false;
+
+  // Constrói o mapeamento de dias e agrupa dias consecutivos
+  const dayMap = buildDayScheduleMap(restaurantInfo.turns);
+  const dayGroups = groupConsecutiveDays(dayMap);
+
   return (
     <div className="restaurant-info">
-      <div className="restaurant-logo-container">
-        <img
-          src={logoSrc}
-          alt={`${restaurantInfo.name} Logo`}
-          className="restaurant-logo"
-        />
+      <div className="restaurant-main-row">
+        <div className="restaurant-logo-container">
+          <img
+            src={logoSrc}
+            alt={`${restaurantInfo.name} Logo`}
+            className="restaurant-logo"
+          />
+        </div>
+
+        <div className="restaurant-details">
+          <h2 className="restaurant-name">{toTitleCase(restaurantInfo.name)}</h2>
+          <p className={`status ${isOpen ? "open" : "closed"}`}>
+            {isOpen ? "Aberto 🟢" : "Fechado 🔴"}
+          </p>
+        </div>
       </div>
 
-      <h2 className="restaurant-name">{toTitleCase(restaurantInfo.name)}</h2>
+      <div className="restaurant-info-row">
+        {/* Tipos de serviço */}
+        {!isTableMode && (
+          <div className="info">
+            <FiMapPin size={16} />
+            <span>
+              <strong>Serviços:</strong>{" "}
+              {deliveryEnabled && "Entrega"}
+              {deliveryEnabled && pickupEnabled && " / "}
+              {pickupEnabled && "Retirada"}
+              {eatHereEnabled && ((deliveryEnabled || pickupEnabled) && " / ")}
+              {eatHereEnabled && "Comer no local"}
+            </span>
+          </div>
+        )}
 
-      <p className={`status ${isOpen ? "open" : "closed"}`}>
-        {isOpen ? "Estamos abertos 😁" : "Estamos fechados 😔"}
-      </p>
+        {/* Turnos agrupados por dias — só mostra se NÃO estiver em modo mesa */}
+        {!isTableMode &&
+          dayGroups.map(group => (
+            <div key={`${group.startDay}-${group.endDay}`} className="info">
+              <FiClock size={16} />
+              <span>
+                <strong>
+                  {group.startDay === group.endDay 
+                    ? DAY_NAMES[group.startDay]
+                    : `${DAY_NAMES[group.startDay]} a ${DAY_NAMES[group.endDay]}`
+                  }:
+                </strong>
+                {" "}
+                {group.schedules.map((s, i) => (
+                  <span key={i}>
+                    {i > 0 && ", "}
+                    {formatTime(s.start)}–{formatTime(s.end)}
+                  </span>
+                ))}
+              </span>
+            </div>
+          ))}
 
-      {/* Turnos — só mostra se NÃO estiver em modo mesa */}
-      {!isTableMode && (
-        <>
-          {/* Turno do Dia */}
-          {!isDisabledShift(
-            restaurantInfo.openingTime,
-            restaurantInfo.closingTime
-          ) && (
-            <p className="info">
-              <FiSun size={14} /> <strong>Turno 1:</strong>{" "}
-              {formatTime(restaurantInfo.openingTime)} –{" "}
-              {formatTime(restaurantInfo.closingTime)}
-            </p>
-          )}
+        {restaurantInfo.deliveryTime && (
+          <div className="info">
+            <FiClock size={16} />
+            <span>{restaurantInfo.deliveryTime} min</span>
+          </div>
+        )}
 
-          {/* Turno da Noite */}
-          {restaurantInfo.openingTime2 &&
-            restaurantInfo.closingTime2 &&
-            !isDisabledShift(
-              restaurantInfo.openingTime2,
-              restaurantInfo.closingTime2
-            ) && (
-              <p className="info">
-                <FiMoon size={14} /> <strong>Turno 2:</strong>{" "}
-                {formatTime(restaurantInfo.openingTime2)} –{" "}
-                {formatTime(restaurantInfo.closingTime2)}
-              </p>
-            )}
-        </>
-      )}
+        {restaurantInfo.address && (
+          <div className="info">
+            <FiMapPin size={16} />
+            <span>{restaurantInfo.address}</span>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

@@ -99,22 +99,22 @@
 .login-button {
   width: 100%;
   padding: 14px;
-  background: var(--gradient-primary);
-  color: hsl(var(--primary-foreground));
+  background: linear-gradient(135deg, hsl(var(--cta)), hsl(var(--cta-glow)));
+  color: white;
   border: none;
   border-radius: calc(var(--radius) - 2px);
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;
   transition: var(--transition-smooth);
-  box-shadow: var(--shadow-medium);
+  box-shadow: 0 4px 16px hsl(var(--cta) / 0.12);
   letter-spacing: 0.3px;
   margin-top: 10px;
 }
 
 .login-button:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-glow);
+  box-shadow: 0 0 24px hsl(var(--cta-glow) / 0.2);
 }
 
 .login-button:active {
