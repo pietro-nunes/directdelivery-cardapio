@@ -13,31 +13,11 @@ const DeliveryTimeSelector = ({
 
   useEffect(() => {
     generateTimeSlots();
-  }, [tipoEntrega, tenantData.deliveryTime, tenantData.openingTime, tenantData.closingTime, tenantData.openingTime2, tenantData.closingTime2, tenantData.openingDays]);
+  }, [tipoEntrega, tenantData.deliveryTime, tenantData.turns]);
 
   // ===========================================
-  // HELPERS - Mesma lógica do RestaurantInfo.js
+  // HELPERS
   // ===========================================
-  
-  const isZeroTime = (t) => {
-    if (!t && t !== 0) return false;
-    const s = String(t).trim();
-    const m = s.match(/^(\d{1,2}):(\d{2})/);
-    if (!m) return false;
-    const hh = m[1].padStart(2, "0");
-    const mm = m[2];
-    return hh === "00" && mm === "00";
-  };
-
-  const isDisabledShift = (open, close) => isZeroTime(open) && isZeroTime(close);
-
-  const normalizeOpeningDays = (openingDays) => {
-    if (Array.isArray(openingDays)) return openingDays;
-    if (typeof openingDays === "string") {
-      return openingDays.split(",").map((s) => s.trim()).filter(Boolean);
-    }
-    return [];
-  };
 
   // Converte "HH:MM" para minutos desde meia-noite
   const timeToMinutes = (timeStr) => {
@@ -46,40 +26,31 @@ const DeliveryTimeSelector = ({
     return h * 60 + m;
   };
 
-  // Verifica se um horário (em minutos) está dentro de um turno
-  const isTimeInShift = (timeInMinutes, openTime, closeTime) => {
-    if (!openTime || !closeTime) return false;
-    if (isDisabledShift(openTime, closeTime)) return false;
-    
-    const openMin = timeToMinutes(openTime);
-    const closeMin = timeToMinutes(closeTime);
-    
-    if (openMin === null || closeMin === null) return false;
-
-    // Turno que vira o dia (ex: 22:00 - 02:00)
-    if (closeMin < openMin) {
-      return timeInMinutes >= openMin || timeInMinutes < closeMin;
-    } else {
-      return timeInMinutes >= openMin && timeInMinutes < closeMin;
+  // Converte string de dias separados por vírgula para array (fallback legado)
+  const normalizeOpeningDays = (openingDays) => {
+    if (Array.isArray(openingDays)) return openingDays;
+    if (typeof openingDays === "string") {
+      return openingDays.split(",").map((s) => s.trim()).filter(Boolean);
     }
+    return [];
   };
 
   // Verifica se o restaurante está aberto em uma data/hora específica
   const isRestaurantOpenAt = (date) => {
-    const dayOfWeek = date.getDay() === 0 ? 1 : date.getDay() + 1; // 1..7
     const timeInMinutes = date.getHours() * 60 + date.getMinutes();
-
-    // Verifica dias de funcionamento
-    const openingDays = normalizeOpeningDays(tenantData.openingDays);
-    if (!openingDays.includes(dayOfWeek.toString())) {
-      return false;
-    }
-
-    // Verifica se está no turno 1 ou turno 2
-    const inShift1 = isTimeInShift(timeInMinutes, tenantData.openingTime, tenantData.closingTime);
-    const inShift2 = isTimeInShift(timeInMinutes, tenantData.openingTime2, tenantData.closingTime2);
-
-    return inShift1 || inShift2;
+    
+    // Obtém turnos de hoje (já filtrados por dia da semana)
+    const shifts = getShiftsFromTurns();
+    
+    // Verifica se o horário está dentro de algum turno
+    return shifts.some(({ open, close }) => {
+      if (close < open) {
+        // Turno que cruza a meia-noite (ex: 22:00 - 02:00)
+        return timeInMinutes >= open || timeInMinutes < close;
+      } else {
+        return timeInMinutes >= open && timeInMinutes < close;
+      }
+    });
   };
 
   // Verifica se o serviço de entrega está disponível (com backward compatibility)
@@ -96,12 +67,44 @@ const DeliveryTimeSelector = ({
     return true;
   };
 
+  // Extrai turnos de HOJE a partir de tenantData.turns
+  const getShiftsFromTurns = () => {
+    if (!Array.isArray(tenantData.turns) || tenantData.turns.length === 0) {
+      return [];
+    }
+
+    const now = new Date();
+    const currentDay = now.getDay() === 0 ? 1 : now.getDay() + 1; // 1=segunda, 7=domingo
+    const shifts = [];
+
+    tenantData.turns.forEach(turn => {
+      if (!turn.isActive || !Array.isArray(turn.days)) return;
+
+      turn.days.forEach(day => {
+        if (day.dayOfWeek !== currentDay) return;
+
+        const startMinutes = timeToMinutes(day.startTime);
+        const endMinutes = timeToMinutes(day.endTime);
+        if (startMinutes !== null && endMinutes !== null) {
+          shifts.push({ open: startMinutes, close: endMinutes });
+        }
+      });
+    });
+
+    return shifts;
+  };
+
   // Obtém os horários de abertura e fechamento do dia atual
   const getShiftsForToday = () => {
-    const now = new Date();
-    const dayOfWeek = now.getDay() === 0 ? 1 : now.getDay() + 1;
+    // PRIORITÁRIO: usar turns (formato novo)
+    const shiftsFromTurns = getShiftsFromTurns();
+    if (shiftsFromTurns.length > 0) {
+      return shiftsFromTurns;
+    }
+
+    // FALLBACK:campos legados (formato antigo) – para compatibilidade
     const openingDays = normalizeOpeningDays(tenantData.openingDays);
-    
+    const dayOfWeek = new Date().getDay() === 0 ? 1 : new Date().getDay() + 1;
     if (!openingDays.includes(dayOfWeek.toString())) {
       return []; // Não funciona hoje
     }
@@ -109,7 +112,7 @@ const DeliveryTimeSelector = ({
     const shifts = [];
 
     // Turno 1
-    if (!isDisabledShift(tenantData.openingTime, tenantData.closingTime)) {
+    if (tenantData.openingTime && tenantData.closingTime) {
       const open1 = timeToMinutes(tenantData.openingTime);
       const close1 = timeToMinutes(tenantData.closingTime);
       if (open1 !== null && close1 !== null) {
@@ -118,8 +121,7 @@ const DeliveryTimeSelector = ({
     }
 
     // Turno 2
-    if (tenantData.openingTime2 && tenantData.closingTime2 && 
-        !isDisabledShift(tenantData.openingTime2, tenantData.closingTime2)) {
+    if (tenantData.openingTime2 && tenantData.closingTime2) {
       const open2 = timeToMinutes(tenantData.openingTime2);
       const close2 = timeToMinutes(tenantData.closingTime2);
       if (open2 !== null && close2 !== null) {
@@ -133,25 +135,25 @@ const DeliveryTimeSelector = ({
   const generateTimeSlots = () => {
     const slots = [];
     const now = new Date();
-    
+
     // Tempo mínimo de preparo (em minutos)
     const preparationTime = tenantData.deliveryTime || 30;
-    
+
     // Horário mínimo para agendamento
     const minTime = new Date(now.getTime() + preparationTime * 60000);
-    
+
     // Arredonda para próxima meia hora
     minTime.setMinutes(Math.ceil(minTime.getMinutes() / 30) * 30);
     minTime.setSeconds(0);
     minTime.setMilliseconds(0);
 
-    // 🔥 MUDANÇA: Só gera slots para HOJE
+    // Base date (hoje)
     const today = new Date(now);
     today.setHours(0, 0, 0, 0);
 
     // Pega os turnos de hoje
     const shifts = getShiftsForToday();
-    
+
     if (shifts.length === 0) {
       // Restaurante fechado hoje
       setAvailableSlots([]);
@@ -160,19 +162,15 @@ const DeliveryTimeSelector = ({
 
     // Para cada turno, gera slots de 30 em 30 minutos
     shifts.forEach(({ open, close }) => {
-      // Converte minutos para horas
       const startHour = Math.floor(open / 60);
       const startMinute = open % 60;
       const endHour = Math.floor(close / 60);
       const endMinute = close % 60;
 
-      // 🔥 MUDANÇA: Não gera slots que viram o dia
-      // Se o turno vira o dia (ex: 22:00 - 02:00), só considera até 23:59 de hoje
+      // Se o turno vira o dia (ex: 22:00 - 02:00), só gera até 23:59 de hoje
       if (close < open) {
-        // Turno vira o dia - só gera até o fim do dia de hoje
         generateSlotsInRange(today, startHour, startMinute, 23, 59, minTime, slots);
       } else {
-        // Turno normal no mesmo dia
         generateSlotsInRange(today, startHour, startMinute, endHour, endMinute, minTime, slots);
       }
     });
@@ -195,13 +193,7 @@ const DeliveryTimeSelector = ({
         // Só adiciona se:
         // 1. Estiver no futuro (depois do minTime)
         // 2. Restaurante estiver aberto neste horário
-        // 3. 🔥 NOVO: Ainda for hoje (não passou para amanhã)
-        const now = new Date();
-        const isStillToday = slot.getDate() === now.getDate() &&
-                              slot.getMonth() === now.getMonth() &&
-                              slot.getFullYear() === now.getFullYear();
-
-        if (slot > minTime && isRestaurantOpenAt(slot) && isStillToday) {
+        if (slot > minTime && isRestaurantOpenAt(slot)) {
           slotsArray.push(slot);
         }
       }

@@ -170,6 +170,16 @@ const RestaurantInfo = ({
   const dayMap = buildDayScheduleMap(restaurantInfo.turns);
   const dayGroups = groupConsecutiveDays(dayMap);
 
+  const cityName = restaurantInfo.city?.name || restaurantInfo.city || '';
+  const cityUf = restaurantInfo.city?.uf || '';
+  const fullAddress = [
+    restaurantInfo.address && restaurantInfo.number
+      ? `${toTitleCase(restaurantInfo.address)}, ${restaurantInfo.number}`
+      : restaurantInfo.address && toTitleCase(restaurantInfo.address),
+    restaurantInfo.neighborhood && toTitleCase(restaurantInfo.neighborhood),
+    cityName && `${toTitleCase(cityName)}${cityUf ? `/${cityUf}` : ''}`,
+  ].filter(Boolean).join(' - ');
+
   return (
     <div className="restaurant-info">
       <div className="restaurant-main-row">
@@ -205,40 +215,45 @@ const RestaurantInfo = ({
           </div>
         )}
 
-        {/* Turnos agrupados por dias — só mostra se NÃO estiver em modo mesa */}
-        {!isTableMode &&
-          dayGroups.map(group => (
-            <div key={`${group.startDay}-${group.endDay}`} className="info">
+        {fullAddress && (
+          <div className="info">
+            <FiMapPin size={16} />
+            <span>{fullAddress}</span>
+          </div>
+        )}
+
+        {/* Turnos agrupados — só mostra se NÃO estiver em modo mesa */}
+        {!isTableMode && dayGroups.length > 0 && (
+          <div className="schedule-group">
+            <div className="schedule-header">
               <FiClock size={16} />
-              <span>
-                <strong>
+              <strong>Horários</strong>
+            </div>
+            {dayGroups.map(group => (
+              <div key={`${group.startDay}-${group.endDay}`} className="schedule-row">
+                <span className="schedule-label">
                   {group.startDay === group.endDay 
                     ? DAY_NAMES[group.startDay]
                     : `${DAY_NAMES[group.startDay]} a ${DAY_NAMES[group.endDay]}`
-                  }:
-                </strong>
-                {" "}
-                {group.schedules.map((s, i) => (
-                  <span key={i}>
-                    {i > 0 && ", "}
-                    {formatTime(s.start)}–{formatTime(s.end)}
-                  </span>
-                ))}
-              </span>
-            </div>
-          ))}
+                  }
+                </span>
+                <span className="schedule-value">
+                  {group.schedules.map((s, i) => (
+                    <span key={i}>
+                      {i > 0 && ", "}
+                      {formatTime(s.start)}–{formatTime(s.end)}
+                    </span>
+                  ))}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
 
         {restaurantInfo.deliveryTime && (
           <div className="info">
             <FiClock size={16} />
             <span>{restaurantInfo.deliveryTime} min</span>
-          </div>
-        )}
-
-        {restaurantInfo.address && (
-          <div className="info">
-            <FiMapPin size={16} />
-            <span>{restaurantInfo.address}</span>
           </div>
         )}
       </div>

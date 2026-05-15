@@ -11,6 +11,7 @@ export function formatarNumero(valor) {
 }
 
 export function toTitleCase(str) {
+  if (!str) return "";
   return str
     .toLowerCase() // converte tudo para minúsculas
     .split(" ") // quebra em palavras

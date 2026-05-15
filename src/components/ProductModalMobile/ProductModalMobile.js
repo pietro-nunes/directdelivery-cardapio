@@ -37,21 +37,26 @@ const ProductModalMobile = ({
     product.relations?.filter((relation) => relation.type === "composition") ||
     [];
 
-  // Função para calcular o preço exibido (estático)
+  const totalFlavorCount = selectedFlavors.reduce((sum, f) => sum + f.quantity, 0);
+
+  const getFlavorQuantity = (relationId) => {
+    const found = selectedFlavors.find((f) => f.id === relationId);
+    return found ? found.quantity : 0;
+  };
+
   const getStaticPriceDisplay = () => {
     const productPrice = Number(product.price || 0);
-    
-    // Se o preço do produto for zero, calcula min/max apenas das relations do tipo "flavor"
+
     if (productPrice === 0 && product.relations && product.relations.length > 0) {
       const flavorPrices = product.relations
         .filter(rel => rel.type === "flavor")
         .map(rel => Number(rel.price || 0))
         .filter(p => p > 0);
-      
+
       if (flavorPrices.length > 0) {
         const minPrice = Math.min(...flavorPrices);
         const maxPrice = Math.max(...flavorPrices);
-        
+
         if (minPrice === maxPrice) {
           return `por R$ ${formatarNumero(minPrice)}`;
         } else {
@@ -59,7 +64,7 @@ const ProductModalMobile = ({
         }
       }
     }
-    
+
     return `R$ ${formatarNumero(productPrice)}`;
   };
 
@@ -87,17 +92,34 @@ const ProductModalMobile = ({
     };
   }, [hasImage]);
 
-  const toggleFlavor = (relationId) => {
-    if (selectedFlavors.includes(relationId)) {
-      setSelectedFlavors((prev) => prev.filter((id) => id !== relationId));
-    } else if (selectedFlavors.length < product.flavorAllowed) {
-      setSelectedFlavors((prev) => [...prev, relationId]);
-    } else {
+  const incrementFlavor = (relationId) => {
+    if (totalFlavorCount >= product.flavorAllowed) {
       toast.warn(
-        `Você pode selecionar no máximo ${product.flavorAllowed} sabor(es).`,
+        `Você pode selecionar no máximo ${product.flavorAllowed} porção(ões).`,
         { theme: "colored", transition: Bounce }
       );
+      return;
     }
+    setSelectedFlavors((prev) => {
+      const existing = prev.find((f) => f.id === relationId);
+      if (existing) {
+        return prev.map((f) =>
+          f.id === relationId ? { ...f, quantity: f.quantity + 1 } : f
+        );
+      }
+      return [...prev, { id: relationId, quantity: 1 }];
+    });
+  };
+
+  const decrementFlavor = (relationId) => {
+    setSelectedFlavors((prev) => {
+      const existing = prev.find((f) => f.id === relationId);
+      if (!existing) return prev;
+      if (existing.quantity <= 1) return prev.filter((f) => f.id !== relationId);
+      return prev.map((f) =>
+        f.id === relationId ? { ...f, quantity: f.quantity - 1 } : f
+      );
+    });
   };
 
   const toggleAdditional = (relationId) => {
@@ -132,52 +154,54 @@ const ProductModalMobile = ({
       .reduce((sum, r) => sum + parseFloat(r.price || 0), 0);
 
     let calculatedFlavorPrice = 0;
-    if (selectedFlavors.length > 0) {
-      const selectedFlavorPrices = selectedFlavors
-        .map((id) => flavors.find((r) => r.id === id))
-        .map((r) => parseFloat(r?.price || 0));
-      
-      const sumOfSelectedFlavorRelationsPrice = selectedFlavorPrices
-        .reduce((sum, price) => sum + price, 0);
+    if (totalFlavorCount > 0) {
+      const weightedSum = selectedFlavors.reduce((sum, f) => {
+        const rel = flavors.find((r) => r.id === f.id);
+        return sum + (parseFloat(rel?.price || 0) * f.quantity);
+      }, 0);
 
-      if (tenantFlavorCalcType === "average" && selectedFlavors.length > 0) {
+      if (tenantFlavorCalcType === "average") {
         calculatedFlavorPrice = parseFloat(
-          (sumOfSelectedFlavorRelationsPrice / selectedFlavors.length).toFixed(2)
+          (weightedSum / totalFlavorCount).toFixed(2)
         );
       } else if (tenantFlavorCalcType === "largest") {
-        calculatedFlavorPrice = Math.max(...selectedFlavorPrices);
+        calculatedFlavorPrice = selectedFlavors.reduce((max, f) => {
+          const rel = flavors.find((r) => r.id === f.id);
+          return Math.max(max, parseFloat(rel?.price || 0));
+        }, 0);
       } else {
-        calculatedFlavorPrice = sumOfSelectedFlavorRelationsPrice;
+        calculatedFlavorPrice = weightedSum;
       }
     }
     return basePrice + additionalPrice + calculatedFlavorPrice;
   };
-  
+
   const calculateTotalPrice = () => {
     return calculateItemPrice() * quantity;
   };
 
   const handleAddToCart = () => {
-    if (selectedFlavors.length < product.flavorMandatory) {
+    if (totalFlavorCount < product.flavorMandatory) {
       toast.warn(
-        `Por favor, selecione pelo menos ${product.flavorMandatory} sabor(es).`,
+        `Por favor, selecione pelo menos ${product.flavorMandatory} porção(ões) de sabor.`,
         { theme: "colored", transition: Bounce }
       );
       return;
     }
 
-    const selectedFlavorsDetails = selectedFlavors.map((id) => {
+    const selectedFlavorsDetails = selectedFlavors.map(({ id, quantity: qty }) => {
       const rel = product.relations.find((r) => r.id === id);
       let unitPriceForDisplay = parseFloat(rel.price || 0);
 
-      if (tenantFlavorCalcType === "average" && selectedFlavors.length > 0) {
+      if (tenantFlavorCalcType === "average" && totalFlavorCount > 0) {
         unitPriceForDisplay = parseFloat(
-          (unitPriceForDisplay / selectedFlavors.length).toFixed(2)
+          (unitPriceForDisplay / totalFlavorCount).toFixed(2)
         );
       }
       return {
         ...rel,
         price: unitPriceForDisplay,
+        quantity: qty,
       };
     });
 
@@ -263,7 +287,7 @@ const ProductModalMobile = ({
                   Escolha seu sabor
                   <div className="options-badges">
                     <span className="badge badge-info">
-                      Até {product.flavorAllowed}
+                      {totalFlavorCount}/{product.flavorAllowed}
                     </span>
                     {product.flavorMandatory > 0 && (
                       <span className="badge badge-mandatory">Obrigatório</span>
@@ -272,23 +296,15 @@ const ProductModalMobile = ({
                 </h4>
                 <div className="options-list-grid">
                   {flavors.map((relation) => {
-                    const flavorUnitPriceForDisplay =
-                      tenantFlavorCalcType === "average" &&
-                      selectedFlavors.length > 0
-                        ? parseFloat(
-                            (
-                              parseFloat(relation.price || 0) /
-                              selectedFlavors.length
-                            ).toFixed(2)
-                          )
-                        : parseFloat(relation.price || 0);
+                    const qty = getFlavorQuantity(relation.id);
+                    const flavorUnitPriceDisplay = parseFloat(
+                      relation.price || 0
+                    );
                     return (
-                      <label className="custom-checkbox-card" key={relation.id}>
-                        <input
-                          type="checkbox"
-                          checked={selectedFlavors.includes(relation.id)}
-                          onChange={() => toggleFlavor(relation.id)}
-                        />
+                      <div
+                        className={`flavor-item-row ${qty > 0 ? "flavor-selected" : ""}`}
+                        key={relation.id}
+                      >
                         <div className="checkbox-content">
                           <span className="option-name">
                             {toTitleCase(relation.relatedProduct.name)}
@@ -298,14 +314,31 @@ const ProductModalMobile = ({
                               {toTitleCase(relation.relatedProduct.description)}
                             </span>
                           )}
-                          {flavorUnitPriceForDisplay > 0 && (
+                          {flavorUnitPriceDisplay > 0 && (
                             <span className="option-price">
-                              + R$ {formatarNumero(flavorUnitPriceForDisplay)}
+                              + R$ {formatarNumero(flavorUnitPriceDisplay)}
                             </span>
                           )}
                         </div>
-                        <span className="checkbox-indicator"></span>
-                      </label>
+                        <div className="flavor-quantity-control">
+                          <button
+                            type="button"
+                            className="flavor-quantity-btn"
+                            onClick={() => decrementFlavor(relation.id)}
+                            disabled={qty === 0}
+                          >
+                            <FiMinus size={14} />
+                          </button>
+                          <span className="flavor-quantity-value">{qty}</span>
+                          <button
+                            type="button"
+                            className="flavor-quantity-btn"
+                            onClick={() => incrementFlavor(relation.id)}
+                          >
+                            <FiPlus size={14} />
+                          </button>
+                        </div>
+                      </div>
                     );
                   })}
                 </div>
@@ -402,7 +435,7 @@ const ProductModalMobile = ({
                 name="observations"
                 value={observation}
                 onChange={setObservation}
-                max={80} 
+                max={80}
                 placeholder="Ex.: Sem cebola, sem ovo, etc."
               />
             </div>

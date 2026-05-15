@@ -181,7 +181,7 @@ const Checkout = ({
         return;
       }
 
-      if (tipoEntrega === "retirada" && !isTableMode && eatHere === null) {
+      if (tipoEntrega === "retirada" && !isTableMode && eatHereEnabled && eatHere === null) {
         toast.warn("Informe se vai comer na loja ou levar para viagem.", {
           theme: "colored",
           transition: Bounce,
@@ -500,9 +500,7 @@ const Checkout = ({
                       {tenantData.neighborhood &&
                         tenantData.neighborhood !== "0" &&
                         `${toTitleCase(tenantData.neighborhood)} - `}
-                      {tenantData.city &&
-                        tenantData.city !== "0" &&
-                        toTitleCase(tenantData.city)}
+                      {toTitleCase(tenantData.city?.name || tenantData.city)}
                     </span>
 
                     {eatHereEnabled && (

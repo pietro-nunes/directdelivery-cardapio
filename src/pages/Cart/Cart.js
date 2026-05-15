@@ -145,18 +145,19 @@ const Cart = ({
                   <div className="item-details">
                     <p className="cart-item-name">{toTitleCase(item.name)}</p>
 
-                    {item.selectedFlavors?.length > 0 && (
-                      <div className="cart-item-info-block">
-                        <p className="cart-item-info-title">Sabores:</p>
-                        <ul className="cart-item-list">
-                          {item.selectedFlavors.map((flavor, index) => (
-                            <li key={index}>
-                              {toTitleCase(flavor.relatedProduct.name)}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
+                     {item.selectedFlavors?.length > 0 && (
+                       <div className="cart-item-info-block">
+                         <p className="cart-item-info-title">Sabores:</p>
+                         <ul className="cart-item-list">
+                           {item.selectedFlavors.map((flavor, index) => (
+                             <li key={index}>
+                               {toTitleCase(flavor.relatedProduct.name)}
+                               {flavor.quantity > 1 && ` (x${flavor.quantity})`}
+                             </li>
+                           ))}
+                         </ul>
+                       </div>
+                     )}
 
                     {item.selectedAdditionals?.length > 0 && (
                       <div className="cart-item-info-block">

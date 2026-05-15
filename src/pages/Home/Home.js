@@ -82,7 +82,7 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen, isTableMode, cart })
   const fetchCategories = async () => {
     try {
       const categoriesResponse = await fetchWithLoading(
-        `${config.baseURL}/categories/with-products/${tenantData.id}`
+        `${config.baseURL}/categories/with-products/${tenantData.id}?currentTurn=true`
       );
       const categoriesData = await categoriesResponse.json();
       setCategories(categoriesData);
@@ -179,8 +179,15 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen, isTableMode, cart })
               logo: tenantData.logo,
               name: tenantData.legalName,
               turns: tenantData.turns,
-              address: `${tenantData.address}, ${tenantData.number}, ${tenantData.neighborhood} - ${tenantData.city}`,
+              address: tenantData.address,
+              number: tenantData.number,
+              neighborhood: tenantData.neighborhood,
+              city: tenantData.city,
               lastPooling: tenantData.lastPooling,
+              deliveryEnabled: tenantData.deliveryEnabled,
+              pickupEnabled: tenantData.pickupEnabled,
+              eatHereEnabled: tenantData.eatHereEnabled,
+              onlyWithdraw: tenantData.onlyWithdraw,
             }}
             setIsRestaurantOpen={setIsRestaurantOpen}
             isTableMode={isTableMode}

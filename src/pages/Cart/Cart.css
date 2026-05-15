@@ -308,13 +308,6 @@
   box-shadow: 0 4px 12px rgba(232, 93, 47, 0.2);
 }
 
-.checkout-button:hover,
-.confirm-button:hover {
-  background-color: var(--cor-primaria-hover);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(26, 155, 155, 0.2);
-}
-
 .secondary-button {
   background-color: var(--cor-primaria);
   color: #ffffff;

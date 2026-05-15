@@ -163,7 +163,7 @@ const OrdersList = ({ tenantData }) => {
                       {tenantData.neighborhood &&
                         tenantData.neighborhood !== "0" &&
                         `${toTitleCase(tenantData.neighborhood)} - `}
-                      {tenantData.city && tenantData.city !== "0" && toTitleCase(tenantData.city)}
+                      {toTitleCase(tenantData.city?.name || tenantData.city)}
                     </span>
                   </p>
                 </div>

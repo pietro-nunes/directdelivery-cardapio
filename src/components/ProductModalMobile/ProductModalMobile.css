@@ -213,6 +213,64 @@ body:has(.modal-overlay-mobile) {
   gap: 8px;
 }
 
+.flavor-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #ffffff;
+  padding: 12px 15px;
+  border-radius: 10px;
+  border: 1px solid #e5e5e5;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.03);
+  transition: all 0.15s ease;
+  gap: 12px;
+}
+
+.flavor-item-row.flavor-selected {
+  border-color: hsl(var(--primary));
+  background-color: hsl(var(--primary) / 0.04);
+}
+
+.flavor-quantity-control {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.flavor-quantity-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1.5px solid #d0d0d0;
+  background: #fff;
+  color: #333;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.flavor-quantity-btn:hover:not(:disabled) {
+  background: hsl(var(--primary));
+  border-color: hsl(var(--primary));
+  color: #fff;
+}
+
+.flavor-quantity-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.flavor-quantity-value {
+  min-width: 28px;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #333;
+}
+
 .custom-checkbox-card {
   display: flex;
   align-items: center;
