@@ -27,12 +27,13 @@ const App = () => {
     Cookies.set(`token-${tenantData.slug}`, token, {
       expires: 60,
       secure: window.location.protocol === 'https:',
+      path: '/',
     });
     setIsLoggedIn(true);
   };
 
   const handleLogout = () => {
-    Cookies.remove(`token-${tenantData.slug}`); // Removendo o cookie ao fazer logout
+    Cookies.remove(`token-${tenantData.slug}`, { path: '/' });
     setIsLoggedIn(false);
   };
 
