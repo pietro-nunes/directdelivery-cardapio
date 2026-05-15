@@ -26,8 +26,8 @@ const App = () => {
   const handleLogin = (token) => {
     Cookies.set(`token-${tenantData.slug}`, token, {
       expires: 60,
-      secure: true,
-    }); // Definindo o cookie com expiração de 3 horas
+      secure: window.location.protocol === 'https:',
+    });
     setIsLoggedIn(true);
   };
 

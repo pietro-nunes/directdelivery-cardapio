@@ -76,10 +76,13 @@ const Checkout = ({
   const [scheduledTime, setScheduledTime] = useState(null);
 
   useEffect(() => {
+    const token = Cookies.get(`token-${tenantData.slug}`);
+    if (!token) {
+      onLogout();
+      return;
+    }
     try {
-      const clienteLocalStorage = JSON.parse(
-        Cookies.get(`token-${tenantData.slug}`),
-      );
+      const clienteLocalStorage = JSON.parse(token);
       setCliente(clienteLocalStorage);
     } catch (e) {
       console.error("Erro ao carregar token do cliente:", e);
