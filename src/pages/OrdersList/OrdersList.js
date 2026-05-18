@@ -45,7 +45,7 @@ const OrdersList = ({ tenantData }) => {
 
     try {
       const ordersResponse = await fetchWithLoading(
-        `${config.baseURL}/orders/${customerId}/${currentTenantId}`
+        `${config.baseURL}/orders/customer/${customerId}/tenant/${currentTenantId}`
       );
       const ordersData = await ordersResponse.json();
       setOrders(ordersData);

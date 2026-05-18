@@ -15,7 +15,7 @@ import {
 } from "react-icons/md";
 import { RiMoneyDollarCircleLine } from "react-icons/ri";
 import Cookies from "js-cookie";
-import { formatarNumero, toTitleCase } from "../../utils/functions";
+import { formatarNumero, toTitleCase, extractCustomerData } from "../../utils/functions";
 import Textarea from "../../components/TextArea/TextArea";
 import CryptoJS from "crypto-js";
 import DeliveryTimeSelector from "../../components/DeliveryTimeSelector/DeliveryTimeSelector";
@@ -231,7 +231,7 @@ const Checkout = ({
         );
 
         const clienteAtt = await response.json();
-        const tokenData = JSON.stringify(clienteAtt);
+        const tokenData = JSON.stringify(extractCustomerData(clienteAtt));
 
         localStorage.removeItem("carrinho-" + tenantData.slug);
         setCartItems([]);

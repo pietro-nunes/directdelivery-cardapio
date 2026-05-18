@@ -4,7 +4,7 @@ import "./Login.css";
 import { useNavigate } from "react-router-dom";
 import { useFetchWithLoading } from "../../contexts/fetchWithLoading";
 import config from "../../config";
-import { formatCPF, isValidCPF, onlyDigits } from "../../utils/functions";
+import { formatCPF, isValidCPF, onlyDigits, extractCustomerData } from "../../utils/functions";
 
 const Login = ({ onLogin, basePath, tenantData, isTableMode }) => {
   const [username, setUsername] = useState("");
@@ -148,7 +148,7 @@ const Login = ({ onLogin, basePath, tenantData, isTableMode }) => {
 
         if (postResponse.ok) {
           const data = await postResponse.json();
-          const tokenData = JSON.stringify(data);
+          const tokenData = JSON.stringify(extractCustomerData(data));
           onLogin(tokenData);
           navigate(`${basePath}/checkout`);
         } else {
@@ -186,13 +186,13 @@ const Login = ({ onLogin, basePath, tenantData, isTableMode }) => {
         }
 
         const updated = await putResponse.json();
-        const tokenData = JSON.stringify(updated);
+        const tokenData = JSON.stringify(extractCustomerData(updated));
         onLogin(tokenData);
         navigate(`${basePath}/checkout`);
         return;
       }
 
-      const tokenData = JSON.stringify(data);
+      const tokenData = JSON.stringify(extractCustomerData(data));
       onLogin(tokenData);
       navigate(`${basePath}/checkout`);
     } catch (err) {

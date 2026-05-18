@@ -1,3 +1,21 @@
+export const extractCustomerData = (data) => ({
+  id: data.id,
+  name: data.name,
+  phone: data.phone,
+  cpf: data.cpf,
+  addresses: (data.addresses || []).map(addr => ({
+    id: addr.id,
+    address: addr.address,
+    number: addr.number,
+    complement: addr.complement,
+    neighborhood: { name: addr.neighborhood?.name },
+    city: { name: addr.city?.name },
+    zipcode: addr.zipcode,
+    referencePoint: addr.referencePoint,
+    nickname: addr.nickname,
+  })),
+});
+
 export function formatarNumero(valor) {
   // Converte para número caso seja string
   const numero = parseFloat(valor);

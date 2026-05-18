@@ -177,7 +177,7 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen, isTableMode, cart })
           <RestaurantInfo
             restaurantInfo={{
               logo: tenantData.logo,
-              name: tenantData.legalName,
+              name: tenantData.tradeName,
               turns: tenantData.turns,
               address: tenantData.address,
               number: tenantData.number,
