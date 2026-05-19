@@ -90,7 +90,7 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen, isTableMode, cart })
       setSelectedCategory(toTitleCase(categoriesData[0]?.name));
 
       const bestSellersResponse = await fetchWithLoading(
-        `${config.baseURL}/products/${tenantData.id}/favorites`
+        `${config.baseURL}/products/${tenantData.id}/favorites?currentTurn=true`
       );
       const bestSellersData = await bestSellersResponse.json();
       setBestSellers(bestSellersData);
