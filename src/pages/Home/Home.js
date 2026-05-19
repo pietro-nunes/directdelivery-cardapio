@@ -203,19 +203,21 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen, isTableMode, cart })
       )}
 
       {/* Seção de Mais Vendidos */}
-      <div className="best-sellers-section">
-        <h3 className="section-title">✨ Nossos Queridinhos ✨</h3>
-        <p className="section-subtitle">Os que mais fazem sucesso por aqui!</p>
-        <div className="best-sellers-carousel">
-          {bestSellers.map((product) => (
-            <BestSellerProductCard
-              key={product.id}
-              product={product}
-              onClick={() => setSelectedProduct(product)}
-            />
-          ))}
+      {bestSellers.length > 0 && (
+        <div className="best-sellers-section">
+          <h3 className="section-title">✨ Nossos Queridinhos ✨</h3>
+          <p className="section-subtitle">Os que mais fazem sucesso por aqui!</p>
+          <div className="best-sellers-carousel">
+            {bestSellers.map((product) => (
+              <BestSellerProductCard
+                key={product.id}
+                product={product}
+                onClick={() => setSelectedProduct(product)}
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {selectedProduct && (
         <ProductModalMobile
@@ -226,26 +228,30 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen, isTableMode, cart })
         />
       )}
 
-      <p className="explore-menu-text">Explore nosso cardápio completo:</p>
+      {categories.some(c => c.isActive) && (
+        <>
+          <p className="explore-menu-text">Explore nosso cardápio completo:</p>
 
-      <div
-        className={`categories-wrapper ${
-          isCategoriesSticky ? "categories-sticky" : ""
-        }`}
-      >
-        <Categories
-          categories={categories}
-          selectedCategory={selectedCategory}
-          onSelectCategory={scrollToCategory}
-        />
-      </div>
+          <div
+            className={`categories-wrapper ${
+              isCategoriesSticky ? "categories-sticky" : ""
+            }`}
+          >
+            <Categories
+              categories={categories}
+              selectedCategory={selectedCategory}
+              onSelectCategory={scrollToCategory}
+            />
+          </div>
 
-      {/* Barra de Busca */}
-      <SearchBar
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
-        resultsCount={searchedProducts.length}
-      />
+          {/* Barra de Busca */}
+          <SearchBar
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
+            resultsCount={searchedProducts.length}
+          />
+        </>
+      )}
 
       {/* Resultados da Busca */}
       {searchTerm && (
