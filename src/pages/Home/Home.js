@@ -2,7 +2,7 @@ import "./Home.css";
 import React, { useEffect, useState, useRef } from "react";
 import ProductCard from "../../components/ProductCard/ProductCard";
 import Categories from "../../components/Categories/Categories";
-import RestaurantInfo from "../../components/RestaurantInfo/RestaurantInfo";
+import RestaurantInfo, { getActiveTurn } from "../../components/RestaurantInfo/RestaurantInfo";
 import BestSellerProductCard from "../../components/BestSellerProductCard/BestSellerProductCard";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import SearchResults from "../../components/SearchResults/SearchResults";
@@ -90,10 +90,22 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen, isTableMode, cart })
       setSelectedCategory(toTitleCase(categoriesData[0]?.name));
 
       const bestSellersResponse = await fetchWithLoading(
-        `${config.baseURL}/products/${tenantData.id}/favorites?currentTurn=true`
+        `${config.baseURL}/products/${tenantData.id}/favorites`
       );
       const bestSellersData = await bestSellersResponse.json();
-      setBestSellers(bestSellersData);
+
+      const now = new Date();
+      const currentDay = now.getDay() === 0 ? 1 : now.getDay() + 1;
+      const currentMinutes = now.getHours() * 60 + now.getMinutes();
+      const activeTurn = getActiveTurn(tenantData.turns, currentDay, currentMinutes);
+
+      const filtered = activeTurn
+        ? bestSellersData.filter(p =>
+            p.productTurns?.some(pt => pt.turnId === activeTurn.id)
+          )
+        : bestSellersData;
+
+      setBestSellers(filtered);
     } catch (error) {
       console.error("Erro ao buscar categorias:", error);
     }
