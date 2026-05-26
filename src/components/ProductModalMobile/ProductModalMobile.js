@@ -317,6 +317,27 @@ const ProductModalMobile = ({
                     />
                   </div>
                 )}
+                {totalFlavorCount > 0 && selectedFlavors.length > 0 && (
+                  <div className="selected-flavors-summary">
+                    <span className="selected-flavors-summary-title">
+                      Selecionados:
+                    </span>
+                    <div className="selected-flavors-chips">
+                      {selectedFlavors.map(({ id, quantity: qty }) => {
+                        const rel = flavors.find((r) => r.id === id);
+                        if (!rel) return null;
+                        return (
+                          <span key={id} className="flavor-chip">
+                            {toTitleCase(rel.relatedProduct.name)}
+                            {qty > 1 && (
+                              <span className="flavor-chip-qty"> x{qty}</span>
+                            )}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
                 <div className="options-list-grid">
                   {filteredFlavors.map((relation) => {
                     const qty = getFlavorQuantity(relation.id);

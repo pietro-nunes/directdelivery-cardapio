@@ -252,6 +252,45 @@ body:has(.modal-overlay-mobile) {
   color: hsl(var(--primary));
 }
 
+.selected-flavors-summary {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.selected-flavors-summary-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #666;
+  white-space: nowrap;
+  margin-top: 4px;
+}
+
+.selected-flavors-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.flavor-chip {
+  display: inline-flex;
+  align-items: center;
+  background-color: hsl(var(--primary) / 0.1);
+  color: hsl(var(--primary));
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 15px;
+  border: 1px solid hsl(var(--primary) / 0.25);
+}
+
+.flavor-chip-qty {
+  font-weight: 700;
+  margin-left: 2px;
+}
+
 .flavor-item-row {
   display: flex;
   align-items: center;
