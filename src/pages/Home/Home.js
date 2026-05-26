@@ -237,6 +237,7 @@ const Home = ({ addToCart, tenantData, setIsRestaurantOpen, isTableMode, cart })
           closeModal={() => setSelectedProduct(null)}
           addToCart={addToCart}
           tenantFlavorCalcType={tenantData.flavorCalcType}
+          fromFavorites
         />
       )}
 

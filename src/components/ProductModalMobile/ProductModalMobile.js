@@ -8,6 +8,7 @@ import {
   FiChevronLeft,
   FiMinus,
   FiPlus,
+  FiSearch,
 } from "react-icons/fi";
 import config from "../../config";
 import Textarea from "../TextArea/TextArea";
@@ -17,6 +18,7 @@ const ProductModalMobile = ({
   closeModal,
   addToCart,
   tenantFlavorCalcType,
+  fromFavorites = false,
 }) => {
   const [selectedFlavors, setSelectedFlavors] = useState([]);
   const [selectedAdditionals, setSelectedAdditionals] = useState([]);
@@ -24,12 +26,21 @@ const ProductModalMobile = ({
   const [observation, setObservation] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [scrolled, setScrolled] = useState(false);
+  const [flavorSearch, setFlavorSearch] = useState("");
   const mainContentRef = useRef(null);
 
   const hasImage = product.image;
 
   const flavors =
     product.relations?.filter((relation) => relation.type === "flavor") || [];
+  const sortedFlavors = fromFavorites ? [...flavors].reverse() : flavors;
+  const filteredFlavors = flavorSearch
+    ? sortedFlavors.filter((relation) =>
+        relation.relatedProduct.name
+          .toLowerCase()
+          .startsWith(flavorSearch.toLowerCase())
+      )
+    : sortedFlavors;
   const additionals =
     product.relations?.filter((relation) => relation.type === "additional") ||
     [];
@@ -294,8 +305,20 @@ const ProductModalMobile = ({
                     )}
                   </div>
                 </h4>
+                {flavors.length > 6 && (
+                  <div className="flavor-search-wrapper">
+                    <FiSearch className="flavor-search-icon" size={16} />
+                    <input
+                      type="text"
+                      className="flavor-search-input"
+                      placeholder="Pesquisar sabor..."
+                      value={flavorSearch}
+                      onChange={(e) => setFlavorSearch(e.target.value)}
+                    />
+                  </div>
+                )}
                 <div className="options-list-grid">
-                  {flavors.map((relation) => {
+                  {filteredFlavors.map((relation) => {
                     const qty = getFlavorQuantity(relation.id);
                     const flavorUnitPriceDisplay = parseFloat(
                       relation.price || 0
