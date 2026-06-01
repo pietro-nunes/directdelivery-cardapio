@@ -13,7 +13,7 @@ const DeliveryTimeSelector = ({
 
   useEffect(() => {
     generateTimeSlots();
-  }, [tipoEntrega, tenantData.deliveryTime, tenantData.turns]);
+  }, [tipoEntrega, tenantData.deliveryTime, tenantData.pickupTime, tenantData.turns]);
 
   // ===========================================
   // HELPERS
@@ -137,7 +137,9 @@ const DeliveryTimeSelector = ({
     const now = new Date();
 
     // Tempo mínimo de preparo (em minutos)
-    const preparationTime = tenantData.deliveryTime || 30;
+    const preparationTime = tipoEntrega === 'retirada'
+      ? (tenantData.pickupTime || 30)
+      : (tenantData.deliveryTime || 30);
 
     // Horário mínimo para agendamento
     const minTime = new Date(now.getTime() + preparationTime * 60000);
@@ -221,14 +223,20 @@ const DeliveryTimeSelector = ({
     onTimeSelect(slot);
   };
 
-  const estimatedTime = tenantData.deliveryTime > 0 ? `${tenantData.deliveryTime} min` : null;
+  const estimatedTime = tipoEntrega === 'retirada'
+    ? (tenantData.pickupTime > 0 ? `${tenantData.pickupTime} min` : null)
+    : (tenantData.deliveryTime > 0 ? `${tenantData.deliveryTime} min` : null);
+
+  const shouldShowTimeSelector = tipoEntrega === 'retirada'
+    ? (tenantData.pickupEnabled ?? tenantData.onlyWithdraw ?? false)
+    : isDeliveryAvailable();
 
   return (
     <div className="delivery-time-selector">
-      <h2>Quando deseja receber?</h2>
+      <h2>{tipoEntrega === 'retirada' ? 'Quando deseja retirar?' : 'Quando deseja receber?'}</h2>
 
-      {/* Opção: Agora (o mais rápido possível) - só aparece se deliveryEnabled */}
-      {isDeliveryAvailable() && (
+      {/* Opção: Agora (o mais rápido possível) */}
+      {shouldShowTimeSelector && (
         <div 
           className={`time-option-card ${selectedOption === "now" ? "selected" : ""}`}
           onClick={() => handleOptionChange("now")}
@@ -243,8 +251,8 @@ const DeliveryTimeSelector = ({
         </div>
       )}
 
-      {/* Opção: Agendar horário - só aparece se deliveryEnabled */}
-      {isDeliveryAvailable() && (
+      {/* Opção: Agendar horário */}
+      {shouldShowTimeSelector && (
         <div 
           className={`time-option-card ${selectedOption === "scheduled" ? "selected" : ""}`}
           onClick={() => handleOptionChange("scheduled")}
@@ -253,7 +261,7 @@ const DeliveryTimeSelector = ({
             <MdSchedule size={24} className="card-icon" />
             <div className="card-content">
               <strong>Agendar para hoje</strong>
-              <p>Escolha o horário de entrega</p>
+              <p>{tipoEntrega === 'retirada' ? 'Escolha o horário de retirada' : 'Escolha o horário de entrega'}</p>
             </div>
           </div>
 

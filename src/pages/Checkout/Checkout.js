@@ -12,6 +12,10 @@ import {
   MdLocalShipping,
   MdStore,
   MdTableBar,
+  MdLocalOffer,
+  MdCheckCircle,
+  MdClose,
+  MdInfoOutline,
 } from "react-icons/md";
 import { RiMoneyDollarCircleLine } from "react-icons/ri";
 import Cookies from "js-cookie";
@@ -74,6 +78,10 @@ const Checkout = ({
   const scannedTabIdRef = useRef(null); // número da comanda lido no QR
   const [eatHere, setEatHere] = useState(null); // null = não escolhido ainda
   const [scheduledTime, setScheduledTime] = useState(null);
+  const [couponCode, setCouponCode] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
+  const [couponError, setCouponError] = useState("");
+  const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
 
   useEffect(() => {
     const token = Cookies.get(`token-${tenantData.slug}`);
@@ -131,10 +139,49 @@ const Checkout = ({
 
   const calcularTotal = () => {
     const subtotal = calcularSubtotal();
-    return subtotal + parseFloat(taxaEntrega);
+    const frete = parseFloat(taxaEntrega);
+    const desconto = appliedCoupon?.discount || 0;
+    return Math.max(0, subtotal + frete - desconto);
   };
 
   const total = calcularTotal();
+
+  const handleApplyCoupon = async () => {
+    const code = couponCode.trim();
+    if (!code) return;
+    setIsApplyingCoupon(true);
+    setCouponError("");
+    try {
+      const res = await fetchWithLoading(`${config.baseURL}/cupons/validate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tenantId: tenantData.id,
+          code,
+          customerId: cliente?.id,
+          subtotal: calcularSubtotal(),
+        }),
+      });
+      const data = await res.json();
+      if (data.valid) {
+        setAppliedCoupon(data);
+        setCouponError("");
+      } else {
+        setAppliedCoupon(null);
+        setCouponError(data.message);
+      }
+    } catch {
+      setCouponError("Erro ao validar cupom");
+    } finally {
+      setIsApplyingCoupon(false);
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponCode("");
+    setCouponError("");
+  };
 
   const handleFinalizarPedido = async () => {
     // Em mesa: exigir QR antes
@@ -192,6 +239,11 @@ const Checkout = ({
         return;
       }
 
+      const subtotal = calcularSubtotal();
+      const deliveryFee = parseFloat(taxaEntrega) || 0;
+      const couponDiscount = appliedCoupon?.discount || 0;
+      const totalFinal = Math.max(0, subtotal + deliveryFee - couponDiscount);
+
       const pedido = {
         customerId: isTableMode ? null : cliente?.id,
         tenantId: tenantData.id,
@@ -199,7 +251,12 @@ const Checkout = ({
           ...item,
           totalPrice: item.unitPrice * item.count,
         })),
-        total,
+        subtotal,
+        deliveryFee,
+        couponDiscount,
+        couponId: appliedCoupon?.couponId || null,
+        couponCode: appliedCoupon?.code || null,
+        total: totalFinal,
         retirada: isTableMode ? true : tipoEntrega === "retirada",
         endereco: enderecos[0] || null,
         formaPagamento: formaPagamentoSelecionada.id,
@@ -240,6 +297,20 @@ const Checkout = ({
           nomeFormaPagamento: pedido?.nomeFormaPagamento,
         });
         onLogin(tokenData);
+
+        if (appliedCoupon) {
+          await fetchWithLoading(`${config.baseURL}/cupons/use`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              tenantId: tenantData.id,
+              couponId: appliedCoupon.couponId,
+              customerId: cliente.id,
+              orderId: dataPedido.id,
+              discountValue: appliedCoupon.discount,
+            }),
+          });
+        }
 
         if (formaPagamentoSelecionada.onlinePayment) {
           const onlinePaymentResponse = await fetchWithLoading(
@@ -658,6 +729,60 @@ const Checkout = ({
         </section>
       )}
 
+      {/* Cupom de Desconto */}
+      {!isTableMode && (
+        <section className="checkout-section">
+          <h2><MdLocalOffer size={20} className="section-icon" /> Cupom de desconto</h2>
+          {appliedCoupon ? (
+            <div className="coupon-applied-card">
+              <div className="coupon-applied-left">
+                <MdCheckCircle className="coupon-check-icon" size={22} />
+                <div className="coupon-applied-details">
+                  <span className="coupon-applied-code">{appliedCoupon.code}</span>
+                  <span className="coupon-applied-discount">
+                    - R$ {formatarNumero(appliedCoupon.discount)}
+                  </span>
+                </div>
+              </div>
+              <button
+                type="button"
+                className="coupon-remove-btn"
+                onClick={handleRemoveCoupon}
+                title="Remover cupom"
+              >
+                <MdClose size={18} />
+              </button>
+            </div>
+          ) : (
+            <div className="coupon-input-wrapper">
+              <MdLocalOffer className="coupon-input-icon" size={18} />
+              <input
+                className="coupon-input-field"
+                type="text"
+                placeholder="Digite o código do cupom"
+                value={couponCode}
+                onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                onKeyDown={(e) => e.key === "Enter" && handleApplyCoupon()}
+              />
+              <button
+                type="button"
+                className="coupon-submit-btn"
+                onClick={handleApplyCoupon}
+                disabled={isApplyingCoupon || !couponCode.trim()}
+              >
+                {isApplyingCoupon ? "..." : "Aplicar"}
+              </button>
+            </div>
+          )}
+          {couponError && (
+            <div className="coupon-error-box">
+              <MdInfoOutline size={16} />
+              <span>{couponError}</span>
+            </div>
+          )}
+        </section>
+      )}
+
       {/* Observações */}
       <section className="checkout-section">
         <h2>Observações do pedido:</h2>
@@ -710,6 +835,12 @@ const Checkout = ({
                 <span>Taxa de entrega:</span>
                 <strong>R$ {formatarNumero(taxaEntrega)}</strong>
               </div>
+              {appliedCoupon && (
+                <div className="total-row total-row-discount">
+                  <span>Desconto ({appliedCoupon.code}):</span>
+                  <strong>- R$ {formatarNumero(appliedCoupon.discount)}</strong>
+                </div>
+              )}
             </>
           )}
           <div className="total-row total-row-highlight">

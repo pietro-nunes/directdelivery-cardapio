@@ -105,18 +105,47 @@ export function formatCPF(value) {
   return formatWithMask(value, cpfMask);
 }
 
-export function formatDateUTC(dateStr) {
+/* -------------------------------------------------------
+ *  Parsing de datas da API DirectDelivery
+ *
+ *  A API devolve createdAt / scheduledDeliveryTime etc.
+ *  com sufixo Z mas os componentes NÃO são UTC. Além
+ *  disso a API aplica um offset fixo de +6h sobre o
+ *  horário real do pedido.
+ *
+ *  Regra (src/lib/date.ts):
+ *    1) remover Z / ±HH:MM
+ *    2) interpretar componentes como wall clock SP (UTC-3)
+ *    3) subtrair 6h (offset mentiroso da API)
+ *  ------------------------------------------------------- */
+
+function parseOrderDate(dateStr) {
+  if (!dateStr) return null;
+
+  // 1) normaliza espaço → T
+  const normalized = dateStr.includes(' ') ? dateStr.replace(' ', 'T') : dateStr;
+
+  // 2) descarta Z / ±HH:MM — a API mente sobre o fuso
+  const naive = normalized.replace(/Z$/, '').replace(/[+-]\d{2}:?\d{2}$/, '');
+
+  // 3) extrai componentes
+  const parts = naive.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2}))?/);
+  if (!parts) return new Date(naive);
+
+  const [, y, m, d, h, min, sec = '0'] = parts;
+
+  // 4) interpreta como SP (UTC-3) e subtrai 6h = net -3h
+  return new Date(Date.UTC(+y, +m - 1, +d, +h - 3, +min, +sec));
+}
+
+export function formatOrderDate(dateStr) {
   if (!dateStr) return '';
-
-  const date = new Date(dateStr);
-
-  // usa métodos UTC para não aplicar fuso
-  const year = date.getUTCFullYear();
-  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
-  const day = String(date.getUTCDate()).padStart(2, '0');
-  const hours = String(date.getUTCHours()).padStart(2, '0');
-  const minutes = String(date.getUTCMinutes()).padStart(2, '0');
-  const seconds = String(date.getUTCSeconds()).padStart(2, '0');
-
-  return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+  const d = parseOrderDate(dateStr);
+  if (!d) return '';
+  return d.toLocaleString('pt-BR', {
+    timeZone: 'America/Sao_Paulo',
+    hour12: false,
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', second: '2-digit',
+  });
 }

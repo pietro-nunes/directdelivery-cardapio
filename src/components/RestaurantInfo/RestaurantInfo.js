@@ -250,10 +250,16 @@ const RestaurantInfo = ({
           </div>
         )}
 
-        {restaurantInfo.deliveryTime && (
+        {deliveryEnabled && restaurantInfo.deliveryTime && (
           <div className="info">
             <FiClock size={16} />
-            <span>{restaurantInfo.deliveryTime} min</span>
+            <span>Entrega: ~{restaurantInfo.deliveryTime} min</span>
+          </div>
+        )}
+        {pickupEnabled && restaurantInfo.pickupTime && (
+          <div className="info">
+            <FiClock size={16} />
+            <span>Retirada: ~{restaurantInfo.pickupTime} min</span>
           </div>
         )}
       </div>

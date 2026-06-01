@@ -5,7 +5,7 @@ import config from "../../config";
 import Cookies from "js-cookie";
 import { FiRefreshCw, FiAlertCircle, FiCopy } from "react-icons/fi";
 import { MdOutlineCheck, MdLocationPin } from "react-icons/md";
-import { formatarNumero, formatDateUTC, toTitleCase } from "../../utils/functions";
+import { formatarNumero, formatOrderDate, toTitleCase } from "../../utils/functions";
 
 const OrdersList = ({ tenantData }) => {
   const [orders, setOrders] = useState([]);
@@ -126,10 +126,10 @@ const OrdersList = ({ tenantData }) => {
           return (
             <div key={order.id} className="order-card">
               <h3>Pedido #{order.id}</h3>
-              <p>Data: {formatDateUTC(order.createdAt)}</p>
+              <p>Data: {formatOrderDate(order.createdAt)}</p>
               {order.scheduledDeliveryTime && (
                 <p className="scheduled-delivery-time">
-                  <strong>🕒 Horário Agendado:</strong> {formatDateUTC(order.scheduledDeliveryTime)}
+                    <strong>🕒 Horário Agendado:</strong> {formatOrderDate(order.scheduledDeliveryTime)}
                 </p>
               )}
 
