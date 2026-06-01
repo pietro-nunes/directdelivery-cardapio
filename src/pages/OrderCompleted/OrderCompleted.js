@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import "./OrderCompleted.css";
 import Lottie from "lottie-react";
-import loadingAnimation from "../../lottie/completed.json"; // Substitua pelo seu arquivo Lottie
+import loadingAnimation from "../../lottie/completed.json";
 import { FaWhatsapp } from "react-icons/fa";
+import { MdNotificationsActive, MdNotificationsNone } from "react-icons/md";
 import { formatarNumero } from "../../utils/functions";
 import { useNavigate } from "react-router-dom";
+import config from "../../config";
+import Cookies from "js-cookie";
 
 const OrderCompleted = ({
   tenantData,
@@ -14,6 +17,63 @@ const OrderCompleted = ({
   basePath,
 }) => {
   const navigate = useNavigate();
+  const [notifActivated, setNotifActivated] = useState(false);
+  const [notifLoading, setNotifLoading] = useState(false);
+  const [notifError, setNotifError] = useState(false)
+
+  const handleActivateNotifications = async () => {
+    setNotifLoading(true);
+    setNotifError(false);
+
+    try {
+      const raw = Cookies.get(`token-${tenantData.slug}`);
+      if (!raw) return;
+      const { id: customerId } = JSON.parse(raw);
+
+      if (!window.OneSignalDeferred) {
+        setNotifError(true);
+        return;
+      }
+
+      window.OneSignalDeferred.push(async (OneSignal) => {
+        await OneSignal.init({
+          appId: '8c53382a-5120-4d84-9748-be4f220b2694',
+        });
+
+        // dispara o prompt de permissão
+        await OneSignal.Slidedown.promptPush();
+
+        const id = OneSignal.User.PushSubscription.id;
+        if (id) {
+          await fetch(`${config.baseURL}/notifications/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ customerId, playerId: id }),
+          });
+          setNotifActivated(true);
+        } else {
+          // Tenta novamente após mudança na inscrição
+          const unsub = OneSignal.User.PushSubscription.addEventListener('change', async (e) => {
+            const newId = e.current?.id;
+            if (newId) {
+              await fetch(`${config.baseURL}/notifications/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ customerId, playerId: newId }),
+              });
+              setNotifActivated(true);
+              unsub.remove();
+            }
+          });
+        }
+      });
+    } catch {
+      setNotifError(true);
+    } finally {
+      setNotifLoading(false);
+    }
+  };
+
   const formatWhatsAppMessage = (orderDetails) => {
     const {
       id,
@@ -212,6 +272,27 @@ const OrderCompleted = ({
           <strong>Total: </strong> R$ {formatarNumero(orderDetails.total)}
         </p>
       </div>
+      {!isTableMode && !notifActivated && (
+        <button
+          className="btn-notification"
+          onClick={handleActivateNotifications}
+          disabled={notifLoading}
+        >
+          <MdNotificationsNone size={20} />
+          {notifLoading ? 'Ativando...' : 'Ativar notificações do pedido'}
+        </button>
+      )}
+      {notifActivated && (
+        <div className="notif-activated">
+          <MdNotificationsActive size={20} />
+          <span>Notificações ativadas! Você receberá atualizações do pedido.</span>
+        </div>
+      )}
+      {notifError && (
+        <p className="notif-error">
+          Não foi possível ativar as notificações. Verifique as permissões do navegador.
+        </p>
+      )}
       <div className="action-buttons">
         {!isTableMode ? (
           <>

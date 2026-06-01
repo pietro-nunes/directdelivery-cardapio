@@ -7,6 +7,7 @@ import Checkout from "./pages/Checkout/Checkout";
 import FabButton from "./components/FabButton/FabButton";
 import Login from "./pages/Login/Login";
 import config from "./config";
+import Cookies from "js-cookie";
 
 import OrdersList from "./pages/OrdersList/OrdersList";
 import OrderCompleted from "./pages/OrderCompleted/OrderCompleted";
@@ -164,7 +165,50 @@ const TenantRoutes = ({
   }, [slug, pollingEnabled]);
 
   // --------------------------------
-  // 5) Guards de carregamento/erro
+  // 6) Registro OneSignal (push notifications)
+  // --------------------------------
+  useEffect(() => {
+    if (!isLoggedIn || !tenantData?.slug) return;
+
+    const registerPlayerId = async (playerId) => {
+      try {
+        const raw = Cookies.get(`token-${tenantData.slug}`);
+        if (!raw) return;
+        const { id: customerId } = JSON.parse(raw);
+
+        await fetch(`${config.baseURL}/notifications/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ customerId, playerId }),
+        });
+      } catch (err) {
+        console.error('Falha ao registrar push token:', err);
+      }
+    };
+
+    const init = () => {
+      if (!window.OneSignalDeferred) return;
+
+      window.OneSignalDeferred.push(async (OneSignal) => {
+        await OneSignal.init({
+          appId: '8c53382a-5120-4d84-9748-be4f220b2694',
+        });
+
+        const tryRegister = () => {
+          const id = OneSignal.User.PushSubscription.id;
+          if (id) registerPlayerId(id);
+        };
+
+        tryRegister();
+        OneSignal.User.PushSubscription.addEventListener('change', tryRegister);
+      });
+    };
+
+    init();
+  }, [isLoggedIn, tenantData?.slug]);
+
+  // --------------------------------
+  // 7) Guards de carregamento/erro
   // --------------------------------
   if (isLoadingTenant) return null;
   if (hasError) return <Navigate to="/" />;
