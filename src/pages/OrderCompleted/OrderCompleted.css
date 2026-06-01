@@ -217,8 +217,41 @@
   text-align: center;
 }
 
+.notif-ios-guide {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 10px 16px;
+  background: hsl(48 100% 95%);
+  border: 1px solid hsl(48 70% 50%);
+  border-radius: 8px;
+  color: hsl(48 80% 30%);
+  font-size: 0.85rem;
+  font-weight: 500;
+  width: 90%;
+  max-width: 450px;
+  text-align: left;
+  line-height: 1.4;
+}
+
+.notif-silent {
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: hsl(0 0% 50%);
+  font-weight: 500;
+  width: 90%;
+  max-width: 450px;
+  text-align: center;
+}
+
 @media (min-width: 768px) {
   .btn-notification {
+    width: 60%;
+    max-width: 550px;
+  }
+  .notif-activated,
+  .notif-ios-guide {
     width: 60%;
     max-width: 550px;
   }
