@@ -165,7 +165,7 @@ const TenantRoutes = ({
   }, [slug, pollingEnabled]);
 
   // --------------------------------
-  // 6) Registro OneSignal (push notifications)
+  // 6) Guards de carregamento/erro
   // --------------------------------
   useEffect(() => {
     if (!isLoggedIn || !tenantData?.slug) return;
