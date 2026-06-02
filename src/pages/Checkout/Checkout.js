@@ -659,13 +659,13 @@ const Checkout = ({
 
           {/* PAGUE ONLINE */}
           {tenantData?.paymentTypes?.some(
-            (f) => f.isActive && f.onlinePayment,
+            (f) => f.isActive && f.onlinePayment && f.showInMenu !== false,
           ) && (
             <>
               <h3>Pague online</h3>
               <div className="payment-card-list">
                 {tenantData.paymentTypes
-                  .filter((forma) => forma.isActive && forma.onlinePayment)
+                  .filter((forma) => forma.isActive && forma.onlinePayment && forma.showInMenu !== false)
                   .map((forma) => (
                     <div
                       key={forma.id}
@@ -694,13 +694,13 @@ const Checkout = ({
 
           {/* PAGUE NA ENTREGA */}
           {tenantData?.paymentTypes?.some(
-            (f) => f.isActive && !f.onlinePayment,
+            (f) => f.isActive && !f.onlinePayment && f.showInMenu !== false,
           ) && (
             <>
               <h3>Pague na entrega</h3>
               <div className="payment-card-list">
                 {tenantData.paymentTypes
-                  .filter((forma) => forma.isActive && !forma.onlinePayment)
+                  .filter((forma) => forma.isActive && !forma.onlinePayment && forma.showInMenu !== false)
                   .map((forma) => (
                     <div
                       key={forma.id}
