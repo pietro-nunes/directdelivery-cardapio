@@ -59,24 +59,25 @@ body:has(.modal-overlay-mobile) {
   position: fixed;
   top: calc(12px + env(safe-area-inset-top));
   left: 12px;
-  z-index: 10000; /* acima do modal */
-  background-color: rgba(255,255,255,0.9);
+  z-index: 10000;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(4px);
   border-radius: 50%;
   padding: 6px;
-  border: none;
+  border: 1px solid rgba(255,255,255,0.25);
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
   transition: background-color .2s ease, transform .15s ease, box-shadow .2s ease;
-  pointer-events: auto; /* garante clique mesmo com locks globais */
+  pointer-events: auto;
 }
 
 .back-button-overlay.scrolled {
-  background-color: #fff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  background: rgba(0,0,0,0.55);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
 }
 
 .back-button-overlay:hover {
-  background-color: rgba(255, 255, 255, 1);
+  background: rgba(0,0,0,0.55);
   transform: scale(1.08);
 }
 
@@ -611,15 +612,14 @@ input[type="checkbox"]:checked + .checkbox-content + .checkbox-indicator::after 
     top: 15px;
     left: 15px;
     padding: 8px;
-    background-color: rgba(255, 255, 255, 0.85);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    background: rgba(0,0,0,0.35);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255,255,255,0.25);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
   }
 
-  .back-button-overlay svg {
-    color: #333 !important;
-  }
-  .back-button-overlay.scrolled svg {
-    color: #333 !important;
+  .back-button-overlay.scrolled {
+    background: rgba(0,0,0,0.55);
   }
 
   .modal-main-content {

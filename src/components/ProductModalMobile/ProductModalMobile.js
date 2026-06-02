@@ -34,12 +34,16 @@ const ProductModalMobile = ({
   const flavors =
     product.relations?.filter((relation) => relation.type === "flavor") || [];
   const sortedFlavors = fromFavorites ? [...flavors].reverse() : flavors;
+  const normalizeStr = (str) =>
+    str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
   const filteredFlavors = flavorSearch
-    ? sortedFlavors.filter((relation) =>
-        relation.relatedProduct.name
-          .toLowerCase()
-          .startsWith(flavorSearch.toLowerCase())
-      )
+    ? sortedFlavors.filter((relation) => {
+        const term = normalizeStr(flavorSearch);
+        const name = normalizeStr(relation.relatedProduct.name || '');
+        const desc = normalizeStr(relation.relatedProduct.description || '');
+        return name.includes(term) || desc.includes(term);
+      })
     : sortedFlavors;
   const additionals =
     product.relations?.filter((relation) => relation.type === "additional") ||
@@ -262,10 +266,7 @@ const ProductModalMobile = ({
           className={`back-button-overlay ${scrolled ? "scrolled" : ""}`}
           onClick={closeModal}
         >
-          <FiChevronLeft
-            size={30}
-            color={scrolled || !hasImage ? "#333" : "#fff"}
-          />
+          <FiChevronLeft size={28} color="#fff" />
         </button>
 
         <div className="modal-main-content" ref={mainContentRef}>
