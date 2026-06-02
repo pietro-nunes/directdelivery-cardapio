@@ -171,7 +171,11 @@ const ProductModalMobile = ({
         return sum + (parseFloat(rel?.price || 0) * f.quantity);
       }, 0);
 
-      if (tenantFlavorCalcType === "average") {
+      if (tenantFlavorCalcType === "slot") {
+        calculatedFlavorPrice = parseFloat(
+          (weightedSum * product.flavorAllowed / totalFlavorCount).toFixed(2)
+        );
+      } else if (tenantFlavorCalcType === "average") {
         calculatedFlavorPrice = parseFloat(
           (weightedSum / totalFlavorCount).toFixed(2)
         );
@@ -204,7 +208,11 @@ const ProductModalMobile = ({
       const rel = product.relations.find((r) => r.id === id);
       let unitPriceForDisplay = parseFloat(rel.price || 0);
 
-      if (tenantFlavorCalcType === "average" && totalFlavorCount > 0) {
+      if (tenantFlavorCalcType === "slot" && totalFlavorCount > 0) {
+        unitPriceForDisplay = parseFloat(
+          (unitPriceForDisplay * product.flavorAllowed / totalFlavorCount).toFixed(2)
+        );
+      } else if (tenantFlavorCalcType === "average" && totalFlavorCount > 0) {
         unitPriceForDisplay = parseFloat(
           (unitPriceForDisplay / totalFlavorCount).toFixed(2)
         );
