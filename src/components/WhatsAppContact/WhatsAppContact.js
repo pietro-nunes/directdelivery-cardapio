@@ -3,14 +3,11 @@ import "./WhatsAppContact.css";
 import { FaWhatsapp } from "react-icons/fa";
 
 const WhatsAppContact = ({ tenantData, message }) => {
+  const cleanPhone = tenantData.phone.replace(/\D/g, "");
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   const shareUrl = isMobile
-    ? `https://api.whatsapp.com/send?phone=55${
-        tenantData.phone
-      }&text=${encodeURIComponent(message)}`
-    : `https://web.whatsapp.com/send?phone=55${
-        tenantData.phone
-      }&text=${encodeURIComponent(message)}`;
+    ? `https://api.whatsapp.com/send?phone=55${cleanPhone}&text=${encodeURIComponent(message)}`
+    : `https://web.whatsapp.com/send?phone=55${cleanPhone}&text=${encodeURIComponent(message)}`;
 
   const handleContact = () => {
     window.open(shareUrl, "_blank");

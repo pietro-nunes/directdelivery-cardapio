@@ -182,12 +182,11 @@ const OrderCompleted = ({
   // Constante com a mensagem formatada
   const message = formatWhatsAppMessage(orderDetails);
 
+  const cleanPhone = tenantData.phone.replace(/\D/g, "");
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   const shareUrl = isMobile
-    ? `https://api.whatsapp.com/send?phone=55${tenantData.phone
-    }&text=${encodeURIComponent(message)}`
-    : `https://web.whatsapp.com/send?phone=55${tenantData.phone
-    }&text=${encodeURIComponent(message)}`;
+    ? `https://api.whatsapp.com/send?phone=55${cleanPhone}&text=${encodeURIComponent(message)}`
+    : `https://web.whatsapp.com/send?phone=55${cleanPhone}&text=${encodeURIComponent(message)}`;
 
   const handleShare = () => {
     // Abre a URL em uma nova aba
