@@ -96,9 +96,11 @@ body:has(.modal-overlay-mobile) {
 /* --- Seção da Imagem --- */
 .product-image-section {
   width: 100%;
-  height: 160px;
+  height: clamp(220px, 42dvh, 420px);
   overflow: hidden;
-  background-color: #f5f5f5;
+  background:
+    linear-gradient(135deg, rgba(0, 0, 0, 0.035), rgba(0, 0, 0, 0.015)),
+    #f7f7f7;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -108,8 +110,9 @@ body:has(.modal-overlay-mobile) {
 .product-modal-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
+  display: block;
 }
 
 /* --- Seção de Título sem Imagem --- */
@@ -596,7 +599,7 @@ input[type="checkbox"]:checked + .checkbox-content + .checkbox-indicator::after 
   }
 
   .product-image-section {
-    height: 240px;
+    height: clamp(280px, 46dvh, 430px);
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
   }

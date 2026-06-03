@@ -92,9 +92,10 @@
   height: 55px; /* Reduzido */
   margin-right: 12px;
   border-radius: 4px;
-  object-fit: cover;
+  object-fit: contain;
   flex-shrink: 0;
   border: 1px solid #f1f1f1;
+  background-color: #f8f9fa;
 }
 
 .item-details {
