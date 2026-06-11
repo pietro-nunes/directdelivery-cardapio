@@ -1,3 +1,27 @@
+.login-cpf-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: #fff8e1;
+  border: 1px solid #f5c518;
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 16px;
+}
+
+.login-cpf-notice-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.login-cpf-notice p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #7a5c00;
+  line-height: 1.4;
+}
+
 .login-container {
   display: flex;
   justify-content: center;

@@ -91,12 +91,17 @@ const Checkout = ({
     }
     try {
       const clienteLocalStorage = JSON.parse(token);
+      if (tenantData?.cpfMandatory && !clienteLocalStorage.cpf) {
+        onLogout();
+        navigate(`/${tenantData.slug}/login?reason=cpf`);
+        return;
+      }
       setCliente(clienteLocalStorage);
     } catch (e) {
       console.error("Erro ao carregar token do cliente:", e);
       onLogout();
     }
-  }, [onLogout, tenantData.slug]);
+  }, [onLogout, tenantData.slug, tenantData?.cpfMandatory, navigate]);
 
   useEffect(() => {
     enderecosRef.current = enderecos;

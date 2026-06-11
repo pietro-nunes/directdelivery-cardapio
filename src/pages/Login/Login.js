@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import MaskedInput from "react-text-mask";
 import "./Login.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useFetchWithLoading } from "../../contexts/fetchWithLoading";
 import config from "../../config";
 import { formatCPF, isValidCPF, onlyDigits, extractCustomerData } from "../../utils/functions";
@@ -14,6 +14,8 @@ const Login = ({ onLogin, basePath, tenantData, isTableMode }) => {
   const [cpfError, setCpfError] = useState("");
   const [clientExists, setClientExists] = useState(false);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const cpfReason = searchParams.get("reason") === "cpf";
   const { fetchWithLoading } = useFetchWithLoading();
 
   // Verifica se o CPF é obrigatório baseado no tenantData
@@ -209,6 +211,12 @@ const Login = ({ onLogin, basePath, tenantData, isTableMode }) => {
     <div className="login-container">
       <div className="login-form">
         <h2>Identificação</h2>
+        {cpfReason && (
+          <div className="login-cpf-notice">
+            <span className="login-cpf-notice-icon">⚠️</span>
+            <p>Precisamos do seu CPF para continuar. Por favor, informe seu telefone e CPF abaixo.</p>
+          </div>
+        )}
         <form onSubmit={handleSubmit}>
           <div className="input-group">
             <label>Qual seu número de telefone?</label>

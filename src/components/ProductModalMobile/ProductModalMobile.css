@@ -217,6 +217,45 @@ body:has(.modal-overlay-mobile) {
   gap: 8px;
 }
 
+/* Grupos de sabores */
+.flavor-groups-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.flavor-group-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.flavor-group-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.flavor-group-header::before,
+.flavor-group-header::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: hsl(var(--primary) / 0.2);
+}
+
+.flavor-group-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: hsl(var(--primary) / 0.1);
+  color: hsl(var(--primary));
+  white-space: nowrap;
+}
+
 .flavor-search-wrapper {
   position: relative;
   margin-bottom: 10px;

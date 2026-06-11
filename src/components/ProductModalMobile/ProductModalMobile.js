@@ -347,12 +347,22 @@ const ProductModalMobile = ({
                     </div>
                   </div>
                 )}
-                <div className="options-list-grid">
-                  {filteredFlavors.map((relation) => {
+                {(() => {
+                  // Agrupar sabores por relation.group, preservando ordem de aparição
+                  const groupOrder = [];
+                  const grouped = {};
+                  filteredFlavors.forEach((relation) => {
+                    const g = relation.group || '';
+                    if (!grouped[g]) {
+                      grouped[g] = [];
+                      groupOrder.push(g);
+                    }
+                    grouped[g].push(relation);
+                  });
+
+                  const renderFlavorItem = (relation) => {
                     const qty = getFlavorQuantity(relation.id);
-                    const flavorUnitPriceDisplay = parseFloat(
-                      relation.price || 0
-                    );
+                    const flavorUnitPriceDisplay = parseFloat(relation.price || 0);
                     return (
                       <div
                         className={`flavor-item-row ${qty > 0 ? "flavor-selected" : ""}`}
@@ -393,8 +403,43 @@ const ProductModalMobile = ({
                         </div>
                       </div>
                     );
-                  })}
-                </div>
+                  };
+
+                  // Se não há grupos definidos, renderiza lista plana (retrocompatível)
+                  const hasGroups = groupOrder.some((g) => g !== '');
+                  if (!hasGroups) {
+                    return (
+                      <div className="options-list-grid">
+                        {filteredFlavors.map(renderFlavorItem)}
+                      </div>
+                    );
+                  }
+
+                  // Renderiza por seção: grupos nomeados primeiro, sem grupo por último
+                  const namedGroups = groupOrder.filter((g) => g !== '');
+                  const ungrouped = grouped[''] || [];
+                  return (
+                    <div className="flavor-groups-wrapper">
+                      {namedGroups.map((g) => (
+                        <div key={g} className="flavor-group-section">
+                          <div className="flavor-group-header">
+                            <span className="flavor-group-badge">{g}</span>
+                          </div>
+                          <div className="options-list-grid">
+                            {grouped[g].map(renderFlavorItem)}
+                          </div>
+                        </div>
+                      ))}
+                      {ungrouped.length > 0 && (
+                        <div className="flavor-group-section">
+                          <div className="options-list-grid">
+                            {ungrouped.map(renderFlavorItem)}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
               </div>
             )}
 
