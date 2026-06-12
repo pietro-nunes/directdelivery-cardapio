@@ -31,11 +31,14 @@ const ProductModalMobile = ({
 
   const hasImage = product.image;
 
-  const flavors =
-    product.relations?.filter((relation) => relation.type === "flavor") || [];
-  const sortedFlavors = fromFavorites ? [...flavors].reverse() : flavors;
   const normalizeStr = (str) =>
     str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  const sortAlpha = (a, b) =>
+    normalizeStr(a.relatedProduct.name || '').localeCompare(normalizeStr(b.relatedProduct.name || ''), 'pt-BR');
+
+  const flavors =
+    product.relations?.filter((relation) => relation.type === "flavor") || [];
+  const sortedFlavors = [...(fromFavorites ? [...flavors].reverse() : flavors)].sort(sortAlpha);
 
   const filteredFlavors = flavorSearch
     ? sortedFlavors.filter((relation) => {
@@ -46,11 +49,9 @@ const ProductModalMobile = ({
       })
     : sortedFlavors;
   const additionals =
-    product.relations?.filter((relation) => relation.type === "additional") ||
-    [];
+    [...(product.relations?.filter((relation) => relation.type === "additional") || [])].sort(sortAlpha);
   const compositions =
-    product.relations?.filter((relation) => relation.type === "composition") ||
-    [];
+    [...(product.relations?.filter((relation) => relation.type === "composition") || [])].sort(sortAlpha);
 
   const totalFlavorCount = selectedFlavors.reduce((sum, f) => sum + f.quantity, 0);
 
@@ -348,17 +349,15 @@ const ProductModalMobile = ({
                   </div>
                 )}
                 {(() => {
-                  // Agrupar sabores por relation.group, preservando ordem de aparição
+                  // Agrupar sabores por relation.group, preservando ordem de aparição dos grupos
                   const groupOrder = [];
                   const grouped = {};
                   filteredFlavors.forEach((relation) => {
-                    const g = relation.group || '';
-                    if (!grouped[g]) {
-                      grouped[g] = [];
-                      groupOrder.push(g);
-                    }
+                    const g = relation.group?.trim() || '';
+                    if (!grouped[g]) { grouped[g] = []; groupOrder.push(g); }
                     grouped[g].push(relation);
                   });
+                  const namedGroupsSorted = groupOrder.filter((g) => g !== '');
 
                   const renderFlavorItem = (relation) => {
                     const qty = getFlavorQuantity(relation.id);
@@ -406,7 +405,7 @@ const ProductModalMobile = ({
                   };
 
                   // Se não há grupos definidos, renderiza lista plana (retrocompatível)
-                  const hasGroups = groupOrder.some((g) => g !== '');
+                  const hasGroups = namedGroupsSorted.length > 0;
                   if (!hasGroups) {
                     return (
                       <div className="options-list-grid">
@@ -415,12 +414,11 @@ const ProductModalMobile = ({
                     );
                   }
 
-                  // Renderiza por seção: grupos nomeados primeiro, sem grupo por último
-                  const namedGroups = groupOrder.filter((g) => g !== '');
+                  // Renderiza por seção: grupos nomeados (alfabético) primeiro, sem grupo por último
                   const ungrouped = grouped[''] || [];
                   return (
                     <div className="flavor-groups-wrapper">
-                      {namedGroups.map((g) => (
+                      {namedGroupsSorted.map((g) => (
                         <div key={g} className="flavor-group-section">
                           <div className="flavor-group-header">
                             <span className="flavor-group-badge">{g}</span>
